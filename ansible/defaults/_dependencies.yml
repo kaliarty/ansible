@@ -4,7 +4,7 @@
 alertmanager_version: 0.26.0
 blackbox_exporter_version: 0.24.0
 fluentbit_version: 1.9.9
-grafana_default_version: 9.5.10
+grafana_version: 9.5.10
 jmx_exporter_version: 0.20.0
 node_exporter_version: 1.6.1
 # we can't use higher version because process_exporter since version 0.7.4 changed checksum url and process_exporter role is not prepared for it
@@ -13,6 +13,8 @@ prometheus_version: 2.37.9
 opensearch_version_logging: 2.11.0
 opensearch_dashboards_version: 2.11.0
 
+postgresql_version: 13
+
 # GEN2 specific components
 gen2_minio_version: RELEASE.2023-10-25T06-33-25Z
 gen2_nginx_exporter_version: 0.9.0
@@ -20,6 +22,5 @@ gen2_nginx_version_rhel7: -1.21.4-1.el7.ngx.x86_64
 gen2_nginx_version_rhel8: -1.21.1-1.el8.ngx.x86_64
 gen2_nginx_version_ubuntu: =1.21.1-1~focal
 gen2_postgres_exporter_version: 0.10.0
-gen2_postgres_version: 13
 gen2_opensearch_version: 2.10.0
 tomcat_version: 9.0.80

@@ -2,11 +2,14 @@
 # ansible-galaxy install -r requirements.yml
 roles:
   - name: nginxinc.nginx
-    version: 0.24.0
+    #version: 0.24.1 
+    src: git+https://github.com/nginxinc/ansible-role-nginx.git
+    version: f0ec588fa724d33ed6400618a2cb3ed6aa07eb9a # fix for https://github.com/nginxinc/ansible-role-nginx/issues/720
+    scm: git
   - name: nginxinc.nginx_config
     version: 0.6.0
   - name: geerlingguy.postgresql
-    version: 3.4.3
+    version: 3.5.0
   - name: cloudalchemy.prometheus
     version: 4.0.0
     # Galaxy says cloudalchemy.prometheus is available in v3.0.0 and v4.0.0 but download fails with
@@ -19,9 +22,6 @@ roles:
     version: 0.19.1
   - name: cloudalchemy.blackbox-exporter
     version: 1.0.0
-  - name: cloudalchemy.grafana
-    scm: git
-    src: https://github.com/cloudalchemy/ansible-grafana.git
   - name: geerlingguy.ntp
     version: 2.3.1
   - name: 0x0i.systemd

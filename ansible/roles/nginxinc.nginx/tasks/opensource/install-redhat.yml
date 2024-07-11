@@ -6,8 +6,9 @@
     description: NGINX Repository
     enabled: true
     gpgcheck: true
-    mode: 0644
+    mode: "0644"
     module_hotfixes: true
+    priority: 9
     state: "{{ (nginx_state == 'uninstall') | ternary('absent', 'present') }}"
   when: nginx_manage_repo | bool
 

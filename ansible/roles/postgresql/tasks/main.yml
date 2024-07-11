@@ -3,11 +3,9 @@
 
 - name: Import distribution dependent variables | override defaults for newer Postgres versions
   include_vars: "{{ ansible_os_family | lower }}.yml"
-  when: postgres_version is defined
 
 - name: Import distribution dependent tasks | setup repositories for newer Postgres versions
   include_tasks: "setup-{{ ansible_os_family | lower }}.yml"
-  when: postgres_version is defined
 
 - name: Configure firewall for PostgreSQL
   include: firewall.yml
@@ -81,7 +79,7 @@
     summary:
       name: PostgreSQL
       description: "RDBMS server"
-      version: "{{ postgres_version | default('system default') }}" 
+      version: "{{ postgresql_version | default('system default') }}" 
       details:
         directories: "{{ [ postgresql_log_dir, ('/var/lib/pgsql' if ansible_os_family == 'RedHat' else '/var/lib/postgresql') ] }}"
         os_user: "{{ postgresql_user }}"

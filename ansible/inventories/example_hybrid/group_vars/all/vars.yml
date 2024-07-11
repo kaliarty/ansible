@@ -72,6 +72,8 @@ dpe_additional_config: |
   ataccama.one.dpe.label=dpe-hybrid
   ## Additional DPE datasources / drivers configuration
   plugin.jdbcdatasource.ataccama.one.driver.redshift.disabled=false
+  ## ONE Data doesn't work on Hybrid DPE, so it have to be disabled
+  plugin.dmm-datasource.enabled=false
 
 # dpe_drivers is a list of additional JDBC drivers that get downloaded from the internet. The following one -
 # redshift is preconfigured as a starting example. Instead of `remote_url`, you can specify

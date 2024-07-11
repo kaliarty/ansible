@@ -45,7 +45,7 @@
 
 - name: Install grafana
   include_role:
-    name: cloudalchemy.grafana
+    name: grafana.grafana.grafana
     apply:
       environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
   vars:
@@ -72,7 +72,6 @@
         admin_user: "{{ grafana_security.admin_user }}"
         data_sources: "{{ grafana_datasources | map(attribute='name') | list }}"
         host: "{{ nginx_hosts.grafana.hostname }}"
-        # values copied from cloudalchemy.grafana role
         os_user: grafana
         os_group: grafana
         services: grafana-server

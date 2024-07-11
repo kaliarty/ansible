@@ -20,7 +20,6 @@
   roles:
     - role: postgresql
       vars:
-        postgres_version: "{{ gen2_postgres_version }}"
         postgresql_users:
           - name: "{{ postgres.database.owner }}"
             password: "{{ postgres.database.password }}"
@@ -107,7 +106,6 @@
   roles:
     - role: postgresql
       vars:
-        postgres_version: "{{ gen2_postgres_version }}"
         postgresql_users:
           - name: "{{ dqit.database.owner }}"
             password: "{{ dqit.database.owner_password }}"
@@ -140,7 +138,6 @@
     - role: postgresql
       vars:
         # defined in _packages.yml
-        postgres_version: "{{ gen2_postgres_version }}"
         postgresql_users:
           - name: "{{ rdm.database.user }}"
             password: "{{ rdm.database.password }}"
@@ -173,7 +170,6 @@
   roles:
     - role: postgresql
       vars:
-        postgres_version: "{{ gen2_postgres_version }}"
         postgresql_users:
           - name: "{{ mdm.database.user }}"
             password: "{{ mdm.database.password }}"

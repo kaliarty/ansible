@@ -119,6 +119,11 @@ ataccama.one.webserver.ff.props.disableposthog={{ ff_disableposthog | default(tr
 ataccama.one.webserver.ff.props.cataloglineage={{ ff_props_catalog_lineage | default(true) | lower }}
 ataccama.one.webserver.backend.lineage.api-url={{ mde_lineage_url }}
 
+### ONE Data
+ataccama.one.webserver.ff.props.onedataenabled={{ ff_props_onedata_enabled | default(true) | lower }}
+ataccama.one.webserver.ff.props.onedataloadenabled={{ ff_props_onedata_load_enabled | default(true) | lower }}
+ataccama.one.webserver.ff.props.onedataloadlimited={{ ff_props_onedata_load_limited | default(false) | lower }}
+
 ### MMM-BE jwt keys
 ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
 ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be

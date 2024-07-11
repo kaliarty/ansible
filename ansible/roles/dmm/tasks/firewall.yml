@@ -5,9 +5,10 @@
   vars:
     iptables:
       allowed_tcp_ports:
+        ### allowing http and grpc port from processing host to be able to profile DMM/ONE Data source with DPE
         - port: "{{ dmm_port }}"
-          source: "{{ groups['one_app'] | default([]) }}"
+          source: "{{ (groups['one_app'] | default([])) + (groups['processing'] | default([])) }}"
         - port: "{{ dmm_grpc_port }}"
-          source: "{{ groups['monitoring_server'] }}"
+          source: "{{ groups['monitoring_server'] + (groups['processing'] | default([])) }}"
         - port: "{{ dmm_management_port }}"
           source: "{{ groups['monitoring_server'] }}"

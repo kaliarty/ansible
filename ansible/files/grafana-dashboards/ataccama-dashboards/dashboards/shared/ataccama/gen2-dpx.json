@@ -544,7 +544,7 @@
         {
           "datasource": null,
           "exemplar": true,
-          "expr": "ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "expr": "sum(ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"})",
           "interval": "",
           "legendFormat": "{{pod}}",
           "refId": "A"
@@ -1407,7 +1407,7 @@
           "exemplar": true,
           "expr": "ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
           "interval": "",
-          "legendFormat": "From {{status_old}} to {{status_new}} - max",
+          "legendFormat": "{{job_type}} from {{status_old}} to {{status_new}} - max",
           "refId": "A"
         },
         {
@@ -1416,7 +1416,7 @@
           "expr": "rate(ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
           "hide": true,
           "interval": "",
-          "legendFormat": "From {{status_old}} to {{status_new}} - count",
+          "legendFormat": "{{job_type}} from {{status_old}} to {{status_new}} - count",
           "refId": "B"
         },
         {
@@ -1425,7 +1425,7 @@
           "expr": "rate(ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
           "hide": true,
           "interval": "",
-          "legendFormat": "From {{status_old}} to {{status_new}} - sum",
+          "legendFormat": "{{job_type}} from {{status_old}} to {{status_new}} - sum",
           "refId": "C"
         }
       ],
@@ -4088,7 +4088,7 @@
               "exemplar": true,
               "expr": "ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
               "interval": "",
-              "legendFormat": "Connected engines",
+              "legendFormat": "Connected engines - SLA monitored {{sla_monitored}}",
               "refId": "B"
             },
             {
@@ -4096,7 +4096,7 @@
               "exemplar": true,
               "expr": "ataccama_one_dpm_engines_count_disconnected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
               "interval": "",
-              "legendFormat": "Disconnected engines",
+              "legendFormat": "Disconnected engines - SLA monitored {{sla_monitored}}",
               "refId": "C"
             },
             {
@@ -4104,7 +4104,7 @@
               "exemplar": true,
               "expr": "ataccama_one_dpm_engines_count_active{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
               "interval": "",
-              "legendFormat": "Active engines ",
+              "legendFormat": "Active engines - SLA monitored {{sla_monitored}}",
               "refId": "A"
             },
             {
@@ -4112,7 +4112,7 @@
               "exemplar": true,
               "expr": "rate(ataccama_one_dpm_engines_count_inactive{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1d])",
               "interval": "",
-              "legendFormat": "Inactive engines ",
+              "legendFormat": "Inactive engines - SLA monitored {{sla_monitored}}",
               "refId": "D"
             }
           ],

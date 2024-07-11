@@ -6,6 +6,6 @@ collections:
   - name: community.crypto
   - name: community.general
     version: 7.0.1
-  - name: community.grafana
+  - name: grafana.grafana
   - name: community.postgresql
   - name: community.sops

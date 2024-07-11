@@ -6,7 +6,7 @@
 
 [INPUT]
     Name              tail
-    Path              {{ postgresql_log_dir }}/postgresql-{{ postgres_version }}-main.log
+    Path              {{ postgresql_log_dir }}/postgresql-{{ postgresql_version }}-main.log
     Tag               console.*
     Multiline         on
     Parser_Firstline  postgresql-multiline

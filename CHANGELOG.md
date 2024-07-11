@@ -1,4 +1,32 @@
-<a name="14.5.2-1"></a>
+<a name="14.5.3"></a>
+# 14.5.3 (2024/07/02)
+
+
+## Bug Fixes
+* **postgres:** postgresql role now respects postgresql_version variable
+
+## Features
+* **ataccama-packages:**  version 14.5.3.240625-1971186
+
+<a name="14.5.2-3"></a>
+# 14.5.2-3 (2024/06/13)
+
+
+## Bug Fixes
+* **nginx:** repository keys updated
+<a name="14.5.2-2"></a>
+# 14.5.2-2 (2024/02/27)
+
+
+## Bug Fixes
+
+* **updated version ** bump to 14.5.2.240517-1864086-patch2
+  * mdm
+  * mdm-server
+  * rdm
+  * mmm-be
+  * server
+<a name="14.5.2-2"></a>
 # 14.5.2-1 (2024/02/27)
 
 
