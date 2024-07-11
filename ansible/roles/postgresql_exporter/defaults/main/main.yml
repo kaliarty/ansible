@@ -1,0 +1,16 @@
+---
+postgres_exporter_user: postgres
+postgres_exporter_group: "{{ postgres_exporter_user }}"
+postgres_exporter_home: "{{ '/var/lib/pgsql' if ansible_os_family ==  'RedHat' else '/var/lib/postgresql' }}"
+postgres_exporter_version: "{{ gen2_postgres_exporter_version }}"
+
+postgres_exporter_port: 9187
+postgres_exporter_listen_address: "0.0.0.0:{{ postgres_exporter_port }}"
+
+postgres_exporter_datasource: "postgresql://postgres@:{{ postgresql_port }}/postgres?host=/var/run/postgresql/&sslmode=disable"
+postgres_exporter_flags:
+  - '--web.listen-address={{ postgres_exporter_listen_address }}'
+  - '--auto-discover-databases'
+  - '--extend.query-path={{ postgres_exporter_queries_file }}'
+
+postgres_exporter_queries_file: "{{ postgres_exporter_home }}/queries.yml"

@@ -1,0 +1,9 @@
+---
+# handlers file for dqit
+
+- name: Restart DQIT
+  service:
+    name: dqit
+    state: restarted
+  tags:
+    - restart

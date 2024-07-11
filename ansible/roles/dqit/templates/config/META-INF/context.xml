@@ -1,0 +1,12 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Context>
+
+    <Resource name="jdbc/AppDS" auth="Container" type="javax.sql.DataSource"
+              testOnBorrow="true"
+              validationQuery="SELECT 1"
+              validationInterval="1800000"
+              maxActive="100" maxIdle="30" maxWait="-1"
+              username="{{ database_user }}" password="{{ database_password }}" driverClassName="org.postgresql.Driver"
+              url="{{ database_connection_url }}"/>
+
+</Context>

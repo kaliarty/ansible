@@ -1,0 +1,13 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ dqf_http_port }}"
+          source: "{{ groups['monitoring_server'] + groups['dqf_server'] + groups['frontend'] }}"
+        - port: "{{ dqf_grpc_port }}"
+          source: "{{ groups['monitoring_server'] + groups['dqf_server'] + groups['frontend'] }}"
+        - port: "{{ dqf_management_port }}"
+          source: "{{ groups['monitoring_server'] + groups['dqf_server'] + groups['frontend'] }}"

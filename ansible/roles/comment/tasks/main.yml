@@ -1,0 +1,55 @@
+---
+# tasks file for comments_service
+- name: Configure firewall for commentss
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install comment service
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ comment_module_name }}"
+    module_version: "{{ comment_version }}"
+    install_dir: "{{ comment_install_dir }}"
+    service_user: "{{ comment_service_user }}"
+    service_group: "{{ comment_service_group }}"
+    module_services: "{{ comment_services }}"
+    package_download_type: "{{ comment_package_download_type }}"
+    package_location: "{{ comment_package_location }}"
+    package_url: "{{ comment_package_url }}"
+    package_checksum: "{{ comment_package_checksum }}"
+    module_config: "{{ comment_config }}"
+    enable_java_heapdumps: "{{ comment_java_heapdumps }}"
+    java_temp_folder: "{{ comment_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure comment_service logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure workflow monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: comment
+      description: "Ataccama platform module: comment"
+      version: "{{ comment_version }}"
+      details:
+        directories: "{{ [ comment_install_dir ] }}"
+        os_user: "{{ comment_service_user }}"
+        os_group: "{{ comment_service_group }}"
+        services: "{{ comment_services | map(attribute='name') | list }}"
+  tags: summary

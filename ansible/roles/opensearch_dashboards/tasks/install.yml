@@ -1,0 +1,103 @@
+---
+# install tasks file for opensearch_dashboards
+
+- name: OpenSearch Dashboards install | Create OpenSearch Dashboards user
+  user:
+    name: "{{ opensearch_dashboards_system_user }}"
+    state: present
+    shell: /bin/false
+    create_home: no
+    system: yes
+    home: "{{ opensearch_dashboards_install_dir }}"
+
+- name: "OpenSearch Dashboards install | Download OpenSearch Dashboards {{ opensearch_dashboards_version }}"
+  get_url:
+    url: "{{ opensearch_dashboards_binary_url }}"
+    dest: "{{ opensearch_dashboards_download_dir }}/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    checksum: "{{ opensearch_dashboards_checksums[opensearch_dashboards_version] }}"
+
+- name: OpenSearch Dashboards install | Create OpenSearch Dashboards install directory
+  file:
+    path: "{{ opensearch_dashboards_install_dir }}-{{ opensearch_dashboards_version }}"
+    state: directory
+    owner: "{{ opensearch_dashboards_system_user }}"
+    group: "{{ opensearch_dashboards_system_user }}"
+    mode: 0755
+
+- name: "OpenSearch Dashboards install | Extract OpenSearch Dashboards to {{ opensearch_dashboards_install_dir }}-{{ opensearch_dashboards_version }}"
+  unarchive:
+    src: "{{ opensearch_dashboards_download_dir }}/opensearch-dashboards-{{ opensearch_dashboards_version }}.tar.gz"
+    dest: "{{ opensearch_dashboards_install_dir }}-{{ opensearch_dashboards_version }}"
+    owner: "{{ opensearch_dashboards_system_user }}"
+    group: "{{ opensearch_dashboards_system_user }}"
+    extra_opts: [ --strip-components=1 ]
+    remote_src: true
+  args:
+    creates: "{{ opensearch_dashboards_install_dir }}-{{ opensearch_dashboards_version }}/bin/opensearch-dashboards"
+
+- name: OpenSearch Dashboards install | Create symlink to actual version
+  file:
+    state: link
+    src: "{{ opensearch_dashboards_install_dir }}-{{ opensearch_dashboards_version }}"
+    dest: "{{ opensearch_dashboards_install_dir }}"
+
+- name: OpenSearch Dashboards install | Create OpenSearch Dashboards systemd service
+  include_role:
+    name: 0x0i.systemd
+  vars:
+    unit_config:
+      - name: opensearch-dashboards
+        enabled: yes
+        state: started
+        Unit:
+          Description: "OpenSearch Dashboards"
+          Wants: network-online.target
+          After: network-online.target
+        Service:
+          RuntimeDirectory: opensearch-dashboards
+          PrivateTmp: true
+          WorkingDirectory: "{{ opensearch_dashboards_install_dir }}"
+          User: "{{ opensearch_dashboards_system_user }}"
+          Group: "{{ opensearch_dashboards_system_user }}"
+          ExecStart: "{{ opensearch_dashboards_install_dir }}/bin/opensearch-dashboards -q"
+          StandardOutput: journal
+          StandardError: inherit
+          LimitNOFILE: "{{ opensearch_dashboards_fs_file_max }}"
+          LimitMEMLOCK: infinity
+          LimitNPROC: "{{ opensearch_dashboards_proc_max }}"
+          LimitAS: infinity
+          LimitFSIZE: infinity
+          TimeoutStopSec: 0
+          KillSignal: SIGTERM
+          KillMode: process
+          SendSIGKILL: no
+          SuccessExitStatus: 143
+        Install:
+          WantedBy: multi-user.target
+    notify: Reload systemd daemon
+
+- name: OpenSearch Dashboards install | Create OpenSearch Dashboards data directory
+  file:
+    path: "{{ opensearch_dashboards_data_dir }}"
+    state: directory
+    owner: "{{ opensearch_dashboards_system_user }}"
+    group: "{{ opensearch_dashboards_system_user }}"
+    mode: 0755
+
+- name: OpenSearch Dashboards config | Create OpenSearch Dashboards config directory
+  file:
+    path: "{{ opensearch_dashboards_config_dir }}"
+    state: directory
+    owner: "{{ opensearch_dashboards_system_user }}"
+    group: "{{ opensearch_dashboards_system_user }}"
+    mode: 0755
+
+- name: OpenSearch Dashboards config | Copy OpenSearch Dashboards config file
+  template:
+    src: opensearch_dashboards.yml.j2
+    dest: "{{ opensearch_dashboards_config_dir }}/opensearch_dashboards.yml"
+    owner: "{{ opensearch_dashboards_system_user }}"
+    group: "{{ opensearch_dashboards_system_user }}"
+    mode: 0600
+    force: yes
+  notify: Restart OpenSearch Dashboards

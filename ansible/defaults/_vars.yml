@@ -1,0 +1,556 @@
+---
+### Global scope variables should come here
+### The variables listed here can be overriden.
+
+amazon_demodata_root: 'http://ataccama.s3.amazonaws.com/tmp/one20_demodata'
+amazon_package_download_link_root: 'https://ataccama.s3.amazonaws.com/products/releases'
+
+#### ONE 2.0 related variables
+deployment_folder: /opt/ataccama/one
+# these directories' privileges and ownership will be managed too. Necessary when restrictive umask (e. g. 027) is used.
+deployment_folder_managed_directories:
+  - /opt/ataccama
+temp_folder: /var/tmp
+env: prod
+
+ataccama_internal_encryption:
+  keystore: encryption/one-encryption.jceks
+  passwordfile: encryption/one-encryption.passwd
+  alias: one
+
+# Passwords - should be overridden in inventory
+# NOTE: we decided to use strong, randomly generated secrets to protect customers who
+# fail to generate their own. This will at least protect them from trivial attacks.
+# We can't generate them per deployment, because some passwords can't be automatically changed,
+# and we can't leave them empty because the error messages are impenetrable for ordinary user.
+# If you for some reason do want weak passwords, override them in your own inventory.
+
+minio_http_port: "9000"
+minio_http_ui_port: "9001"
+minio_url: "{{ 'https://' ~ nginx_hosts.minio.hostname if (nginx_hosts.minio.hostname is defined) else ('http://' ~ minio.host ~ ':' ~ minio_http_port) }}"
+minio:
+  host: "{{ groups['dependencies'][0] }}"
+  http_port: "{{ minio_http_port }}"
+  http_ui_port: "{{ minio_http_ui_port }}"
+  secret_key: "{{ minio_secret_key }}"
+  access_key: minio-access-key
+
+minio_ui:
+  host: "{{ groups['dependencies'][0] }}"
+  http_port: "{{ minio_http_port }}"
+  http_ui_port: "{{ minio_http_ui_port }}"
+  secret_key: "{{ minio_secret_key }}"
+  access_key: minio-access-key
+
+apyc:
+  database_name: ai
+
+anomaly_detection_anomaly_detector_deployment_name: "anomaly-detection-anomaly-detector-{{ env }}"
+anomaly_detection_anomaly_detector_http_port: "8047"
+anomaly_detection_anomaly_detector_grpc_port: "8547"
+
+anomaly_detection:
+  anomaly_detector:
+    host: "{{ groups['ai_server'][0] }}"
+    http_port: "{{ anomaly_detection_anomaly_detector_http_port }}"
+    grpc_port: "{{ anomaly_detection_anomaly_detector_grpc_port }}"
+
+term_suggestions_api_deployment_name: "term-suggestions-api-{{ env }}"
+term_suggestions_api_http_port: "8044"
+term_suggestions_api_grpc_port: "8544"
+term_suggestions_api_enabled: true
+
+term_suggestions_feedback_deployment_name: "term-suggestions-feedback-{{ env }}"
+term_suggestions_feedback_http_port: "8043"
+term_suggestions_feedback_grpc_port: "8543"
+
+term_suggestions_neighbors_deployment_name: "term-suggestions-neighbors-{{ env }}"
+term_suggestions_neighbors_http_port: "8042"
+term_suggestions_neighbors_grpc_port: "8542"
+
+term_suggestions_recommender_deployment_name: "term-suggestions-recommender-{{ env }}"
+term_suggestions_recommender_http_port: "8041"
+term_suggestions_recommender_grpc_port: "8541"
+
+term_suggestions:
+  api:
+    host: "{{ groups['ai_server'][0] }}"
+    http_port: "{{ term_suggestions_api_http_port }}"
+    grpc_port: "{{ term_suggestions_api_grpc_port }}"
+  feedback:
+    host: "{{ groups['ai_server'][0] }}"
+    http_port: "{{ term_suggestions_feedback_http_port }}"
+    grpc_port: "{{ term_suggestions_feedback_grpc_port }}"
+  neighbors:
+    host: "{{ groups['ai_server'][0] }}"
+    http_port: "{{ term_suggestions_neighbors_http_port }}"
+    grpc_port: "{{ term_suggestions_neighbors_grpc_port }}"
+  recommender:
+    host: "{{ groups['ai_server'][0] }}"
+    http_port: "{{ term_suggestions_recommender_http_port }}"
+    grpc_port: "{{ term_suggestions_recommender_grpc_port }}"
+
+mmm_http_port: "8021"
+mmm_grpc_port: "8521"
+mmm_management_port: "8024"
+mmm_url: "{{ 'https://' + nginx_hosts.one.hostname if (nginx_hosts.one.hostname is defined) else ('http://' ~ vars['mmm']['host'] ~ ':' ~ mmm_http_port) }}/graphql"
+mmm_deployment_name: "mmm-{{ env }}"
+mmm:
+  host: "{{ groups['one_app'][0] }}"
+  http_port: "{{ mmm_http_port }}"
+  grpc_port: "{{ mmm_grpc_port }}"
+  management_port: "{{ mmm_management_port }}"
+  audit:
+    enable: true
+  database_name: "mmm"
+  es_database_name: "events"
+  schema_check_database_name: "schema_check"
+  lineage_database_schema: "external_lineage"
+  search_url: "http://{{ groups['dependencies'][0] }}:{{ opensearch_api_port }}"
+  search_index: com_ataccama_one_search_catalog_item
+  search_query_template: com_ataccama_one_search_catalog_item_search
+
+workflow_database_name: "workflow"
+workflow_management_port: 8014
+workflow_port: 8013
+workflow_grpc_port: 8513
+workflow_deployment_name: "workflow"
+workflow_host: "{{ groups['one_app'][0] }}"
+
+comment_database_name: "comment"
+comment_management_port: 8038
+comment_port: 8039
+comment_host: "{{ groups['one_app'][0] }}"
+comment_deployment_name: "comment"
+
+task_deployment_name: "task"
+task_port: 8093
+task_grpc_port: "8593"
+task_host: "{{ groups['one_app'][0] }}"
+
+dmm_database_name: "dmm"
+dmm_deployment_name: "dmm"
+dmm_port: 8027
+dmm_grpc_port: "8527"
+dmm_management_port: 9027
+dmm_host: "{{ groups['one_app'][0] }}"
+
+dpm_http_port: "8031"
+dpm_grpc_port: "8531"
+dpm_url: "{{ 'https://' ~ nginx_hosts.dpm.hostname if (nginx_hosts.dpm.hostname is defined) else ('http://' ~ vars['dpm']['host'] ~ ':' ~ dpm_http_port) }}"
+dpm_deployment_name: "dpm-{{ env }}"
+dpm:
+  host: "{{ groups['one_app'][0] }}"
+  url: "{{ groups['one_app'][0] }}:{{ dpm_grpc_port }}"
+  http_port: "{{ dpm_http_port }}"
+  grpc_port: "{{ dpm_grpc_port }}"
+  database_name: dpm
+  audit:
+    enable: true
+
+dqf_database_name: "dqf"
+dqf_http_port: 8028
+dqf_grpc_port: 8528
+dqf_management_port: 8026
+dqf_host: "{{ groups['dqf_server'][0] }}"
+dqf_deployment_name: "dqf"
+
+frontend_http_port: "8023"
+frontend_url: "{{ 'https://' + nginx_hosts.one.hostname if (nginx_hosts.one.hostname is defined) else ('http://' ~ vars['frontend']['host'] ~ ':' ~ frontend_http_port) }}"
+frontend_deployment_name: "one-webapp-{{ env }}"
+frontend:
+  host: "{{ groups['frontend'][0] if 'frontend' in groups else 'localhost' }}"
+  http_port: "{{ frontend_http_port }}"
+  es_database_name: events
+
+postgres:
+  host: "{{ one_db_host | default(groups['one_database'][0] if 'one_database' in groups else 'localhost') }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+  database:
+    owner: "{{ (db_user_one | default('one')) }}{{ ('@' ~ one_db_host) if one_db_host is defined and cloud_provider == 'azure' else '' }}"
+    password: "{{ db_user_one_password }}"
+  port: "{{ postgresql_port }}"
+  postgresql_server:
+    hostname: "{{ one_db_host | default(groups['one_database'][0] if 'one_database' in groups else 'localhost') }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    port: "{{ postgresql_port }}"
+    parameters: "{{ '?sslmode=require' if one_db_host is defined else '' }}"
+    users:
+      - name: "{{ db_user_one | default('one') }}"
+        password: "{{ db_user_one_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: mmm
+            extensions:
+              - btree_gin
+          - name: events
+          - name: dpm
+          - name: ai
+          - name: keycloak
+          - name: audit
+          - name: schema_check
+          - name: task
+          - name: comment
+          - name: workflow
+          - name: dmm
+          - name: mde
+            extensions:
+              - uuid-ossp
+          - name: dqf
+postgresql_port: "5432"
+
+dpe_deployment_name: "dpe-{{ env }}"
+dpe_http_port: "8034"
+dpe_grpc_port: "8532"
+dpe:
+  host: "{{ groups['processing'][0] }}"
+  http_port: "{{ dpe_http_port }}"
+  url: "{{groups['processing'][0]}}:{{ dpe_grpc_port }}"
+  filesystem_dir: "/opt"
+
+rdm_http_port: "8060"
+rdm_fe_url: "{{ 'https://' + nginx_hosts.rdm.hostname if (nginx_hosts.rdm.hostname is defined) else ('http://' ~ vars['rdm']['host'] ~ ':' ~ rdm_http_port) }}"
+rdm_server_url: "{{ 'https://' + nginx_hosts.rdm_console.hostname if (nginx_hosts.rdm_console.hostname is defined) else ('http://' + vars['rdm']['server']['host'] + ':' + '8061') }}"
+rdm_server_monitoring_port: "8062"
+rdm_monitoring_port: "8068"
+
+rdm_deployment_name: "rdm-{{ env }}"
+rdm:
+  database:
+    host: "{{ rdm_db_host | default(groups['rdm_database'][0] if 'rdm_database' in groups else 'localhost')  }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+    port: "{{ postgresql_port }}"
+    name: rdm
+    user: "{{ (db_user_rdm | default('rdm')) }}{{ ('@' ~ rdm_db_host) if rdm_db_host is defined and cloud_provider == 'azure' else '' }}"
+    password: "{{ db_user_rdm_password }}"
+  postgresql_server:
+    hostname: "{{ rdm_db_host | default(groups['rdm_database'][0] if 'rdm_database' in groups else 'localhost')  }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    port: "{{ postgresql_port }}"
+    parameters: "{{ '?sslmode=require&amp;gssEncMode=disable' if rdm_db_host is defined else '' }}"
+    users:
+      - name: "{{ (db_user_rdm | default('rdm')) }}"
+        password: "{{ db_user_rdm_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: rdm
+  host: "{{ groups['rdm_server'][0] if 'rdm_server' in groups else 'localhost' }}"
+  http_port: "{{ rdm_http_port }}"
+  monitoring_port: "{{ rdm_monitoring_port }}"
+  # Server config:
+  server:
+    host: "{{ groups['rdm_server'][0] if 'rdm_server' in groups else 'localhost' }}"
+    port: "8061"
+    service_port: "8069"
+    monitoring_port: "{{ rdm_server_monitoring_port }}"
+
+mda_url: "{{ 'https://' + nginx_hosts.mda.hostname if (nginx_hosts.mda.hostname is defined) else ('http://' ~ mdm.host ~ ':' ~ '8050') }}"
+mdm_deployment_name: "mdm-{{ env }}"
+mdm_http_port: "8050"
+mdm_monitoring_port: "8055"
+
+mdm_server_http_port: "8051"
+mdm_server_actuators_port: "8056"
+mdm_server_manager_port: "8057"
+mdm_server_health_port: "8058"
+
+mdm_server_url: "{{ 'https://' + nginx_hosts.console.hostname if (nginx_hosts.console.hostname is defined) else ('http://' ~ mdm.host ~ ':' ~ mdm_server_http_port) }}"
+mdm_server_manager_url: "{{ 'https://' + nginx_hosts.console.hostname if (nginx_hosts.console.hostname is defined) else ('http://' ~ mdm.host ~ ':' ~ mdm_gmanager_port) }}"
+mdm_server_monitoring_port: "{{ mdm_server_actuators_port }}"
+mdm:
+  database:
+    host: "{{ mdm_db_host | default(groups['mdm_database'][0] if 'mdm_database' in groups else 'localhost') }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+    port: "{{ postgresql_port }}"
+    user: "{{ db_user_mdm | default('mdm') }}{{ ('@' ~ mdm_db_host) if mdm_db_host is defined and cloud_provider == 'azure' else '' }}"
+    password: "{{ db_user_mdm_password }}"
+    databases:
+      - name: mdc_db
+        owner: "{{ db_user_mdm | default('mdm') }}"
+      - name: it_db
+        owner: "{{ db_user_mdm | default('mdm') }}"
+      - name: log_db
+        owner: "{{ db_user_mdm | default('mdm') }}"
+      - name: eh_db
+        owner: "{{ db_user_mdm | default('mdm') }}"
+    runtime_databases:
+      - name: esb_db
+        owner: "{{ db_user_mdm | default('mdm') }}"
+      - name: external
+        owner: "{{ db_user_mdm | default('mdm') }}"
+  postgresql_server:
+    hostname: "{{ mdm_db_host | default(groups['mdm_database'][0] if 'mdm_database' in groups else 'localhost') }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    port: "{{ postgresql_port }}"
+    parameters: "{{ '?sslmode=require&amp;gssEncMode=disable' if mdm_db_host is defined else '' }}"
+    users:
+      - name: "{{ db_user_mdm | default('mdm') }}"
+        password: "{{ db_user_mdm_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: mdc_db
+          - name: it_db
+          - name: esb_db
+          - name: mda_cache
+          - name: external
+          - name: log_db
+          - name: eh_db
+  host: "{{ groups['mdm_frontend'][0] if 'mdm_frontend' in groups else 'localhost' }}"
+  http_port: "{{ mdm_http_port }}"
+  monitoring_port: "{{ mdm_monitoring_port }}"
+  server:
+    host: "{{ groups['mdm_server'][0] if 'mdm_server' in groups else 'localhost' }}"
+    http_port: "{{ mdm_server_http_port }}"
+    service_port: "8059"
+    grpc_port: "8551"
+    monitoring_port: "{{ mdm_server_actuators_port }}"
+    manager_port: "{{ mdm_server_manager_port }}"
+    health_port: "{{ mdm_server_health_port }}"
+
+orch_server_url: "{{ 'https://' + nginx_hosts.orchestration.hostname if (nginx_hosts.orchestration.hostname is defined) else ('http://' + vars['orchestration_server']['host'] + ':' + '8091') }}"
+orchestration_server_monitoring_port: "12099"
+orchestration_server:
+  host: "{{ groups['orchestration_server'][0] if 'orchestration_server' in groups else 'localhost' }}"
+  http_port: 8091
+  server_http_port: 8099
+
+dqit_url: "{{ 'https://' + nginx_hosts.dqit.hostname if (nginx_hosts.dqit.hostname is defined) else ('http://' + vars['dqit']['host'] + ':' + '8081') }}"
+dqit_server_url: "{{ 'https://' + nginx_hosts.dqit_console.hostname if (nginx_hosts.dqit_console.hostname is defined) else ('http://' + vars['dqit']['server']['host'] + ':' + '8888') }}"
+
+dqit_monitoring_port: "12081"
+dqit_server_monitoring_port: "12388"
+dqit:
+  database:
+    host: "{{ dqit_db_host | default(groups['dqit_database'][0] if 'dqit_database' in groups else 'localhost') }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+    port: "{{ dqit_db_port | default(postgres.port) }}"
+    name: "{{ dqit_db_name | default('dqit') }}"
+    owner: "{{ dqit_db_user | default('dqit') }}{{ ('@' ~ dqit_db_host) if dqit_db_host is defined and cloud_provider == 'azure' else '' }}"
+    owner_password: "{{ db_user_dqit_password }}"
+  postgresql_server:
+    hostname: "{{ dqit_db_host | default(groups['dqit_database'][0] if 'dqit_database' in groups else 'localhost') }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    port: "{{ postgresql_port }}"
+    parameters: "{{ '?sslmode=require&amp;gssEncMode=disable' if dqit_db_host is defined else '' }}"
+    users:
+      - name: "{{ db_user_dqit | default('dqit') }}"
+        password: "{{ db_user_dqit_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: dqit
+  host: "{{ groups['dqit_server'][0] if 'dqit_server' in groups else 'localhost' }}"
+  http_port: "8081"
+  admin:
+    user: admin
+    password: "{{ dqit_admin_password }}"
+  server:
+    host: "{{ groups['dqit_server'][0] if 'dqit_server' in groups else 'localhost' }}"
+    http_port: "8888"
+    service_port: "7777"
+
+dpe_spark:
+  jwt_key:
+    content: ""
+    fp: ""
+    name: ""
+
+audit_http_port: "8071"
+audit_url: "{{ 'https://' + nginx_hosts.audit.hostname if (nginx_hosts.audit.hostname is defined) else ('http://' ~ vars['audit']['host'] + ':' + audit_http_port) }}"
+audit:
+  host: "{{ groups['one_app'][0] }}"
+  http_port: "{{ audit_http_port }}"
+  port: "8071"
+  database_name: audit
+  auth_basic_enabled: true
+  auth_basic_name: admin
+audit_jwt_key:
+  name: 'audit-prod-key'
+  private: eyJrdHkiOiJFQyIsImQiOiJGLVNIcHRWaFc3bVdLNW9QNTQtOGhTNzZqclpYYVpudTdOREd1M2labWZBIiwiY3J2IjoiUC0yNTYiLCJraWQiOiJvdTRBQ1RGX0RNcXlfZHd3dlBOMkFWWnRvb244Z3hDMk9fNTJsTWlRM3dNIiwieCI6IllXanIwSml6S0thMGxYU01sZHZTZC1PSzNRaEFleUJFNjhhLVRLTjU1R2MiLCJ5IjoiblBScUs4RXM4LURtaGlVa1JhZGlWYjNlak5FdzZwUVNCYk9QSEY3YjltcyIsImFsZyI6IkVTMjU2In0=
+  content: '{"kty":"EC","crv":"P-256","kid":"ou4ACTF_DMqy_dwwvPN2AVZtoon8gxC2O_52lMiQ3wM"
+            ,"x":"YWjr0JizKKa0lXSMldvSd-OK3QhAeyBE68a-TKN55Gc","y":"nPRqK8Es8-DmhiUkRadiVb3ejNEw6pQSBbOPHF7b9ms"
+            ,"alg":"ES256"}'
+  fp: 'ou4ACTF_DMqy_dwwvPN2AVZtoon8gxC2O_52lMiQ3wM'
+
+opensearch_api_port: 9200
+
+opensearch_dashboards_server_port: 5601
+opensearch_dashboards:
+  host: "{{ groups['frontend'][0] }}"
+  port: "{{ opensearch_dashboards_server_port }}"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.opensearch_dashboards
+  auth_basic_name: admin
+  auth_basic_password: "{{ opensearch_dashboards_admin_password }}"
+
+grafana_server_port: "3000"
+grafana:
+  host: "{{ groups['frontend'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "{{ grafana_server_port  }}"
+
+monitoring_server:
+  host: "{{ groups['monitoring_server'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "9090"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.monitoring
+  auth_basic_name: admin
+  auth_basic_password: "{{ prometheus_admin_password }}"
+
+alertmanager:
+  host: "{{ groups['monitoring_server'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "9093"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.alertmanager
+  auth_basic_name: admin
+  auth_basic_password: "{{ alertmanager_admin_password }}"
+
+nginx_domain: "{{ ansible_domain }}"
+nginx_status_stub_enabled: true
+nginx_exporter_port: 9113
+nginx_hosts:
+  one:
+    enabled: true
+    hostname: "one.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  console:
+    enabled: "{{ 'mdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "console.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dpm:
+    enabled: true
+    hostname: "dpm.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dpm_grpc:
+    enabled: true
+    hostname: "dpm-grpc.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dqit:
+    enabled: "{{ 'dqit_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "dqit.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dqit_console:
+    enabled: "{{ 'dqit_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "dqit-console.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  mda:
+    enabled: "{{ 'mdm_frontend' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "mda.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  minio:
+    enabled: true
+    hostname: "minio.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  minio_ui:
+    enabled: true
+    hostname: "minio-ui.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  mmm_grpc:
+    enabled: true
+    hostname: "mmm-grpc.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  rdm:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  rdm_console:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm-console.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  opensearch_dashboards:
+    enabled: true
+    hostname: "kibana.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  monitoring:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "monitoring.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  alertmanager:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "alertmanager.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  orchestration:
+    enabled: "{{ 'orchestration_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "orch-console.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  grafana:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "grafana.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  audit:
+    enabled: true
+    hostname: "audit.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  mde_lineage:
+    enabled: true
+    hostname: "mde.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dqf:
+    enabled: true
+    hostname: "dqf.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+  dqf_grpc:
+    enabled: true
+    hostname: "dqf-grpc.{{ nginx_domain }}"
+    crt: "one.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "one.{{ nginx_domain }}.key"
+
+
+fluentbit_http_port: "2020"
+fluentd_port: 24224
+fluentd_http_metrics_port: "24231"
+
+firewall_manage: false
+firewall_fact_dir: /etc/ansible/facts.d/firewall
+firewall_fact_suffix: .in # suffix of files that will be assembled to a complete FW config; include a leading dot
+
+# custom rules that will be added to firewall config; this will be used as a value for 'iptables' key.
+# Meant for use-cases like "customer uses its own monitoring agent that must be network-accessible".
+# If only some hosts need its own rules, consider overriding it for specific groups or hosts only.
+custom_firewall_rules: []
+monitoring_manage: true
+monitoring_fact_dir: /etc/ansible/facts.d/monitoring
+monitoring_fact_suffix: .in # suffix of files that will be assembled to a complete monitoring config; include a leading dot
+
+# please modify following 2 Variables in case you need to change default port of Prometheus server.
+
+# prometheus_web_listen_address: "0.0.0.0:9090"
+# grafana_datasources:
+#  - name: prometheus
+#    type: prometheus
+#    access: proxy
+#    url: "http://{{groups['monitoring_server'][0]}}:9090"
+#    basicAuth: false
+#    isDefault: true
+
+# detect connection losses (aggresive firewalls, iptables reconfiguration etc.) so we can handle them
+ansible_ssh_common_args: "-o ServerAliveInterval=20 -o ServerAliveCountMax=3"
+
+mde_lineage_deployment_name: "mde-lineage-{{ env }}"
+mde_lineage_database_name: mde
+mde_lineage_port: 8070
+mde_lineage_grpc_port: 8521
+mde_lineage_management_port: 8072
+mde_lineage_host: "{{ groups['mde_lineage'][0] }}"
+mde_lineage_url: "{{ 'https://' + nginx_hosts.mde_lineage.hostname if (nginx_hosts.mde_lineage.hostname is defined) else ('http://' ~ vars['mde_lineage']['host'] ) }}/graphql"
+
+# Slack integration
+# slack_proxy_url: https://srg.services.ataccama.com

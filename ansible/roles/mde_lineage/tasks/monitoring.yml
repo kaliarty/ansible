@@ -1,0 +1,19 @@
+---
+- name: set monitoring rules for mde_lineage
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      job_name: mde-lineage
+      metrics_path: /actuator/prometheus
+      basic_auth:
+        username: "{{ keycloak_monitoring_user.username }}"
+        password: "{{ keycloak_monitoring_user.password }}"
+      scheme: http
+      port: "{{ mde_lineage_management_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem
+            app_kubernetes_io_component: mde

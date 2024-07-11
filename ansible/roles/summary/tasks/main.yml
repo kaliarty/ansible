@@ -1,0 +1,37 @@
+---
+- name: Summary
+  tags: summary
+  block:
+  - name: Check if we have been included
+    fail:
+      msg: Neither summary_name nor ansible_parent_role_names is set. This role acts on behalf of another role; either include it, or provide a name.
+    when: (ansible_parent_role_names is not defined) and (summary_name is not defined)
+
+  - name: Ensure summary fact directory exists
+    file:
+      path: "{{ summary_fact_dir }}"
+      state: directory
+      mode: 0770
+      owner: root
+      group: root
+
+  # NOTE: we use generic roles that get either included by specific roles (one_module) or just called with specific vars (server)
+  #       We can handle the first case autmatically by exploiting the fact that ansible_parent_role_names is a list containing the whole import path.
+  #       The second case can't be (robustly) handled automatically: we just rely on caller to provide a unique name.
+  #
+  # NOTE: ansible role names can have any name that's allowed in file name: there's no completely safe role name separator.
+  #       We just use ":" as it is unlikely to be used in role name and easy on the eyes.
+  
+  - name: Get summary rules file name
+    set_fact:
+      # the 'ansible_parent_role_names | default('')' statement prevents errors when we are called directly
+      _summary_name: "{{ summary_name | default((ansible_parent_role_names | default('')) | join(':')) }}"
+
+  - name: Store the summary to the server
+    template:
+      src: summary.in.j2
+      dest: "{{ summary_fact_dir }}/{{ _summary_name }}{{ summary_fact_suffix }}"
+      owner: root
+      group: root
+      mode: 0640
+      backup: true

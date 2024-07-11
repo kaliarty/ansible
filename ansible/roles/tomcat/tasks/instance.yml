@@ -1,0 +1,170 @@
+---
+# Tasks to create Tomcat instance
+
+- name: Ensure instance group exists
+  group:
+    name: "{{ instance.group | default(tomcat_group) }}"
+    state: present
+
+- name: "Ensure instance user exists ({{ instance.name }})"
+  user:
+    name: "{{ instance.user | default(tomcat_user) }}"
+    state: present
+    group: "{{ instance.group | default(tomcat_group) }}"
+    create_home: no
+    system: yes
+
+- name: "Ensure instance directory exists ({{ instance.name }})"
+  file:
+    path: "{{ tomcat_directory }}/{{ instance.name }}"
+    state: directory
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+    mode: "0755"
+
+- name: "Enable Java heap dumps for {{ instance.name }}"
+  include_vars: heapdump-params.yml
+  when: instance.heapdump_enabled
+
+- name: "Ensure heap dumps directory exists ({{ instance.name }})"
+  file:
+    path: "{{ instance_heapdump_dir }}"
+    state: directory
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+    mode: 0755
+  when: instance.heapdump_enabled
+
+- name: "Create {{ instance.name }} heap dump rotation"
+  include_role:
+    name: logrotate
+  vars:
+    logrotate_filename: "{{ instance.name }}-heapdump"
+    log_paths:
+      - "{{ instance_heapdump_file }}"
+    logrotate_options: |
+      rotate 1
+      daily
+      missingok
+      nocreate
+  when: instance.heapdump_enabled
+
+- name: Download Tomcat archive to temporary folder
+  get_url:
+    url: "{{ tomcat_archive_url }}"
+    dest: "{{ tomcat_tmp_dir }}/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    mode: "440"
+
+- name: "Install Tomcat instance ({{ instance.name }})"
+  unarchive:
+    src: "{{ tomcat_tmp_dir }}/apache-tomcat-{{ tomcat_version }}.tar.gz"
+    dest: "{{ tomcat_directory }}/{{ instance.name }}"
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+    remote_src: yes
+    extra_opts: "--strip-components=1"
+    exclude:
+      - "webapps/docs"
+      - "webapps/examples"
+      - "webapps/host-manager"
+      - "webapps/manager"
+    creates: "{{ tomcat_directory }}/{{ instance.name }}/bin"
+    mode: "0755"
+
+- name: Set instance name
+  set_fact:
+    instance_name: "{{ instance.name }}"
+
+- name: "Create service instance ({{ instance.name }})"
+  include_role:
+    name: 0x0i.systemd
+  vars:
+    unit_config:
+      - name: "{{ instance.name | default(tomcat_name) }}"
+        state: "{{ instance.service_state | default(tomcat_service_state) }}"
+        enabled: "{{ instance.service_enabled | default(tomcat_service_enabled) }}"
+        Unit:
+          Description: "Apache Tomcat web server - {{ instance.name | default(tomcat_name) }}"
+          After: syslog.target
+        Service:
+          User: "{{ instance.user | default(tomcat_user) }}"
+          Group: "{{ instance.group | default(tomcat_group) }}"
+          ExecStart: "{{ tomcat_directory }}/{{ instance.name | default(tomcat_directory) }}/bin/catalina.sh run"
+          ExecStop: "{{ tomcat_directory }}/{{ instance.name | default(tomcat_directory) }}/bin/shutdown.sh"
+          SuccessExitStatus: 143
+          Restart: always
+          RestartSec: 5
+          SyslogIdentifier: "{{ instance.name }}"
+        Install:
+          WantedBy: multi-user.target
+
+- name: "Configure Tomcat instance ({{ instance.name }}) - server.xml"
+  template:
+    src: server.xml.j2
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/conf/server.xml"
+    mode: "0644"
+  notify:
+    - restart tomcat instance
+
+- name: "Configure Tomcat instance ({{ instance.name }}) - tomcat-users.xml"
+  template:
+    src: tomcat-users.xml.j2
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/conf/tomcat-users.xml"
+    mode: "0644"
+  when:
+    - (instance.tomcat_users is defined) or (instance.tomcat_user_roles is defined)
+  notify:
+    - restart tomcat instance
+
+- name: "Configure Tomcat instance ({{ instance.name }}) - setenv.sh"
+  template:
+    src: setenv.sh.j2
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/bin/setenv.sh"
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+    mode: "0644"
+  when:
+    - (instance.env_vars is defined) or (instance.xms is defined) or (instance.xmx is defined)
+  notify:
+    - restart tomcat instance
+
+- name: Place neutral default page
+  copy:
+    content: "Please select an application by adding the context to the URL."
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/webapps/ROOT/index.html"
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+    mode: "0640"
+
+- name: "Configure Tomcat instance ({{ instance.name }}) - loop over config_files"
+  include: config_file.yml
+  loop: "{{ instance.config_files }}"
+  loop_control:
+    loop_var: config_file
+  when: instance.config_files is defined
+  notify:
+    - restart tomcat instance
+
+- name: "Add webapp WARs to tomcat instance ({{ instance.name }}) - loop over wars"
+  include: war.yml
+  loop: "{{ instance.wars }}"
+  loop_control:
+    loop_var: war
+  when:
+    - instance.wars is defined
+
+- name: "Add webapp directories to tomcat instance ({{ instance.name }}) - loop over app_dirs"
+  include: directory.yml
+  loop: "{{ instance.app_dirs }}"
+  loop_control:
+    loop_var: app_dir
+  when:
+    - instance.app_dirs is defined
+
+- name: "Add libs to Tomcat instance ({{ instance.name }}) - loop over libs"
+  include: lib.yml
+  loop: "{{ instance.libs }}"
+  loop_control:
+    loop_var: lib
+  when:
+    - instance.libs is defined

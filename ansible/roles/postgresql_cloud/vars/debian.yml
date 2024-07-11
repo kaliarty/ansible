@@ -1,0 +1,6 @@
+---
+# variables for Ubuntu and other Debian based systems
+
+psycopg2_packages:
+  - python-is-python3
+  - python3-psycopg2

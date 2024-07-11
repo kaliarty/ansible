@@ -1,0 +1,21 @@
+---
+- name: Disable journal output to /var/log/messages using rsyslog - RHEL/CentOS 8
+  ansible.builtin.replace:
+    dest: /etc/rsyslog.conf
+    regexp: '^{{ item.regexp }}'
+    replace: '{{ item.replace }}'
+  loop:
+    - regexp: '(^module\(load="imjournal")'
+      replace: '# \1'
+    - regexp: '(^       StateFile="imjournal.state"\))'
+      replace: '# \1'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '8'
+  notify: Restart rsyslog service
+
+- name: Disable journal output to /var/log/messages using rsyslog - RHEL/CentOS 7
+  replace:
+    path: /etc/rsyslog.conf
+    regexp: '^\$ModLoad imjournal'
+    replace: '#$ModLoad imjournal'
+  when: ansible_os_family == 'RedHat' and ansible_distribution_major_version == '7'
+  notify: Restart rsyslog service

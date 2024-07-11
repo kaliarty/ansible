@@ -1,0 +1,18 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      metrics_path: /actuator/prometheus
+      basic_auth:
+        username: "{{ keycloak_monitoring_user.username }}"
+        password: "{{ keycloak_monitoring_user.password }}"
+      scheme: http
+      port: "{{ dqf_management_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem

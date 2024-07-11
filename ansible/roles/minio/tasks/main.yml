@@ -1,0 +1,85 @@
+---
+# tasks file for minio
+
+- name: Configure firewall for MinIO
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- include: install.yml
+  become: true
+  tags:
+    - minio_install
+
+- block:
+    - name: "Create MinIO service configuration directory"
+      file:
+        path: "/etc/systemd/system/{{ minio_unitname }}.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+    - name: "Deploy MinIO service configuration"
+      template:
+        src: service-local.conf.j2
+        dest: "/etc/systemd/system/{{ minio_unitname }}.service.d/{{ minio_unitname }}.conf"
+        owner: root
+        group: root
+        mode: 0644
+      notify: Reload systemd daemon
+
+- name: Configure and start MinIO systemd service
+  include_role:
+    name: 0x0i.systemd
+  vars:
+    unit_config:
+      - name: "{{ minio_unitname }}"
+        enabled: yes
+        state: started
+        Unit:
+          Description: "MinIO Server"
+          After: network.target
+        Service:
+          Type: simple
+          User: "{{ minio_system_user }}"
+          Group: "{{ minio_system_group }}"
+          EnvironmentFile: "/etc/systemd/system/{{ minio_unitname }}.service.d/{{ minio_unitname }}.conf"
+          ExecStart: "{{ minio_exec_start }}"
+          TimeoutStartSec: 600
+          TimeoutStopSec: 600
+          KillMode: control-group # minio is started directly and is not a forking server, therefore this is not strictly necessary: we do it just to be sure
+          Restart: always
+          SyslogIdentifier: "{{ minio_unitname }}"
+        Install:
+          WantedBy: multi-user.target
+
+- name: Configure MinIO logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Flush all the notified handlers at the end of this role
+  meta: flush_handlers
+
+- name: Configure MinIO monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform dependencies
+    summary:
+      name: MinIO
+      description: "Object storage"
+      version: "{{ gen2_minio_version }}"
+      details:
+        directories: "{{ [ minio_install_dir, minio_data_dir ] }}"
+        os_user: "{{ minio_system_user }}"
+        os_group: "{{ minio_system_group }}"
+        services: "{{ [minio_unitname] }}"
+  tags: summary

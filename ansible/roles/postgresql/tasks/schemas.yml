@@ -1,0 +1,24 @@
+---
+- name: Ensure PostgreSQL schemas in databases are present.
+  become: true
+  become_user: "{{ postgresql_user }}"
+  postgresql_schema:
+    database: "{{ item.0.name }}"
+    name: "{{ item.1 }}"
+    port: "{{ postgresql_port }}"
+    state: present
+  loop: "{{ q('subelements', postgresql_databases, 'schemas', {'skip_missing': True}) }}"
+  # See: https://github.com/ansible/ansible/issues/16048#issuecomment-229012509
+  vars:
+    ansible_ssh_pipelining: true
+
+- name: Ensure database extensions in databases are created.
+  become: true
+  become_user: "{{ postgresql_user }}"
+  vars:
+    ansible_ssh_pipelining: true
+  community.postgresql.postgresql_ext:
+    db: "{{ item.0.name }}"
+    name: "{{ item.1 }}"
+    port: "{{ postgresql_port }}"
+  loop: "{{ q('subelements', postgresql_databases, 'extensions', {'skip_missing': True}) }}"

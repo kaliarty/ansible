@@ -1,0 +1,56 @@
+---
+# tasks file for MDE-Lineage
+- name: Configure firewall for MDE-Lineage
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install MDE-Lineage service
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ mde_lineage_module_name }}"
+    module_version: "{{ mde_lineage_version }}"
+    install_dir: "{{ mde_lineage_install_dir }}"
+    service_user: "{{ mde_lineage_service_user }}"
+    service_group: "{{ mde_lineage_service_group }}"
+    deploy_files: "{{ mde_lineage_files }}"
+    module_services: "{{ mde_lineage_services }}"
+    package_download_type: "{{ mde_lineage_package_download_type }}"
+    package_location: "{{ mde_lineage_package_location }}"
+    package_url: "{{ mde_lineage_package_url }}"
+    package_checksum: "{{ mde_lineage_package_checksum }}"
+    module_config: "{{ mde_lineage_config }}"
+    enable_java_heapdumps: "{{ mde_lineage_java_heapdumps }}"
+    java_temp_folder: "{{ mde_lineage_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure MDE-Lineage logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure MDE-Lineage monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: MDE-Lineage
+      description: "Ataccama platform module: MDE-Lineage"
+      version: "{{ mde_lineage_version }}"
+      details:
+        directories: "{{ [ mde_lineage_install_dir ] }}"
+        os_user: "{{ mde_lineage_service_user }}"
+        os_group: "{{ mde_lineage_service_group }}"
+        services: "{{ mde_lineage_services | map(attribute='name') | list }}"
+  tags: summary

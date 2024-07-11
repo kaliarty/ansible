@@ -1,0 +1,267 @@
+<?xml version="1.0" ?>
+
+<web-app xmlns="http://java.sun.com/xml/ns/j2ee"
+         version="3.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://java.sun.com/xml/ns/j2ee http://java.sun.com/xml/ns/j2ee/web-app_3_0.xsd">
+
+    <display-name>DQ Issue Tracker</display-name>
+
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>/WEB-INF/dqit-security-openid.xml</param-value>
+    </context-param>
+
+    <!-- 	<context-param>
+            <param-name>log4jConfigLocation</param-name>
+            <param-value>classpath:/log4j.properties</param-value>
+        </context-param>
+     -->
+    <context-param>
+        <param-name>BaseServerUrl</param-name>
+        <param-value>{{ dqit_base_url }}</param-value>
+    </context-param>
+
+    <!-- DQM-1741: (MDM-2558) disable/remap RESTEasy dispatcher filter and servlet that are automatically created if it is on classpath -->
+    <filter-mapping>
+        <filter-name>org.jboss.resteasy.plugins.server.servlet.Filter30Dispatcher</filter-name>
+        <url-pattern>/weNeedToDisableThisFilter</url-pattern>
+    </filter-mapping>
+    <servlet-mapping>
+        <servlet-name>org.jboss.resteasy.plugins.server.servlet.HttpServlet30Dispatcher</servlet-name>
+        <url-pattern>/weNeedToDisableThisServlet</url-pattern>
+    </servlet-mapping>
+
+    <!-- Encoding filter to support UTF-8 characters in spring, for example in login forms when spring security is used -->
+    <!-- This has to be the first filter! -->
+    <filter>
+        <filter-name>encoding-filter</filter-name>
+        <filter-class>
+            org.springframework.web.filter.CharacterEncodingFilter
+        </filter-class>
+        <init-param>
+            <param-name>encoding</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+        <init-param>
+            <param-name>forceEncoding</param-name>
+            <param-value>true</param-value>
+        </init-param>
+    </filter>
+    <filter-mapping>
+        <filter-name>encoding-filter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <filter>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <filter-class>org.springframework.web.filter.DelegatingFilterProxy</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>springSecurityFilterChain</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+
+    <listener>
+        <listener-class>org.springframework.security.web.session.HttpSessionEventPublisher</listener-class>
+    </listener>
+
+    <filter>
+        <filter-name>serviceAuthFilter</filter-name>
+        <filter-class>com.ataccama.epp.web.auth.AuthenticationFilter</filter-class>
+        <init-param>
+            <param-name>configFile</param-name>
+            <param-value>/WEB-INF/remote-auth.xml</param-value>
+        </init-param>
+    </filter>
+    <filter>
+        <filter-name>restartFilter</filter-name>
+        <filter-class>com.ataccama.epp.web.filters.RestartCheckingFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>loginFilter</filter-name>
+        <filter-class>com.ataccama.epp.web.login.LoginFilter</filter-class>
+    </filter>
+    <filter>
+        <filter-name>encFilter</filter-name>
+        <filter-class>com.ataccama.web.common.filters.EncodingFilter</filter-class>
+        <init-param>
+            <param-name>charset</param-name>
+            <param-value>UTF-8</param-value>
+        </init-param>
+    </filter>
+    <!--
+        <filter>
+            <filter-name>gzipFilter</filter-name>
+            <filter-class>com.ataccama.web.common.filters.GzipFilter</filter-class>
+        </filter>
+     -->
+    <!--
+    -->
+
+    <filter-mapping>
+        <filter-name>serviceAuthFilter</filter-name>
+        <url-pattern>/remote/importer/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>serviceAuthFilter</filter-name>
+        <url-pattern>/remote/exporter/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>restartFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+    </filter-mapping>
+    <filter-mapping>
+        <filter-name>loginFilter</filter-name>
+        <url-pattern>/app/*</url-pattern>
+    </filter-mapping>
+
+    <filter-mapping>
+        <filter-name>encFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+    <!--
+        <filter-mapping>
+            <filter-name>gzipFilter</filter-name>
+            <url-pattern>/app/*</url-pattern>
+        </filter-mapping>
+     -->
+
+    <!--
+    <listener>
+        <listener-class>listeners.OnDeployDictionaryCreator</listener-class>
+    </listener>
+     -->
+
+    <!-- App Servlet Configuration -->
+    <!--<servlet>
+        <servlet-name>MdaItServlet</servlet-name>
+        <servlet-class>com.ataccama.epp.mda.MdaItServlet</servlet-class>
+    </servlet>-->
+
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>com.ataccama.epp.web.DqitLogoutServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>app</servlet-name>
+        <servlet-class>com.ataccama.web.appservlet.servlet.AppServlet</servlet-class>
+        <init-param>
+            <param-name>config</param-name>
+            <param-value>/WEB-INF/app-config.xml</param-value>
+        </init-param>
+        <load-on-startup>2</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>css-processing</servlet-name>
+        <servlet-class>com.ataccama.web.common.cache.servlet.CssPermaCachedResourceServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>remoteMeta</servlet-name>
+        <servlet-class>com.ataccama.epp.web.remote.MetadataServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>remoteImporter</servlet-name>
+        <servlet-class>com.ataccama.epp.web.remote.ImporterServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>remoteExporter</servlet-name>
+        <servlet-class>com.ataccama.epp.web.remote.ExporterServlet</servlet-class>
+    </servlet>
+
+    <!-- Servlet Mapping -->
+    <!--<servlet-mapping>
+        <servlet-name>MdaItServlet</servlet-name>
+        <url-pattern>/mda</url-pattern>
+    </servlet-mapping>-->
+
+    <servlet-mapping>
+        <servlet-name>app</servlet-name>
+        <url-pattern>/app/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>css-processing</servlet-name>
+        <url-pattern>*.css</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>remoteMeta</servlet-name>
+        <url-pattern>/remote/</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>remoteMeta</servlet-name>
+        <url-pattern>/remote</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>remoteImporter</servlet-name>
+        <url-pattern>/remote/importer/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>remoteExporter</servlet-name>
+        <url-pattern>/remote/exporter/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/logout</url-pattern>
+    </servlet-mapping>
+
+    <jsp-config>
+        <jsp-property-group>
+            <url-pattern>*.jsp</url-pattern>
+            <include-prelude>/WEB-INF/include/declarations.jsp</include-prelude>
+        </jsp-property-group>
+    </jsp-config>
+
+    <error-page>
+        <exception-type>java.lang.Throwable</exception-type>
+        <location>/WEB-INF/include/error.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>402</error-code>
+        <location>/WEB-INF/pages/http_errors/error_402.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>403</error-code>
+        <location>/WEB-INF/pages/http_errors/error_403.jsp</location>
+    </error-page>
+
+    <error-page>
+        <error-code>404</error-code>
+        <location>/WEB-INF/pages/http_errors/error_404.jsp</location>
+    </error-page>
+
+    <!-- The Welcome File List -->
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+        <welcome-file>index.html</welcome-file>
+    </welcome-file-list>
+
+    <resource-ref>
+        <res-ref-name>jdbc/AppDS</res-ref-name>
+        <res-type>javax.sql.DataSource</res-type>
+        <res-auth>Container</res-auth>
+        <res-sharing-scope>Shareable</res-sharing-scope>
+    </resource-ref>
+
+    <!-- 30 minutes should be enough for everyone -->
+    <session-config>
+        <session-timeout>30</session-timeout>
+    </session-config>
+
+</web-app>

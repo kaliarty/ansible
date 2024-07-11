@@ -1,0 +1,111 @@
+---
+# Default properties with package versions and download type. The example below is minimal, currently working with Karlin Artifactory.
+# version - version of package to be deployed
+# package_download_type - one of: maven_artifact (default), remote_url, local. See readme for more information.
+
+packages:
+  mmm_be:
+    version: 14.5.2.240213-121286-4b7bc3cf
+    package_url: "{{ amazon_package_download_link_root }}/mmm-be-assembly-14.5.2.240213-121286-4b7bc3cf-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:38c5f3d4711f0dc25cd1c501f02fc4c428a0f4531ed0da595e9a85658a6ebd6a
+  mmm_fe:
+    version: 14.5.1.231211-464604-a13e5c0f
+    package_url: "{{ amazon_package_download_link_root }}/mmm-fe-assembly-14.5.1.231211-464604-a13e5c0f-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:c61afc9c371946ed9d7cc12712c470eebffbc5b7da6e0199525ac8e7c9522625
+  dpm:
+    version: 14.5.1.231208-9472-2ea087ae
+    package_url: "{{ amazon_package_download_link_root }}/dpm-assembly-14.5.1.231208-9472-2ea087ae-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:cd1a423f69ace3032e06eba9db6200961a9d35ff6b3b80cba3b1b08f648df9ae
+  dpe:
+    version: 14.5.1.231205-13929-3b0b5777
+    package_url: "{{ amazon_package_download_link_root }}/dpe-assembly-14.5.1.231205-13929-3b0b5777-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:1e9f9283fa8209666129a422ab8d7b808a79b10d3b62d3ef69f7644942d9f8eb
+  server:
+    version: 14.5.2.240215-5221-ae9ddeea
+    package_url: "{{ amazon_package_download_link_root }}/server-assembly-14.5.2.240215-5221-ae9ddeea.tar"
+    package_download_type: remote_url
+    package_checksum: sha256:05a248951557bd2a44cfb7c5d7e06a2b99b6aa701a75954a41d248765a1615e2
+  mdm:
+    version: 14.5.2.240226-74984-a12d82ce
+    package_url: "{{ amazon_package_download_link_root }}/mdm-assembly-14.5.2.240226-74984-a12d82ce-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:899e01cd96f7a802f432f2252b627eb719332c9a5cded00334d7aad1d615ceeb
+  mdm_server:
+    version: 14.5.2.240226-74984-a12d82ce
+    package_url: "{{ amazon_package_download_link_root }}/mdm-server-assembly-14.5.2.240226-74984-a12d82ce-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:9ec63d5980f2c42e30eaca3ac3b5926b2a46f08bf399a8f9b9f132c937651209
+  rdm:
+    version: 14.5.2.240226-74984-a12d82ce
+    package_url: "{{ amazon_package_download_link_root }}/rdm-assembly-14.5.2.240226-74984-a12d82ce-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:e1276220f1411c4437656a0aa7cac71bbbf69c15765f19a45b9382aa10640948
+  audit:
+    version: 14.5.1.231207-2028-0cfd98b9
+    package_url: "{{ amazon_package_download_link_root }}/audit-assembly-14.5.1.231207-2028-0cfd98b9-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:20c61fe96a9d9cebba777806a1ee1002b0e5ad5bb210705d9f84fbf717f77c37
+  dqit:
+    version: 14.5.1.231124-1469-c3d735b8
+    package_url: "{{ amazon_package_download_link_root }}/epp-webapp-14.5.1.231124-1469-c3d735b8.war"
+    package_download_type: remote_url
+    package_checksum: sha256:c4e6569f5344373121db79b456bc0445b1defc37ec9018c10bda056a4bc236a3
+  task:
+    version: 14.5.1.231130-2145-ca9c2c67
+    package_url: "{{ amazon_package_download_link_root }}/task-service-14.5.1.231130-2145-ca9c2c67.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:07e82b0b0585a11f9514f22e698b9177e89aec5ea02152317eec0aec582e33a2
+  workflow:
+    version: 14.5.1.231130-2836-fc171a52
+    package_url: "{{ amazon_package_download_link_root }}/workflow-service-14.5.1.231130-2836-fc171a52.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:010d462db7b8fa7eed23c67d1b24a96005f55127b8c3d4263334f3cf93386584
+  comment:
+    version: 14.5.1.231211-1197-8699073b
+    package_url: "{{ amazon_package_download_link_root }}/comment-service-14.5.1.231211-1197-8699073b.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:c4ea401cd542af282786b783eac2d724c724a84a3a6b228d974fa544339ad47c
+  anomaly_detection_anomaly_detector:
+    version: 14.5.1.231130-1865-72d11192
+    package_url: "{{ amazon_package_download_link_root }}/anomaly-detection-anomaly-detector-assembly-14.5.1.231130-1865-72d11192-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:560724bcd8877ed6c2e8402f1b96301505ddab7ce5c3a591343199d8ef4c2448
+  term_suggestions_api:
+    version: 14.5.1.231130-2794-2bca643f
+    package_url: "{{ amazon_package_download_link_root }}/term-suggestions-api-assembly-14.5.1.231130-2794-2bca643f-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:967d6bfd0c4868ea2f61f53a34694d1a7e065d7ad2ca0651e62763048d3cde35
+  term_suggestions_feedback:
+    version: 14.5.1.231130-2794-2bca643f
+    package_url: "{{ amazon_package_download_link_root }}/term-suggestions-feedback-assembly-14.5.1.231130-2794-2bca643f-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:85ee0eb044742b1f619dea847414870d6387ea0a918664a5b9796a24d907ae18
+  term_suggestions_neighbors:
+    version: 14.5.1.231130-2794-2bca643f
+    package_url: "{{ amazon_package_download_link_root }}/term-suggestions-neighbors-assembly-14.5.1.231130-2794-2bca643f-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:a56d911ab2cb1384827c4671afc3057b1da7d9354690a0485dd75b48b8517dc2
+  term_suggestions_recommender:
+    version: 14.5.1.231130-2794-2bca643f
+    package_url: "{{ amazon_package_download_link_root }}/term-suggestions-recommender-assembly-14.5.1.231130-2794-2bca643f-linux.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:a71bd35897169376c4657cbd5d26a1e3b7bb0724b8b9b92b428bd9fc359430fb
+  dmm:
+    version: 14.5.1.231201-7267-109ae550
+    package_url: "{{ amazon_package_download_link_root }}/dmm-14.5.1.231201-7267-109ae550.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:338f1bb87a2b5bf86547af96b6661cad00ab21bda1f920176231045e0004b4ba
+  mde_lineage:
+    version: 14.5.1.231211-2056-49547b92
+    package_url: "{{ amazon_package_download_link_root }}/mde-lineage-service-14.5.1.231211-2056-49547b92.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:2480f2682ea238ec5e88806a359c11f754a73ededcd9453946fbef9d9a78ad2f
+  dqf:
+    version: 14.5.1.231130-4342-ab1073a7
+    package_url: "{{ amazon_package_download_link_root }}/dqf-be-14.5.1.231130-4342-ab1073a7.zip"
+    package_download_type: remote_url
+    package_checksum: sha256:0bbca1281841d2b12e88fdf5b3d9407b6ab51b9ee3cfcf7dc3c19d9d2dcc1aa5

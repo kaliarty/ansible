@@ -1,0 +1,30 @@
+---
+# tasks for RedHat 9  installation
+
+- name: RedHat 9 - Add AdoptiumOpenJDK repository key
+  rpm_key:
+    key: "{{ adoptiumopenjdk_rpm_repo_key }}"
+    state: present
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 9 - Add AdoptiumOpenJDK repository
+  yum_repository:
+    name: AdoptiumOpenJDK
+    description: AdoptiumOpenJDK Repository
+    baseurl: "{{ adoptiumopenjdk_rpm_repo }}"
+    state: present
+    gpgcheck: yes
+    gpgkey: "{{ adoptiumopenjdk_rpm_repo_key }}"
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 9 - Ensure Java is installed
+  dnf:
+    name: "{{ java_packages }}"
+    state: present
+    update_cache: yes
+
+- name: RedHat 9 - Install dependencies
+  dnf:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: yes

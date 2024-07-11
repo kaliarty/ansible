@@ -1,0 +1,122 @@
+---
+- name: Ensure permissions KeyCloak configuration file
+  file:
+    path: "{{ keycloak_dir }}/conf/keycloak.conf"
+    state: file
+    owner: root
+    group: "{{ keycloak_system_group }}"
+    mode: 0640
+
+- name: KeyCloak configuration
+  community.general.ini_file:
+    path: "{{ keycloak_dir }}/conf/keycloak.conf"
+    section: null
+    no_extra_spaces: true
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    mode: 0640
+  loop: "{{ keycloak_config | dict2items }}"
+  no_log: true
+  notify: "restart keycloak"
+
+- name: Ensure permissions KeyCloak passwords file
+  file:
+    path: "{{ keycloak_dir }}/conf/ataccamaone.properties"
+    state: file
+    owner: root
+    group: "{{ keycloak_system_group }}"
+    mode: 0640
+
+# this avoids setting of empty values
+# so we touch only keys for which we can assign values
+- name: KeyCloak realm - set Ataccama properties
+  community.general.ini_file:
+    path: "{{ keycloak_dir }}/conf/ataccamaone.properties"
+    section: null
+    no_extra_spaces: yes
+    allow_no_value: no
+    option: "{{ item.key }}"
+    value: "{{ item.value }}"
+    mode: 0640
+  when: item.value | length > 0
+  loop: "{{ keycloak_realm_ataccama | dict2items }}"
+  no_log: true
+  notify: "restart keycloak"
+  vars:
+    keycloak_realm_ataccama:
+      MONITORING_USER_USERNAME: "{{ keycloak_monitoring_user.username }}"
+      MONITORING_USER_PASSWORD: "{{ keycloak_monitoring_user.password }}"
+      APPLICATION_ADMIN_USER: "{{ keycloak_one_admin.username }}"
+      APPLICATION_ADMIN_PASSWORD: "{{ keycloak_one_admin.password }}"
+      ANOMALY_DETECTOR_TOKEN_CLIENT_SECRET: >-
+        {{ anomaly_detection_token_client_secret if anomaly_detection_token_client_secret is defined }}
+      AUDIT_TOKEN_CLIENT_SECRET: >-
+        {{ audit_token_client_secret if audit_token_client_secret is defined }}
+      DPE_ADMIN_CLIENT_SECRET: >-
+        {{ dpe_admin_client_secret if dpe_admin_client_secret is defined }}
+      DPE_TOKEN_CLIENT_SECRET: >-
+        {{ dpe_token_client_secret if dpe_token_client_secret is defined }}
+      DPM_TOKEN_CLIENT_SECRET: >-
+        {{ dpm_token_client_secret if dpm_token_client_secret is defined }}
+      DQIT_ADMIN_CLIENT_SECRET: >-
+        {{ dqit_admin_client_secret if dqit_admin_client_secret is defined }}
+      DQIT_STEPS_TOKEN_CLIENT_SECRET: >-
+        {{ dqit_steps_token_client_secret if dqit_steps_token_client_secret is defined }}
+      DQIT_WEBAPP_TOKEN_CLIENT_SECRET: >-
+        {{ dqit_webapp_token_client_secret if dqit_webapp_token_client_secret is defined }}
+      DQF_TOKEN_CLIENT_SECRET: >-
+        {{ dqf_token_client_secret if dqf_token_client_secret is defined }}
+      FEEDBACK_TOKEN_CLIENT_SECRET: >-
+        {{ term_suggestions_token_client_secret if term_suggestions_token_client_secret is defined }}
+      MDM_ADMIN_CLIENT_SECRET: >-
+        {{ mdm_admin_client_secret if mdm_admin_client_secret is defined }}
+      MDM_TOKEN_CLIENT_SECRET: >-
+        {{ mdm_token_client_secret if mdm_token_client_secret is defined }}
+      MMM_ADMIN_CLIENT_SECRET: >-
+        {{ mmm_admin_client_secret if mmm_admin_client_secret is defined }}
+      MMM_TOKEN_CLIENT_SECRET: >-
+        {{ mmm_token_client_secret if mmm_token_client_secret is defined }}
+      ONE_WEBAPP_TOKEN_CLIENT_SECRET: >-
+        {{ one_webapp_token_client_secret if one_webapp_token_client_secret is defined }}
+      RUNTIME_SERVER_TOKEN_CLIENT_SECRET: >-
+        {{ runtime_server_token_client_secret if runtime_server_token_client_secret is defined }}
+      RDM_ADMIN_CLIENT_SECRET: >-
+        {{ rdm_admin_client_secret if rdm_admin_client_secret is defined }}
+      RDM_TOKEN_CLIENT_SECRET: >-
+        {{ rdm_token_client_secret if rdm_token_client_secret is defined }}
+      TS_API_TOKEN_CLIENT_SECRET: >-
+        {{ term_suggestions_token_client_secret if term_suggestions_token_client_secret is defined }}
+      TASK_SERVICE_ADMIN_CLIENT_SECRET: >-
+        {{ task_admin_client_secret if task_admin_client_secret is defined }}
+      TASK_SERVICE_TOKEN_CLIENT_SECRET: >-
+        {{ task_token_client_secret if task_token_client_secret is defined }}
+      WORKFLOW_SERVICE_ADMIN_CLIENT_SECRET: >-
+        {{ workflow_admin_client_secret if workflow_admin_client_secret is defined }}
+      WORKFLOW_SERVICE_TOKEN_CLIENT_SECRET: >-
+        {{ workflow_token_client_secret if workflow_token_client_secret is defined }}
+      DMM_ADMIN_CLIENT_SECRET: >-
+        {{ dmm_admin_client_secret if dmm_admin_client_secret is defined }}
+      DMM_TOKEN_CLIENT_SECRET: >-
+        {{ dmm_token_client_secret if dmm_token_client_secret is defined }}
+      MDE_ADMIN_CLIENT_SECRET: >-
+        {{ mde_lineage_admin_client_secret if mde_lineage_admin_client_secret is defined }}
+      MDE_TOKEN_CLIENT_SECRET: >-
+        {{ mde_lineage_token_client_secret if mde_lineage_token_client_secret is defined }}
+
+# NOTE: we need to override _some_ parameters inside definitions of "keycloak clients" containing
+# hardcoded prefixes in HOSTNAME - shipped defaults won't work without change.
+- name: load selected KeyCloak client definitions from JSON files
+  slurp:
+    src: "{{ keycloak_dir }}/realms/ataccamaone/clients/{{ item.value.file }}.json"
+  register: keycloak_clients_selected
+  loop: "{{ keycloak_client_json_files | dict2items }}"
+
+- name: write modified keycloak client JSON files
+  copy:
+    content: "{{ keycloak_clients_selected.results | list | selectattr('item.value', 'equalto', item.value) |
+                map(attribute='content') | b64decode| from_json | default([]) | combine(item.value.options) |
+                to_nice_json }}"
+    dest: "{{ keycloak_dir }}/realms/ataccamaone/clients/{{ item.value.file }}.json"
+    mode: 0640
+  loop: "{{ keycloak_client_json_files | dict2items }}"
+  notify: "restart keycloak"

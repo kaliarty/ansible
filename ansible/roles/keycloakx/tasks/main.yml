@@ -1,0 +1,87 @@
+---
+- name: Configure firewall for Keycloak
+  include_tasks: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- include_tasks: install.yml
+  tags:
+    - keycloak_install
+
+- include_tasks: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- include_tasks: logging.yml
+  tags:
+    - logging
+
+# populate systemd services so we can use conditions in handler
+# that prevents early restart attempts when we pre-configure properties
+- name: Populate service facts
+  ansible.builtin.service_facts:
+
+- include_tasks: configure.yml
+  tags:
+    - keycloak_config
+
+- block:
+    - name: "Create {{ keycloak_service_name }} service configuration directory"
+      file:
+        path: "/etc/systemd/system/{{ keycloak_service_name }}.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: 0750
+    - name: "Deploy {{ keycloak_service_name }} service configuration"
+      template:
+        src: keycloak-server.service.conf.j2
+        dest: "/etc/systemd/system/{{ keycloak_service_name }}.service.d/{{ keycloak_service_name }}.conf"
+        owner: root
+        group: root
+        mode: 0640
+    - name: Create Keycloak systemd service
+      include_role:
+        name: 0x0i.systemd
+      vars:
+        unit_config:
+          - name: "{{ keycloak_service_name }}"
+            enabled: yes
+            state: started
+            Unit:
+              Description: "Keycloak Server"
+              After: network.target
+            Service:
+              User: "{{ keycloak_system_user }}"
+              Group: "{{ keycloak_system_group }}"
+              ExecStart: "{{ keycloak_dir }}/scripts/start.sh start --auto-build --log-console-output json"
+              TimeoutStartSec: 300
+              TimeoutStopSec: 300
+              KillMode: control-group # KeyCloak runs as a child of shell script: proper process accounting is necessary to ensure termination
+              Restart: always
+              SyslogIdentifier: "{{ keycloak_service_name }}"
+              PIDFile: "{{ temp_folder }}/keycloak.pid"
+              Type: simple # start.sh script launches 2 processes - main daemon is in foreground while CLI job runs in background
+              LimitNOFILE: 102642
+            Install:
+              WantedBy: multi-user.target
+        notify: "Reload systemd daemon"
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform dependencies
+    summary:
+      name: Keycloak
+      description: "Single Sign On provider"
+      version: "{{ keycloak_version }}"
+      admin_user: "{{ keycloak_admin.username }}"
+      details:
+        directories: "{{ [ keycloak_install_dir ] }}"
+        os_user: "{{ keycloak_system_user }}"
+        os_group: "{{ keycloak_system_group }}"
+        services: "{{ [keycloak_service_name] }}"
+  tags: summary

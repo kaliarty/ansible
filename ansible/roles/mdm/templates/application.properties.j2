@@ -1,0 +1,40 @@
+## Logging setup
+ataccama.logging.plainTextConsoleAppender = false
+ataccama.logging.jsonConsoleAppender = true
+ataccama.logging.plainTextFileAppender = false
+ataccama.logging.jsonFileAppender = true
+
+{% if ataccama_internal_encryption is defined %}
+
+# internal.encryption.keystore= ${ataccama.path.etc}/{{ ataccama_internal_encryption.keystore | basename }}
+# internal.encryption.keystore.passwordFile= ${ataccama.path.etc}/{{ ataccama_internal_encryption.passwordfile | basename }}
+# internal.encryption.keystore.keyAlias= {{ ataccama_internal_encryption.alias }}
+# properties.encryption.keystore= ${ataccama.path.etc}/{{ ataccama_internal_encryption.keystore | basename }}
+# properties.encryption.keystore.passwordFile= ${ataccama.path.etc}/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+ataccama.one.mda.server.url={{ mdm_server_url }}
+ataccama.one.mda.server.manager.url={{ mdm_server_manager_url }}/manager/graphql
+ataccama.one.mda.max.connections=50
+## Keycloak setup
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=mdm-webapp-public-client
+ataccama.authentication.keycloak.admin.client-id=mdm-admin-client
+ataccama.authentication.keycloak.admin.secret={{ mdm_admin_client_secret }}
+ataccama.authentication.keycloak.public.client-id=${ataccama.authentication.keycloak.token.client-id}
+ataccama.authentication.keycloak.admin.enable=true
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+# Endpoints for monitoring
+management.endpoints.enabled-by-default=false
+management.endpoint.info.enabled=true
+management.endpoint.health.enabled=true
+management.endpoint.prometheus.enabled=true
+management.endpoints.web.exposure.include=health,info,prometheus
+management.endpoint.health.show-details=always
+management.endpoint.health.show-components=always
+management.endpoint.health.status.order=down,out-of-service,reloading,unknown,up
+management.info.git.mode=full
+# Timing metrics to all spring endpoints (true by default)
+management.metrics.web.server.auto-time-requests=false

@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          modify
+    Match         console.*
+    Remove        PRIORITY
+    Remove        SYSLOG_FACILITY
+    Hard_rename   _HOSTNAME hostname
+    Rename        MESSAGE message
+    Remove_regex  ^(_[A-Z_]+)$

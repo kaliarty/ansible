@@ -1,0 +1,4 @@
+{{ ansible_managed | comment }}
+## This is a default application.yaml file for generic ONE 2.0 module.
+
+{{ application_properties | to_nice_yaml(indent = 2) }}

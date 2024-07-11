@@ -1,0 +1,12 @@
+---
+# vars file for firewall
+
+iptables_packages:
+  - iptables
+  - iptables-services
+
+iptables_persistence_service: iptables
+iptables_persistence_service_reload_state: reloaded
+
+iptables_v4_rules: /etc/sysconfig/iptables
+iptables_v6_rules: /etc/sysconfig/ip6tables

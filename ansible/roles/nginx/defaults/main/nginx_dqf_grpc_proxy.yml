@@ -1,0 +1,29 @@
+---
+# this is default configuration for nginx proxy - dqf grpc
+nginx_dqf_grpc_client_max_body_size: 50m
+
+nginx_dqf_grpc_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/dqf-grpc.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.dqf_grpc.hostname | default(omit) }}"
+          client_max_body_size: "{{ nginx_dqf_grpc_client_max_body_size }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.dqf_grpc.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.dqf_grpc.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.dqf_grpc.hostname | default(omit) }}.access.log"
+              format: main
+        locations:
+          - location: /
+            grpc:
+              pass: grpc://dqf_grpc
+    upstreams:
+      - name: dqf_grpc
+        servers:
+          - address: "{{ dqf_host }}:{{ dqf_grpc_port }}"
+            weight: 1

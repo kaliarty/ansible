@@ -1,0 +1,18 @@
+---
+- name: Install versionlock packages
+  package:
+    name: "{{ item }}"
+  loop:
+    - yum-plugin-versionlock
+    - dnf-plugin-versionlock
+
+- name: "Hold the {{ package }} package: yum"
+  community.general.yum_versionlock:
+    name: "{{ package }}"
+    state: "{{ 'present' if (locked | default(true) | bool) else 'absent' }}"
+
+- name: "Hold the {{ package }} package: dnf"
+  community.general.dnf_versionlock:
+    name: "{{ package }}"
+    state: "{{ 'present' if (locked | default(true) | bool) else 'absent' }}"
+  when: (ansible_distribution_major_version | int) > 7 # CentOS 7 doesn't have DNF

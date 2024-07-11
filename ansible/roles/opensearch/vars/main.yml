@@ -1,0 +1,4 @@
+---
+# vars file for opensearch
+
+opensearch_security_enabled: false

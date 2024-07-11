@@ -1,0 +1,11 @@
+---
+
+- name: verify Ansible is usable locally
+  hosts: 127.0.0.1
+  connection: local
+  tasks:
+    - name: run dummy command
+      ansible.builtin.command: "true"
+    - name: give result
+      debug:
+        msg: "Minimal functionality confirmed!"

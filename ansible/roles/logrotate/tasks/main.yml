@@ -1,0 +1,15 @@
+---
+- name: install logrotate
+  become: true
+  package:
+    name: logrotate
+    state: present
+
+- name: "copy logrotate configuration: /etc/logrotate.d/{{ logrotate_filename }}"
+  become: true
+  template:
+    src: "logrotate.j2"
+    dest: "/etc/logrotate.d/{{ logrotate_filename }}"
+    owner: root
+    group: root
+    mode: 0644

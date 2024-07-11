@@ -1,0 +1,8 @@
+---
+# service could be restarted only after systemd unit is prepared
+# so we check it's existence and do nothing in early stages
+- name: restart keycloak
+  service:
+    name: "{{ keycloak_service_name }}"
+    state: restarted
+  when: ansible_facts.services["{{ keycloak_service_name }}.service"] is defined # noqa no-jinja-when

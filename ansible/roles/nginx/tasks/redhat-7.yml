@@ -1,0 +1,18 @@
+---
+# prepare repository
+- name: RedHat 7 - Create the YUM repository
+  yum_repository:
+    name: "{{ epel_repo.name }}"
+    description: "{{ epel_repo.description }}"
+    metalink: "{{ epel_repo.metalink }}"
+    gpgkey: "{{ epel_repo.gpgkey }}"
+    gpgcheck: yes
+    enabled: yes
+
+# install packages
+- name: RedHat 7 - Install packages
+  package:
+    name:
+      - python2-passlib
+    state: present
+    update_cache: yes

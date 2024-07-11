@@ -1,0 +1,37 @@
+---
+# this is default configuration for nginx proxy - monitoring (prometheus)
+
+nginx_monitoring_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/monitoring.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.monitoring.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.monitoring.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.monitoring.crt_key | default(omit) }}"
+        auth_basic:
+          realm: "{{ (monitoring_server.auth_basic_enabled) | ternary(\"Monitoring\", \"off\") }}"
+          user_file: "{{ monitoring_server.auth_basic_user_file }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.monitoring.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_monitoring_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: monitoring
+        ip_hash: true
+        servers:
+          - address: "{{ monitoring_server.host }}:{{ monitoring_server.port }}"
+            weight: 1
+
+nginx_monitoring_proxy_default_locations:
+  - location: /
+    proxy:
+      pass: http://monitoring
+      set_header: "{{ nginx_proxy_headers }}"

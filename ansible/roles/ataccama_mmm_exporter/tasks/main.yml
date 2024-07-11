@@ -1,0 +1,32 @@
+---
+- name: Install ataccama-mmm-exporter
+  include_role:
+    name: prometheus_exporter
+
+- name: Install queries file
+  become: true
+  copy:
+    dest: "{{ mmm_exporter_queries_file }}"
+    content: |
+      {{ mmm_exporter_queries }}
+      {%- if mmm_exporter_additional_queries | length %}
+
+      {{ mmm_exporter_additional_queries }}
+      {%- endif %}
+    backup: false
+    owner: "{{ mmm_exporter_user }}"
+    group: "{{ mmm_exporter_group }}"
+    mode: "u=r,g=r,o="
+  notify: restart mmm-exporter
+
+- name: Configure firewall for Ataccama MMM exporter
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Configure monitoring for Ataccama MMM exporter
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring

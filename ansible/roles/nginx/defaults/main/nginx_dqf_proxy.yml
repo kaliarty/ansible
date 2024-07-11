@@ -1,0 +1,40 @@
+---
+# this is default configuration for nginx proxy - dqf
+nginx_dqf_http_client_max_body_size: 50m
+
+nginx_dqf_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/dqf.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.dqf.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+          client_max_body_size: "{{ nginx_dqf_http_client_max_body_size }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.dqf.crt | default(omit)}}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.dqf.crt_key | default(omit)}}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.dqf.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_dqf_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: dqf
+        ip_hash: true
+        servers:
+          - address: "{{ dqf_host }}:{{ dqf_http_port }}"
+            weight: 1
+
+nginx_dqf_proxy_default_locations:
+  - location: /
+    proxy:
+      pass: http://dqf
+      set_header: "{{ nginx_proxy_headers }}"
+  - location: /actuator
+    rewrite:
+      return:
+        code: 403

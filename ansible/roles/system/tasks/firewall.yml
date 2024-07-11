@@ -1,0 +1,14 @@
+---
+- name: Install firewall
+  include_role:
+    name: firewall_setup
+
+- name: Setup basic firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: 22  # SSH
+          source:
+            - 0.0.0.0

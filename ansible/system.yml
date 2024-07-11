@@ -1,0 +1,20 @@
+---
+- hosts: all
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - os_family
+    - virtualization_role
+  roles:
+    - system
+  environment: "{{ environment_vars | default({}) }}"
+
+# single point of java installation (in parallel for all related group)
+- hosts: ai_server, dependencies, frontend, mdm_server,  monitoring_server, one_app, processing, rdm_server, dqit_server, orchestration_server, mdm_frontend
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution
+  roles:
+    - java
+  environment: "{{ environment_vars | default({}) }}"

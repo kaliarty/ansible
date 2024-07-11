@@ -1,0 +1,55 @@
+---
+# tasks file for dmm_service
+- name: Configure firewall for dmm
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install dmm service
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ dmm_module_name }}"
+    module_version: "{{ dmm_version }}"
+    install_dir: "{{ dmm_install_dir }}"
+    service_user: "{{ dmm_service_user }}"
+    service_group: "{{ dmm_service_group }}"
+    module_services: "{{ dmm_services }}"
+    package_download_type: "{{ dmm_package_download_type }}"
+    package_location: "{{ dmm_package_location }}"
+    package_url: "{{ dmm_package_url }}"
+    package_checksum: "{{ dmm_package_checksum }}"
+    module_config: "{{ dmm_config }}"
+    enable_java_heapdumps: "{{ dmm_java_heapdumps }}"
+    java_temp_folder: "{{ dmm_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure dmm_service logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure dmm monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: dmm
+      description: "Ataccama platform module: dmm"
+      version: "{{ dmm_version }}"
+      details:
+        directories: "{{ [ dmm_install_dir ] }}"
+        os_user: "{{ dmm_service_user }}"
+        os_group: "{{ dmm_service_group }}"
+        services: "{{ dmm_services | map(attribute='name') | list }}"
+  tags: summary

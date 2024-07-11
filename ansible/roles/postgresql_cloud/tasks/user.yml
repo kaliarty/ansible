@@ -1,0 +1,34 @@
+---
+- name: Create a new user '{{ psql_user_item.name }}' and grant privs
+  community.postgresql.postgresql_user:
+    login_host: "{{ login_host }}"
+    login_user: "{{ login_user }}"
+    login_password: "{{ postgresql_server.admin_password }}"
+    port: "{{ postgresql_port }}"
+    ssl_mode: "{{ psql_cloud_ssl_mode }}"
+    db: postgres
+    #
+    name: "{{ psql_user_item.name }}"
+    password: "{{ psql_user_item.password }}"
+    role_attr_flags: "{{ psql_user_item.role_attr_flags }}"
+    no_password_changes: "{{ 'yes' if cloud_provider == 'aws' else 'no' }}"
+  register: result
+
+- name: Create a new user '{{ psql_user_item.name }}' result
+  debug:
+    var: result.queries
+
+- name: Set azure '{{ psql_user_item.name }}' db user login
+  set_fact:
+    psql_user_item_login: "{{ psql_user_item.name + '@' + postgresql_server.hostname }}"
+  when: cloud_provider == 'azure'
+
+- name: Set aws '{{ psql_user_item.name }}' db user login
+  set_fact:
+    psql_user_item_login: "{{ psql_user_item.name }}"
+  when: cloud_provider == 'aws'
+
+- include_tasks: database.yml
+  loop: "{{ psql_user_item.databases }}"
+  loop_control:
+    loop_var: psql_db_item

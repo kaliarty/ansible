@@ -1,0 +1,5 @@
+{{ ansible_managed | comment }}
+
+{{ log_paths | join(" ") }} {
+    {{ logrotate_options | indent(4, False) -}}
+}

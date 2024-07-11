@@ -1,0 +1,11 @@
+---
+- hosts: all
+
+  tasks:
+    - name: Edit environment file
+      become: true
+      blockinfile:
+        path: /etc/environment
+        block: |
+          http_proxy=http://1.2.3.4:3128
+          https_proxy=http://1.2.3.4:3128

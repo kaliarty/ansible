@@ -1,0 +1,497 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Standalone components installation using Ansible - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#standalone-components-installation-using-ansible" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Standalone components installation using Ansible
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory.html" class="md-nav__link">
+        Ansible inventory
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_ansible.html" class="md-nav__link">
+        Running Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tat.html" class="md-nav__link">
+        Ansible installation tips & tricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hybrid.html" class="md-nav__link">
+        Hybrid DPE installation using Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory_examples.html" class="md-nav__link">
+        Inventory examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-installation" class="md-nav__link">
+    Ansible installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#rdm-standalone-installation" class="md-nav__link">
+    RDM standalone installation
+  </a>
+  
+    <nav class="md-nav" aria-label="RDM standalone installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#rdm-prepare-the-inventory" class="md-nav__link">
+    RDM Prepare the inventory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rdm-installation" class="md-nav__link">
+    RDM Installation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#rdm-after-installation-check" class="md-nav__link">
+    RDM After installation check
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#mdm-standalone-installation" class="md-nav__link">
+    MDM standalone installation
+  </a>
+  
+    <nav class="md-nav" aria-label="MDM standalone installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#mdm-prepare-the-inventory" class="md-nav__link">
+    MDM Prepare the inventory
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mdm-installation" class="md-nav__link">
+    MDM Installation
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mdm-after-installation-check" class="md-nav__link">
+    MDM After installation check
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="standalone-components-installation-using-ansible">Standalone components installation using Ansible</h1>
+<p>This document describes a standalone installation of individual components.
+The installation can be divided into two parts:</p>
+<ul>
+<li>Preparing an inventory</li>
+<li>Running a playbook for a component standalone installation.</li>
+</ul>
+<p>For more information about inventories, see the <a href="inventory.html">inventory documentation</a>.</p>
+<h2 id="ansible-installation">Ansible installation</h2>
+<p>As a first step, one needs to have Ansible installed on his control node - which can be either a local machine with any Linux distribution,
+or the installation can be run even from any server of the environment if the server has 22 port opened. The server needs to have connectivity to the internet (at least for the time of the installation),
+as we need to download the necessary packages.</p>
+<p>See <a href="installing_ansible.html">installation section</a> of the docs, which covers the installation of Ansible itself.</p>
+<h2 id="rdm-standalone-installation">RDM standalone installation</h2>
+<p>This section describes a standalone RDM installation.</p>
+<h3 id="rdm-prepare-the-inventory">RDM Prepare the inventory</h3>
+<p>There is an inventory example in <code>ansible/inventories/example_rdm_standalone</code> folder. Copy this example e.g. to <code>ansible/inventories/customer</code> to start preparing the inventory for the installation. Then one has to modify both the hosts file and the variables files.</p>
+<p>First of all, replace the host examples (enclosed in <code>&lt;&gt;</code>) in the <code>hosts.yml</code> file with the correct hosts.
+Then replace variables in files located in the <code>group_vars/all</code> folder depending on requirements. Please, keep unset variables in <code>secrets.yml</code> as is.</p>
+<h3 id="rdm-installation">RDM Installation</h3>
+<p>Having the inventory prepared, you can then proceed with the RDM standalone installation. To install the RDM, run the <code>ansible/rdm_standalone.yml</code> playbook.
+If you need to run a single playbook, please run only the playbooks mentioned in the <code>ansible/rdm_standalone.yml</code> file.
+Please, don't use the <code>site.yml</code> playbook and other playbooks that aren't mentioned there to install the RDM standalone.</p>
+<p>The command to execute the playbook is the following, needs to be executed from the <code>ansible</code> directory,</p>
+<pre><code class="language-shell">ansible-playbook -i &lt;path-to-inventory&gt; -u &lt;username&gt; --private-key &lt;path-to-private-key&gt; -b rdm_standalone.yml
+### in case of the example inventory, connecting via `admin` account and it's private key located in `~/.ssh/admin-private` as follows:
+ansible-playbook -i inventories/example_rdm_standalone/hosts.yml -u admin --private-key ~/.ssh/admin-private -b rdm_standalone.yml
+</code></pre>
+<p>The user needs to have ssh access to all the hosts with root (passwordless sudo) privileges.</p>
+<h3 id="rdm-after-installation-check">RDM After installation check</h3>
+<p>When the installation using the playbook is complete, the following web endpoints should be available for opening in a browser:
+<a href="https://rdm.&lt;nginx_domain&gt;">https://rdm.<code>&lt;nginx_domain&gt;</code></a></p>
+<p><a href="https://rdm-console.&lt;nginx_domain&gt;">https://rdm-console.<code>&lt;nginx_domain&gt;</code></a></p>
+<p>These web pages should open, and it should be possible to log into them using the credentials from the inventory (usually, it's the <code>group_vars/all/secrets.yml</code> file if you didn't set them somewhere additionally).</p>
+<p>The monitoring page should also be available. Please, check that all the targets are green:
+<a href="https://monitoring.&lt;nginx_domain&gt;/targets">https://monitoring.<code>&lt;nginx_domain&gt;</code>/targets</a></p>
+<h2 id="mdm-standalone-installation">MDM standalone installation</h2>
+<p>This section describes a standalone MDM installation.</p>
+<h3 id="mdm-prepare-the-inventory">MDM Prepare the inventory</h3>
+<p>There is an inventory example in <code>ansible/inventories/example_mdm_standalone</code> folder. Copy this example e.g. to <code>ansible/inventories/customer</code> to start preparing the inventory for the installation. Then one has to modify both the hosts file and the variables files.</p>
+<p>First of all, replace the host examples (enclosed in <code>&lt;&gt;</code>) in the <code>hosts.yml</code> file with the correct hosts.
+Then replace variables in files located in the <code>group_vars/all</code> folder depending on requirements. Please, keep unset variables in <code>secrets.yml</code> as is.</p>
+<h3 id="mdm-installation">MDM Installation</h3>
+<p>Having the inventory prepared, you can then proceed with the MDM standalone installation. To install the MDM, run the <code>ansible/mdm_standalone.yml</code> playbook.
+If you need to run a single playbook, please run only the playbooks mentioned in the <code>ansible/mdm_standalone.yml</code> file.
+Please, don't use the <code>site.yml</code> playbook and other playbooks that aren't mentioned there to install the MDM standalone.</p>
+<p>The command to execute the playbook is the following, needs to be executed from the <code>ansible</code> directory,</p>
+<pre><code class="language-shell">ansible-playbook -i &lt;path-to-inventory&gt; -u &lt;username&gt; --private-key &lt;path-to-private-key&gt; -b mdm_standalone.yml
+### in case of the example inventory, connecting via `admin` account and it's private key located in `~/.ssh/admin-private` as follows:
+ansible-playbook -i inventories/example_mdm_standalone/hosts.yml -u admin --private-key ~/.ssh/admin-private -b mdm_standalone.yml
+</code></pre>
+<p>The user needs to have ssh access to all the hosts with root (passwordless sudo) privileges.</p>
+<h3 id="mdm-after-installation-check">MDM After installation check</h3>
+<p>When the installation using the playbook is complete, the following web endpoints should be available for opening in a browser:
+<a href="https://mda.&lt;nginx_domain&gt;">https://mda.<code>&lt;nginx_domain&gt;</code></a></p>
+<p><a href="https://console.&lt;nginx_domain&gt;">https://console.<code>&lt;nginx_domain&gt;</code></a></p>
+<p>These web pages should open, and it should be possible to log into them using the credentials from the inventory (usually, it's the <code>group_vars/all/secrets.yml</code> file if you didn't set them somewhere additionally).</p>
+<p>The monitoring page should also be available. Please, check that all the targets are green:
+<a href="https://monitoring.&lt;nginx_domain&gt;/targets">https://monitoring.<code>&lt;nginx_domain&gt;</code>/targets</a></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

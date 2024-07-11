@@ -1,0 +1,12 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ dpe.http_port }}"
+          source: "{{ groups['monitoring_server'] + (groups['one_app'] | default([])) + (groups['rdm_server'] | default([])) }}"
+        - port: "{{ dpe_grpc_port }}"
+          source: "{{ groups['one_app'] + (groups['rdm_server'] | default([])) }}"

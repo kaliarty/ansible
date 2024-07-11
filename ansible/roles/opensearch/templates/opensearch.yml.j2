@@ -1,0 +1,25 @@
+---
+{{ ansible_managed | comment }}
+
+cluster.name: {{ opensearch_cluster_name }}
+
+node.name: {{ inventory_hostname }}
+node.data: true
+node.master: true
+
+network.host: 0.0.0.0
+
+http.port: {{ opensearch_api_port }}
+transport.port: {{ opensearch_transport_port }}
+
+discovery.type: {{ opensearch_cluster_type }}
+bootstrap.memory_lock: true
+
+path.logs: {{ opensearch_log_dir }}
+path.data: {{ opensearch_data_dirs }}
+
+plugins.security.disabled: {{ ( not opensearch_security_enabled ) | bool }}
+
+{% if opensearch_config %}
+{{ opensearch_config | to_nice_yaml(indent=2) }}
+{% endif %}

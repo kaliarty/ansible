@@ -1,0 +1,38 @@
+---
+- name: Print postgresql_server variable value
+  debug:
+    msg: "{{ postgresql_server }}"
+    verbosity: 2
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Install psycopg2
+  package:
+    name: "{{ psycopg2_packages }}"
+    state: present
+
+- name: Set azure db credentials
+  set_fact:
+    login_host: "{{ postgresql_server.hostname + '.' + postgresql_domain }}"
+    login_user: "{{ postgresql_server.admin_user + '@' + postgresql_server.hostname }}"
+  when: cloud_provider == 'azure'
+
+- name: Set aws db credentials
+  set_fact:
+    login_host: "{{ postgresql_server.hostname }}"
+    login_user: "{{ postgresql_server.admin_user }}"
+  when: cloud_provider == 'aws'
+
+- include_tasks: user.yml
+  loop: "{{ postgresql_server.users }}"
+  loop_control:
+    loop_var: psql_user_item
+  no_log: true

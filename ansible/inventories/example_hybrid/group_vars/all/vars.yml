@@ -1,0 +1,133 @@
+---
+# This is default variables file for plain DPE installation, for Ataccama hybrid solution.
+# Unless specified otherwise, all paths refer to files on the Ansible controller,
+# and can be either absolute, or relative to ansible/files directory.
+
+# install and temporary directories
+deployment_folder: /opt/ataccama/one
+# these directories' privileges and ownership will be managed too. Necessary when restrictive umask (e. g. 027) is used.
+deployment_folder_managed_directories:
+  - /opt/ataccama
+temp_folder: /var/tmp
+
+packages:
+  dpe:
+    version: 14.5.1.231205-13929-3b0b5777
+    package_url: "https://ataccama.s3.amazonaws.com/products/releases/dpe-assembly-14.5.1.231205-13929-3b0b5777-linux.zip"
+    package_download_type: remote_url
+    package_checksum: 'sha256:1e9f9283fa8209666129a422ab8d7b808a79b10d3b62d3ef69f7644942d9f8eb'
+    ## In case the DPE nodes have no access to the internet configure the following instead:
+    # package_download_type: local
+    # package_location: /path/to/dpe.zip
+
+# DPE license file - path to the license file on the Ansible controller. In case of multiple DPEs being provisioned, recommended is to set it in hosts.
+dpe_license_file: /path/to/license.plf
+
+# Keycloak variables
+# keycloak_url is a URL to Keycloak Auth server.
+keycloak_url: https://customer.env.ataccama.online/auth
+
+# MinIO (S3 storage) variables
+# minio_url is a URL to MinIO endpoint
+minio_url: https://minio.customer.env.ataccama.online
+# minio_logs_bucket is a name of the bucket for DPE logs - preconfigured to work with Ataccama PaaS environment.
+minio_logs_bucket: hybrid-logs
+# Minio authentication - access key and secret access key. Change accordingly.
+minio:
+  access_key: <minio-access-key>
+  secret_key: "{{ minio_secret_key }}"
+
+# DPM connection configuration
+# change the host (gRPC endpoint) respectively. gRPC and HTTP ports are preconfigured to work with Ataccama PaaS environment.
+dpm:
+  host: dpm-grpc.customer.env.ataccama.online
+  grpc_port: 443
+  http_port: 8031
+# dpm_deployment_name is the name of the DPM deployment in CS, preconfigured to work with Ataccama PaaS environment.
+dpm_deployment_name: dpm-prod
+# dpm_jwt_key is a public JWT key of DPM, required for communication with the PaaS environment. Change accordingly.
+dpm_jwt_key:
+  name: dpm-prod-key
+  # jwt key content
+  content:
+  # jwt key fingerprint
+  fp:
+env: prod
+
+# DPE configuration
+# private_key of the DPE module. Change accordingly
+dpe_jwt_key:
+  private:
+
+# dpe_additional_config is an additional DPE application configuration in the form of additional application.properties.
+# The following properties set is minimal, that (apart from the base configuration) sets the required properties for
+# seamless communication of the DPE and PaaS DPM, and also as a starting example enables some datasources in DPE
+# for start.
+dpe_additional_config: |
+  ## Additional DPM connection properties - enable bidirectional streaming via TLS and trust all certificates.
+  ## This part is mandatory for hybrid DPE.
+  ataccama.client.connection.dpm.grpc.tls.enabled=true
+  ataccama.client.connection.dpm.grpc.tls.trust-all=true
+  ataccama.one.dpe.service.dpm.connection.mode=FIREWALL_FRIENDLY_REGISTRATION
+  ataccama.one.dpe.label=dpe-hybrid
+  ## Additional DPE datasources / drivers configuration
+  plugin.jdbcdatasource.ataccama.one.driver.redshift.disabled=false
+
+# dpe_drivers is a list of additional JDBC drivers that get downloaded from the internet. The following one -
+# redshift is preconfigured as a starting example. Instead of `remote_url`, you can specify
+# `path` to copy the drivers from the Ansible controller instead.
+# If you add/remove any driver, you need to adjust the DPE application config (above) accordingly.
+dpe_drivers:
+  - name: redshift
+    remote_url: https://s3.amazonaws.com/redshift-downloads/drivers/jdbc/2.0.0.1/redshift-jdbc42-2.0.0.1.jar
+
+# DPE filesystem and port defaults - do not change.
+dpe:
+  filesystem_dir: /opt
+  http_port: 8034
+  grpc_port: 8532
+
+# DPE availability check during the installation
+check_availability: true
+
+## FluentBit configuration. Preconfigured to ship logs to Ataccama PaaS environment - output to MinIO.
+fluentbit_outputs:
+  - Name: s3
+    Match: '*'
+    bucket: "{{ minio_logs_bucket }}"
+    region: eu-central-1
+    upload_chunk_size: 10M
+    total_file_size: 50M
+    upload_timeout: 1m
+    use_put_object: true
+    s3_key_format: "/dpe_logs_%Y_%m_%d_$UUID"
+    Endpoint: "{{ minio_url }}"
+
+fluentbit_unit_env:
+  AWS_ACCESS_KEY_ID: "{{ minio.access_key }}"
+  AWS_SECRET_ACCESS_KEY: "{{ minio.secret_key }}"
+
+# Ataccama internal encryption configuration
+ataccama_internal_encryption:
+  keystore: encryption/one-encryption.jceks
+  passwordfile: encryption/one-encryption.passwd
+  alias: one
+
+# Firewall and monitoring variables - do not change
+firewall_manage: false
+monitoring_manage: false
+
+# Custom Java parameters
+#
+#audit_server_java_opts: -Xms256m -Xmx384m -XX:MaxRAM=500m
+#dpe_java_opts: -Xms1024m -Xmx2560m -XX:MaxRAM=3096m
+#mmm_fe_java_opts: -Xms128m -Xmx256m -XX:MaxRAM=300m
+#mdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+#mdm_server_java_opts: -Xms1024m -Xmx3072m -XX:MaxRAM=3200m
+#mmm_be_java_opts: -Xms512m -Xmx1512m -XX:MaxRAM=1800m
+#rdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+
+# Uncomment this to pass environment variables to Ansible tasks (e. g. to configure a proxy)
+#environment_vars:
+#  http_proxy: http://1.2.3.4:3128
+#  https_proxy: http://1.2.3.4:3128

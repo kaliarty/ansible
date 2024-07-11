@@ -1,0 +1,20 @@
+## This file is Ansible managed
+## iptables ipv6 configuration
+
+# Drop all packets in all tables except on loopback interface
+*filter
+:INPUT DROP [0:0]
+:FORWARD DROP [0:0]
+:OUTPUT DROP [0:0]
+
+# Accept traffic from and to loopback interface (localhost).
+-A INPUT -i lo -j ACCEPT
+-A OUTPUT -o lo -j ACCEPT
+
+# Log on debug if something is trying to get through
+-A INPUT -j LOG --log-level 7 --log-prefix "ipv6 iptables-dropped:"
+
+# Drop all traffic.
+-A INPUT -j DROP
+
+COMMIT

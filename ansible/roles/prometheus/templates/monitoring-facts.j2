@@ -1,0 +1,51 @@
+#!/usr/bin/python3
+
+# Read all fragments in input dir, combine them into a list and output it in Ansible fact format
+# Fragment is always list of dicts, possibly 1 item long
+# If there are none, output an empty (but valid) data
+
+from pathlib import Path
+import json
+
+input_dir = Path("{{ monitoring_fact_dir }}")
+input_file_suffix = "{{ monitoring_fact_suffix }}"
+
+jobs = list()
+for file in sorted(input_dir.glob(f"*{input_file_suffix}")):
+    with file.open() as f:
+        fragment = json.load(f)
+        jobs.extend(fragment)
+
+# Prometheus' scrape config is a list that doesn't allow duplicate job names
+# Combine static configs of jobs with the same name into a single job
+
+#
+# Example job:
+#    {
+#        "honor_timestamps": true,
+#        "job_name": "node_exporter",
+#        "metrics_path": "/metrics",
+#        "scheme": "http",
+#        "scrape_interval": "10s",
+#        "scrape_timeout": "10s",
+#        "static_configs": [
+#            {
+#                "targets": [
+#                    "orch-killdeer.medium.zdenek01.dt.ataccama.dev:9100"
+#                ]
+#            }
+#        ]
+#    }
+
+
+unique_jobs = dict()
+for job in jobs:
+    job_name = job['job_name']
+    if job_name not in unique_jobs:
+        unique_jobs[job_name] = job
+    else:
+        unique_jobs[job_name]['static_configs'].extend(job['static_configs'])
+
+out = list(unique_jobs.values())  # we kept jobs intact, just collect deduplicated list
+
+print(json.dumps(out, indent=4))

@@ -1,0 +1,9 @@
+---
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      metrics_path: "/auth/metrics"
+      port: "{{ keycloak_http_port }}"

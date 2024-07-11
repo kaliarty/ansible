@@ -1,0 +1,4712 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 37,
+  "iteration": 1681918463766,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 74,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "DPx short facts",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "",
+          "mappings": [],
+          "max": 86400000,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "#EAB839",
+                "value": 60480000
+              },
+              {
+                "color": "dark-red",
+                "value": 77760000
+              }
+            ]
+          },
+          "unit": "dtdurationms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 0,
+        "y": 1
+      },
+      "id": 60,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_queue_jobs_top_priority_job_age_millis{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "format": "table",
+          "interval": "",
+          "legendFormat": "Job age",
+          "refId": "A"
+        }
+      ],
+      "title": "Queued Job Top Priority Age",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 3,
+        "y": 1
+      },
+      "id": 96,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_jobs_count{status=\"queued\",namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Queued jobs",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 6,
+        "y": 1
+      },
+      "id": 95,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "deriv(ataccama_one_dpm_plugin_executor_jobs_count{status=\"success\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) * 60",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Succeed jobs per minute",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 0.1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 9,
+        "y": 1
+      },
+      "id": 63,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_jobs_count{status=\"failure\",namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m]) * 60",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed jobs per minute",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 12,
+        "y": 1
+      },
+      "id": 99,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "sum(ataccama_one_dpe_plugin_executor_jobs_running{namespace=~\"$namespace\", job=~\"$dpe_job_name\"})",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Jobs running on engine(s)",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0,
+          "mappings": [],
+          "max": 1,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 15,
+        "y": 1
+      },
+      "id": 97,
+      "options": {
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "sum(ataccama_one_dpm_resource_allocation_datasource_connections{namespace=~\"$namespace\", job=~\"$dpm_job_name\"})",
+          "interval": "",
+          "legendFormat": "Total connectios",
+          "refId": "A"
+        }
+      ],
+      "title": "Total connectios",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "",
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "max": 35,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "dark-red",
+                "value": 30
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 18,
+        "y": 1
+      },
+      "id": 64,
+      "links": [],
+      "options": {
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "text": {}
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_status_check_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Status engine check duration",
+      "transparent": true,
+      "type": "gauge"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "displayName": "",
+          "mappings": [
+            {
+              "id": 0,
+              "op": "=",
+              "text": "N/A",
+              "type": 1,
+              "value": "null"
+            }
+          ],
+          "max": 35,
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 3,
+        "x": 21,
+        "y": 1
+      },
+      "id": 98,
+      "links": [],
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "horizontal",
+        "reduceOptions": {
+          "calcs": [
+            "last"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "text": {},
+        "textMode": "auto"
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Connected engines",
+      "transparent": true,
+      "type": "stat"
+    },
+    {
+      "collapsed": false,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 6
+      },
+      "id": 72,
+      "panels": [],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "Jobs info",
+      "type": "row"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 14,
+        "w": 14,
+        "x": 0,
+        "y": 7
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_jobs_count{status!=\"killed\", status!=\"success\", status!=\"failure\", status!=\"unknown\", status!=\"unrecognized\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "format": "time_series",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Unfinished jobs",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 10,
+        "x": 14,
+        "y": 7
+      },
+      "id": 83,
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_jobs_count{status!=\"disconnected\", status!=\"killing\", status!=\"submitting\", status!=\"postprocessing\", status!=\"preprocessing\", status!=\"queued\", status!=\"running\", status!=\"starting\", status!=\"submitted\", status!=\"submitted_to_engine\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{status}}",
+          "refId": "F"
+        }
+      ],
+      "title": "Finished jobs",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 14,
+        "y": 14
+      },
+      "id": 17,
+      "interval": "10s",
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "deriv(ataccama_one_dpm_plugin_executor_jobs_count{status=\"success\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) * 60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Succeed  jobs (avg per minute)",
+          "refId": "A"
+        }
+      ],
+      "title": "Number of jobs succeed in a minute",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 5,
+        "x": 19,
+        "y": 14
+      },
+      "id": 16,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "deriv(ataccama_one_dpm_plugin_executor_jobs_count{status=\"failure\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) * 60",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Failed  jobs (avg per minute)",
+          "refId": "A"
+        }
+      ],
+      "title": "Number of jobs failed in a minute",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 10,
+        "x": 0,
+        "y": 21
+      },
+      "id": 81,
+      "links": [],
+      "options": {
+        "legend": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "(ataccama_one_dpe_plugin_executor_jobs_running{namespace=~\"$namespace\", job=~\"$dpe_job_name\"})",
+          "format": "time_series",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "sum(ataccama_one_dpe_plugin_executor_jobs_running{namespace=~\"$namespace\", job=~\"$dpe_job_name\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total",
+          "refId": "B"
+        }
+      ],
+      "title": "Jobs running per engine",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 0,
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "none"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 8,
+        "x": 10,
+        "y": 21
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "lastNotNull",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_jobs_count{status=\"queued\",namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "hide": false,
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Queued jobs",
+          "refId": "C"
+        }
+      ],
+      "title": "Queued jobs",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "ms"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 10,
+        "w": 6,
+        "x": 18,
+        "y": 21
+      },
+      "id": 6,
+      "options": {
+        "legend": {
+          "calcs": [
+            "mean",
+            "max"
+          ],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_queue_jobs_top_priority_job_age_millis{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "Job age",
+          "refId": "A"
+        }
+      ],
+      "title": "DPM Queue Jobs Top Priority Job Age",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 89,
+      "options": {
+        "legend": {
+          "calcs": [
+            "max",
+            "last"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_resource_allocation_datasource_connections{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{access_type}} {{resource_info}}",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "sum(ataccama_one_dpm_resource_allocation_datasource_connections{namespace=~\"$namespace\", job=~\"$dpm_job_name\"})",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Total connections",
+          "refId": "B"
+        }
+      ],
+      "title": "dpm_resource_allocation",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 24,
+        "x": 0,
+        "y": 40
+      },
+      "id": 43,
+      "options": {
+        "legend": {
+          "calcs": [
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "From {{status_old}} to {{status_new}} - max",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "From {{status_old}} to {{status_new}} - count",
+          "refId": "B"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_job_status_change_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "hide": true,
+          "interval": "",
+          "legendFormat": "From {{status_old}} to {{status_new}} - sum",
+          "refId": "C"
+        }
+      ],
+      "title": "Job status transition",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 12,
+        "w": 13,
+        "x": 0,
+        "y": 49
+      },
+      "id": 92,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_grpc_client_call_seconds_max{job=~\"dpm.*\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{job}} - {{method}} - {{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "DPM GRPC client call",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 11,
+        "x": 13,
+        "y": 49
+      },
+      "id": 94,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last",
+            "max"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_job_preprocess_plugin_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "{{ name }} preprocessing",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_job_postprocess_plugin_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "{{ name }} postprocessing",
+          "refId": "B"
+        }
+      ],
+      "title": "Job preprocessing / postprocessing duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 6,
+        "x": 13,
+        "y": 55
+      },
+      "id": 77,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_job_processing_file_download_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "Processing file download duration max",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_job_processing_file_download_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_job_processing_file_download_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "interval": "",
+          "legendFormat": "Processing file download duration average",
+          "refId": "D"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_file_upload_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "Processing file upload duration max",
+          "refId": "E"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_file_upload_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_file_upload_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "interval": "",
+          "legendFormat": "Processing file upload duration average",
+          "refId": "H"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_file_provider_download_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "interval": "",
+          "legendFormat": "Provider file download duration max",
+          "refId": "I"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_file_provider_download_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_file_provider_download_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "interval": "",
+          "legendFormat": "Provider file download duration average",
+          "refId": "L"
+        }
+      ],
+      "title": "Processing file download/upload duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 10,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "never",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "links": [],
+          "mappings": [],
+          "min": 0,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "bytes"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 6,
+        "w": 5,
+        "x": 19,
+        "y": 55
+      },
+      "id": 33,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "9.0.2",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_job_submit_message_size_bytes_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Max - {{type}}",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_plugin_executor_job_submit_message_size_bytes_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_job_submit_message_size_bytes_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Average - {{type}}",
+          "refId": "D"
+        }
+      ],
+      "title": "Size of incoming JobSubmit request",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 61
+      },
+      "id": 112,
+      "panels": [
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 62
+          },
+          "id": 102,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_queue_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "legendFormat": "queue size ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_queue_job_constraints_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "job constraints count ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_queue_job_constraints_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "job constraints size ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_engines_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "engines count ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "D"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_engine_pools{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "engine pools ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "E"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_hashes_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "hashes count ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "F"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_constraints_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "constraints size ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "G"
+            }
+          ],
+          "title": "In Memory Submit queue",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "handle (dpm-svc:8031)"
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 73
+          },
+          "id": 106,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_handle_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_handle_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "handle ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "handle"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_plan_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_plan_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "plan ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "plan"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_job_incremental_load_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_job_incremental_load_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "job incremental load ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "inc_load"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_engines_get_engines_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_engines_get_engines_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "get engines ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "get_engines"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_snapshot_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_snapshot_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "snapshot ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "snapshot"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_pick_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_pick_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "pick ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "pick"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_allocate_resources_seconds_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_allocate_resources_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "allocate resources ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "allocate"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_clean_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_clean_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "clean ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "clean"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_clean_pick_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_clean_pick_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "clean-pick ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "clean_pick"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_clean_remove_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_clean_remove_seconds_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "clean-remove ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "clean_remove"
+            }
+          ],
+          "title": "Scan and handle timers",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "smooth",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "jobs analyzed (dpm-svc:8031)"
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 24,
+            "x": 0,
+            "y": 83
+          },
+          "id": 104,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "expr": "rate(ataccama_one_dpm_job_queue_engine_slots_empty_summary_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\", queue=\"$queue\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "queue run rate ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "run_rate"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_jobs_analyzed_summary_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_jobs_analyzed_summary_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "jobs analyzed ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "analyzed"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_jobs_picked_summary_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_jobs_picked_summary_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "jobs picked ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "picked"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_jobs_notsubmitted_count_total{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_pick_success_count_total{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "not submitted ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "not_submitted"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_jobs_resources_notallocated_summary_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_jobs_resources_notallocated_summary_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "resources not allocated ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "not_allocated"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_jobs_notsubmitted_error_count_total{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_pick_success_count_total{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "not submitted on error ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "not_submitted_err"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_engine_slots_empty_summary_sum{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_engine_slots_empty_summary_count{queue=\"$queue\", namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "empty engine slots ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "empty_slots"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_queue_clean_jobs_picked_summary_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_queue_clean_jobs_picked_summary_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "removed jobs ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "removed"
+            }
+          ],
+          "title": "Queue summaries",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 93
+          },
+          "id": 108,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "expr": "rate(ataccama_one_dpm_job_submit_engine_find_matching_timer_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "find matching engine ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "expr": "rate(ataccama_one_dpm_job_submit_engine_set_timer_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_job_submit_engine_set_timer_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "set engines ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "EngineSets timers",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "description": "",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 24,
+            "x": 0,
+            "y": 99
+          },
+          "id": 110,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "expr": "ataccama_one_dpm_job_submit_engine_constraints_changed_total{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "legendFormat": "constraints changed ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "expr": "ataccama_one_dpm_job_submit_engine_find_matching_count_total{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "find matching engine ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "B"
+            }
+          ],
+          "title": "EngineSets counters",
+          "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "Job queue insights",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 62
+      },
+      "id": 118,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 63
+          },
+          "id": 116,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_action_insert_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_action_insert_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "insert {{action}} ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "insert"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_action_read_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_action_read_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "read {{action}} ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "read"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_action_in_queue_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_action_in_queue_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "in queue {{action}} ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "in_queue"
+            }
+          ],
+          "title": "Job Action Summaries",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 63
+          },
+          "id": 114,
+          "options": {
+            "legend": {
+              "calcs": [
+                "min",
+                "mean",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_action_insert_timer_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_action_insert_timer_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "insert {{action}} ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "insert"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_job_action_read_timer_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_job_action_read_timer_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "legendFormat": "read {{action}} ({{instance}}{{pod}})",
+              "range": true,
+              "refId": "read"
+            }
+          ],
+          "title": "Job action timers",
+          "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "Job action",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 63
+      },
+      "id": 70,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 64
+          },
+          "id": 27,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_thread_pool_pool{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Current number of threads in the pool: {{thread_pool_name}}",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_thread_pool_active{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Approximate number of threads that are actively executing tasks: {{thread_pool_name}}",
+              "refId": "D"
+            }
+          ],
+          "title": "Executor thread pool",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 73
+          },
+          "id": 100,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_thread_pool_queued{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Approximate tasks in queue: {{thread_pool_name}}",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_thread_pool_completed_total{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "interval": "",
+              "legendFormat": "Approximate completed tasks:  {{thread_pool_name}}",
+              "refId": "D"
+            }
+          ],
+          "title": "Executor queue size / tasks completed",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 17,
+            "x": 0,
+            "y": 81
+          },
+          "id": 31,
+          "options": {
+            "legend": {
+              "calcs": [
+                "mean",
+                "lastNotNull",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_thread_pool_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Seconds max: {{thread_pool_name}}",
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_thread_pool_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_thread_pool_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Seconds average: {{thread_pool_name}}",
+              "refId": "D"
+            }
+          ],
+          "title": "Executor thread pool [s]",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 7,
+            "x": 17,
+            "y": 81
+          },
+          "id": 87,
+          "options": {
+            "legend": {
+              "calcs": [
+                "max",
+                "last"
+              ],
+              "displayMode": "table",
+              "placement": "right"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_grpc_server_pool_active{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "DPM server pool active",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_grpc_server_pool_queue_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "DPM server pool queue",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_grpc_server_pool_active{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{ pod}} server pool active",
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_grpc_server_pool_queue_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "{{ pod}} server pool queue",
+              "refId": "D"
+            }
+          ],
+          "title": "GRPC server pool",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 10,
+            "x": 0,
+            "y": 88
+          },
+          "id": 85,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_events_engine_pick_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Max",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_events_engine_pick_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_events_engine_pick_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Average",
+              "refId": "B"
+            }
+          ],
+          "title": "Duration of retrieving events from database",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 7,
+            "x": 10,
+            "y": 88
+          },
+          "id": 79,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_submit_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of job submit operation max",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_submit_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_job_submit_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "interval": "",
+              "legendFormat": "Duration of job submit operation average",
+              "refId": "D"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_update_status_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of update job process  max",
+              "refId": "E"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_create_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_job_create_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "interval": "",
+              "legendFormat": "Duration of update job process  average",
+              "refId": "H"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_kill_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of job kill operation max",
+              "refId": "I"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_kill_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval]) / rate(ataccama_one_dpm_plugin_executor_job_kill_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "interval": "",
+              "legendFormat": "Duration of job kill operation average",
+              "refId": "L"
+            }
+          ],
+          "title": "Duration of job operations",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 10,
+            "w": 7,
+            "x": 17,
+            "y": 88
+          },
+          "id": 78,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_to_submit_add_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of add operation on submit job queue max",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_submit_add_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of add operation on submit job queue count",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_submit_add_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of add operation on submit job queue sum",
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_submit_add_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m]) / rate(ataccama_one_dpm_plugin_executor_job_to_submit_add_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "interval": "",
+              "legendFormat": "Duration of add operation on submit job queue average",
+              "refId": "D"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_to_kill_add_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of add operation on kill job queue max",
+              "refId": "E"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_kill_add_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of add operation on kill job queue count",
+              "refId": "F"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_kill_add_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of add operation on kill job queue sum",
+              "refId": "G"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_to_kill_add_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m]) / rate(ataccama_one_dpm_plugin_executor_job_to_kill_add_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "interval": "",
+              "legendFormat": "Duration of add operation on kill job queue average",
+              "refId": "H"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_plugin_executor_job_killAsAdmin_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Duration of kill job as admin operation max",
+              "refId": "I"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_killAsAdmin_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of kill job as admin operation count",
+              "refId": "J"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_killAsAdmin_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "hide": true,
+              "interval": "",
+              "legendFormat": "Duration of kill job as admin operation sum",
+              "refId": "K"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_plugin_executor_job_killAsAdmin_duration_seconds_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m]) / rate(ataccama_one_dpm_plugin_executor_job_killAsAdmin_duration_seconds_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1m])",
+              "interval": "",
+              "legendFormat": "Duration of kill job as admin operation average",
+              "refId": "L"
+            }
+          ],
+          "title": "Duration of queue operations",
+          "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "DPM info",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 64
+      },
+      "id": 68,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 9,
+            "x": 0,
+            "y": 65
+          },
+          "id": 21,
+          "links": [],
+          "options": {
+            "legend": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "(ataccama_one_dpe_plugin_executor_jobs_running{namespace=~\"$namespace\", job=~\"$dpe_job_name\"})",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "",
+              "intervalFactor": 1,
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "sum(ataccama_one_dpe_plugin_executor_jobs_running{namespace=~\"$namespace\", job=~\"$dpe_job_name\"})",
+              "instant": false,
+              "interval": "",
+              "legendFormat": "Total",
+              "refId": "B"
+            }
+          ],
+          "title": "Jobs running per engine",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 11,
+            "x": 9,
+            "y": 65
+          },
+          "id": 19,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_status_check_duration_seconds{quantile=\"0.95\",namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Average",
+              "refId": "F"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_status_check_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "interval": "",
+              "legendFormat": "Max",
+              "refId": "J"
+            }
+          ],
+          "title": "Status check duration",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "displayName": "Maximum response time",
+              "mappings": [
+                {
+                  "id": 0,
+                  "op": "=",
+                  "text": "N/A",
+                  "type": 1,
+                  "value": "null"
+                }
+              ],
+              "max": 35,
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 10
+                  },
+                  {
+                    "color": "dark-red",
+                    "value": 30
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 15,
+            "w": 4,
+            "x": 20,
+            "y": 65
+          },
+          "id": 59,
+          "links": [],
+          "options": {
+            "orientation": "horizontal",
+            "reduceOptions": {
+              "calcs": [
+                "max"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "text": {}
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_status_check_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "{{pod}}",
+              "refId": "A"
+            }
+          ],
+          "type": "gauge"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "links": [],
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 11,
+            "x": 9,
+            "y": 72
+          },
+          "id": 57,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpe_constraints_collector_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpe_job_name\"}",
+              "interval": "",
+              "legendFormat": "Engine {{pod}} max",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpe_constraints_cached_data_source_session_digests_duration_seconds_max{namespace=~\"$namespace\", job=~\"$dpe_job_name\"}",
+              "interval": "",
+              "legendFormat": "Engine {{pod}}, cached source data",
+              "refId": "A"
+            }
+          ],
+          "title": "Constraints collector",
+          "type": "timeseries"
+        },
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 10,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "never",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "decimals": 0,
+              "links": [],
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 6,
+            "w": 9,
+            "x": 0,
+            "y": 74
+          },
+          "id": 2,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi",
+              "sort": "none"
+            }
+          },
+          "pluginVersion": "9.0.2",
+          "targets": [
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Connected engines",
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_count_disconnected{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Disconnected engines",
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "ataccama_one_dpm_engines_count_active{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "interval": "",
+              "legendFormat": "Active engines ",
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "exemplar": true,
+              "expr": "rate(ataccama_one_dpm_engines_count_inactive{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[1d])",
+              "interval": "",
+              "legendFormat": "Inactive engines ",
+              "refId": "D"
+            }
+          ],
+          "title": "Associated engines",
+          "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "Engines info",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": null,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 65
+      },
+      "id": 122,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 16,
+            "w": 24,
+            "x": 0,
+            "y": 66
+          },
+          "id": 120,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_k8sEnginesCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "k8sEnginesCount",
+              "range": true,
+              "refId": "A"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_jobsInQueueCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "jobsInQueueCount",
+              "range": true,
+              "refId": "B"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_movingAverageJobsInQueueCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "movingAverageJobsInQueueCount",
+              "range": true,
+              "refId": "C"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_scaleUpSlotsCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "scaleUpSlotsCount",
+              "range": true,
+              "refId": "G"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_newEnginesCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "newEnginesCount",
+              "range": true,
+              "refId": "H"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_throttledJobsInQueueCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "throttledJobsInQueueCount",
+              "range": true,
+              "refId": "I"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_registeredEnginesNotScaledDownCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "registeredEnginesNotScaledDownCount",
+              "range": true,
+              "refId": "D"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_registeredEnginesCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "registeredEnginesCount",
+              "range": true,
+              "refId": "E"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_job_submit_queue_size{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "Jobs Queue Size",
+              "range": true,
+              "refId": "F"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_enginesIdsToReviveCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "enginesIdsToReviveCount",
+              "range": true,
+              "refId": "J"
+            },
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "ataccama_one_dpm_autoscaler_enginesIdsToStopCount{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}",
+              "hide": false,
+              "legendFormat": "enginesIdsToStopCount",
+              "range": true,
+              "refId": "K"
+            }
+          ],
+          "title": "Autoscaling",
+          "type": "timeseries"
+        }
+      ],
+      "targets": [
+        {
+          "datasource": null,
+          "refId": "A"
+        }
+      ],
+      "title": "Autoscaling",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 67
+      },
+      "id": 128,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "task.start - host.docker.internal:8031 - jobProcessedEventProcessor"
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 68
+          },
+          "id": 130,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "table",
+              "placement": "right",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "irate(ataccama_one_dpm_db_lock_total{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "{{counterName}} - {{instance}}{{pod}} - {{lock}}",
+              "range": true,
+              "refId": "lock"
+            }
+          ],
+          "title": "DB locks per second",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Locks",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 68
+      },
+      "id": 126,
+      "panels": [
+        {
+          "datasource": null,
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisCenteredZero": false,
+                "axisColorMode": "text",
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 22
+          },
+          "id": 124,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom",
+              "showLegend": true
+            },
+            "tooltip": {
+              "mode": "single",
+              "sort": "none"
+            }
+          },
+          "targets": [
+            {
+              "datasource": null,
+              "editorMode": "code",
+              "expr": "rate(ataccama_one_dpm_events_published_summary_sum{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])/rate(ataccama_one_dpm_events_published_summary_count{namespace=~\"$namespace\", job=~\"$dpm_job_name\"}[$__rate_interval])",
+              "legendFormat": "{{instance}}{{pod}}",
+              "range": true,
+              "refId": "A"
+            }
+          ],
+          "title": "Published Events",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Events",
+      "type": "row"
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 36,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": null,
+        "definition": "label_values(kube_pod_info, cluster)",
+        "description": "cluster",
+        "hide": 2,
+        "includeAll": true,
+        "label": "cluster",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info, cluster)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": null,
+        "definition": "label_values(kube_pod_info{clusterName=~\"$cluster\"}, namespace)",
+        "description": "namespace",
+        "hide": 0,
+        "includeAll": true,
+        "label": "namespace",
+        "multi": false,
+        "name": "namespace",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info{clusterName=~\"$cluster\"}, namespace)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "jobPreprocess",
+          "value": "jobPreprocess"
+        },
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "queue",
+        "options": [
+          {
+            "selected": true,
+            "text": "jobPreprocess",
+            "value": "jobPreprocess"
+          },
+          {
+            "selected": false,
+            "text": "jobSubmit",
+            "value": "jobSubmit"
+          },
+          {
+            "selected": false,
+            "text": "jobPostprocess",
+            "value": "jobPostprocess"
+          }
+        ],
+        "query": "jobPreprocess,jobSubmit,jobPostprocess",
+        "skipUrlSync": false,
+        "type": "custom"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(ataccama_one_dpm_engines_count_connected, job)",
+        "hide": 2,
+        "includeAll": true,
+        "multi": false,
+        "name": "dpm_job_name",
+        "options": [],
+        "query": {
+          "query": "label_values(ataccama_one_dpm_engines_count_connected, job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "allValue": ".+",
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "definition": "label_values(ataccama_one_dpe_plugin_executor_jobs_running, job)",
+        "hide": 2,
+        "includeAll": true,
+        "multi": false,
+        "name": "dpe_job_name",
+        "options": [],
+        "query": {
+          "query": "label_values(ataccama_one_dpe_plugin_executor_jobs_running, job)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-30m",
+    "to": "now"
+  },
+  "timepicker": {
+    "refresh_intervals": [
+      "10s",
+      "30s",
+      "1m",
+      "5m",
+      "15m",
+      "30m",
+      "1h",
+      "2h",
+      "1d"
+    ]
+  },
+  "timezone": "",
+  "title": "DPx facts",
+  "uid": "cy3C-DZns",
+  "version": 19,
+  "weekStart": ""
+}

@@ -1,0 +1,51 @@
+---
+- hosts: dependencies
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  pre_tasks:
+    - name: Stop Elasticsearch if running     # for the sake of upgrades
+      service:
+        name: elasticsearch
+        state: stopped
+        enabled: no
+      failed_when: false
+  roles:
+    - role: opensearch
+      vars:
+        opensearch_version: "{{ gen2_opensearch_version }}"
+        opensearch_cluster_name: one-search
+        opensearch_index_templates:
+          - name: default-index-template
+            template:
+              index_patterns: ['*']
+              template:
+                settings:
+                  number_of_shards: 1
+                  number_of_replicas: 0
+    - role: keycloakx
+      vars:
+        keycloak_config:
+          proxy: edge
+          hostname: "{{ nginx_hosts.one.hostname }}"
+          cache-stack: tcp
+          db-url-host: "{{ postgres.host }}"
+          db-username: "{{ postgres.database.owner }}"
+          db-password: "{{ postgres.database.password }}"
+          db-url-port: "{{ postgres.port }}"
+          db-url-database: "{{ keycloak_database_name }}"
+      tags:
+        - keycloak
+    - minio
+  post_tasks:
+    - name: set firewall rules
+      include_role:
+        name: firewall_rules
+      vars:
+        ansible_parent_role_names: ['opensearch']
+        iptables:
+          allowed_tcp_ports:
+            - port: "{{ opensearch_api_port }}"
+              source: "{{ groups['frontend'] + groups['one_app'] + groups['monitoring_server'] }}"
+      when: firewall_manage | bool
+  environment: "{{ environment_vars | default({}) }}"

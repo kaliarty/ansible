@@ -1,0 +1,89 @@
+---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "vars"
+      skip: true
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Install necessary packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Configure firewall for Anomaly Detection Anomaly Detector
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install Anomaly Detection Anomaly Detector
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ anomaly_detection_anomaly_detector_module_name }}"
+    module_version: "{{ anomaly_detection_anomaly_detector_version }}"
+    install_dir: "{{ anomaly_detection_anomaly_detector_install_dir }}"
+    service_user: "{{ anomaly_detection_anomaly_detector_system_user }}"
+    service_group: "{{ anomaly_detection_anomaly_detector_system_group }}"
+    module_services: "{{ anomaly_detection_anomaly_detector_services }}"
+    package_download_type: "{{ anomaly_detection_anomaly_detector_package_download_type }}"
+    package_location: "{{ anomaly_detection_anomaly_detector_package_location }}"
+    package_url: "{{ anomaly_detection_anomaly_detector_package_url }}"
+    package_checksum: "{{ anomaly_detection_anomaly_detector_package_checksum }}"
+    module_config: "{{ anomaly_detection_anomaly_detector_config }}"
+    deploy_files: "{{ anomaly_detection_anomaly_detector_files }}"
+    enable_java_heapdumps: false
+
+- name: Configure Anomaly Detection Anomaly Detector logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for Anomaly Detection Anomaly Detector to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ ansible_host }}:{{ item }}/actuator/health/readiness"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  with_items:
+    - "{{ anomaly_detection.anomaly_detector.http_port }}"
+  when: check_availability | default(false) | bool
+
+- name: Configure monitoring for Anomaly Detection Anomaly Detector
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: "Anomaly Detection - Anomaly Detector"
+      description: Ataccama platform module implementing Anomaly Detection functionality
+      version: "{{ anomaly_detection_anomaly_detector_version }}"
+      details:
+        directories: "{{ [ anomaly_detection_anomaly_detector_install_dir ] }}"
+        os_user: "{{ anomaly_detection_anomaly_detector_system_user }}"
+        os_group: "{{ anomaly_detection_anomaly_detector_system_group }}"
+        services: "{{ anomaly_detection_anomaly_detector_services | map(attribute='name') | list }}"
+  tags: summary

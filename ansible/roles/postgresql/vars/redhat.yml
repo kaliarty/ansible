@@ -1,0 +1,14 @@
+---
+# variables for RHEL & CentOS
+
+postgresql_enablerepo: "pgdg{{ postgres_version }}"
+
+postgresql_data_dir: "/var/lib/pgsql/{{ postgres_version }}/data"
+postgresql_bin_path: "/usr/pgsql-{{ postgres_version }}/bin/"
+postgresql_config_path: "/var/lib/pgsql/{{ postgres_version }}/data"
+postgresql_daemon: "postgresql-{{ postgres_version }}"
+postgresql_service: "postgresql-{{ gen2_postgres_version }}"
+postgresql_packages:
+  - "postgresql{{ postgres_version }}"
+  - "postgresql{{ postgres_version }}-server"
+  - "postgresql{{ postgres_version }}-contrib"

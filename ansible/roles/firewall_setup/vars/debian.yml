@@ -1,0 +1,12 @@
+---
+# vars file for firewall
+
+iptables_packages:
+  - iptables
+  - iptables-persistent
+
+iptables_persistence_service: netfilter-persistent
+iptables_persistence_service_reload_state: restarted
+
+iptables_v4_rules: /etc/iptables/rules.v4
+iptables_v6_rules: /etc/iptables/rules.v6

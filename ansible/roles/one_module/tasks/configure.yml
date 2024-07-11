@@ -1,0 +1,156 @@
+---
+# Configuration tasks for one_module
+
+- name: "Copy additional files | module: {{ module_name }}"
+  copy:
+    src: "{{ file.src }}"
+    dest: "{{ file.dest }}"
+    owner: "{{ file.owner | default(service_user) }}"
+    group: "{{ file.group | default(service_group) }}"
+    mode: "{{ file.mode | default(_default_copy_mode) }}"
+  loop: "{{ deploy_files }}"
+  loop_control:
+    label: "src: {{ file.src }} -> dest: {{ file.dest }}"
+    loop_var: file
+  notify: Restart module services
+  when: deploy_files is defined
+  tags:
+    - license
+
+- name: Copy configuration properties - yaml
+  template:
+    src: "{{ module_config.src | default('application.yaml.j2') }}"
+    dest: "{{ module_config.dest | default (install_dir + '/application.yaml') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0600
+  vars:
+    application_properties: "{{ module_config.properties | default({}) }}"
+  notify: Restart module services
+  when: module_config is defined and (module_config.type == 'properties_yaml') and (module_config.properties is defined)
+
+- name: Copy configuration properties - key/values
+  template:
+    src: "{{ module_config.src | default('application.properties.blank.j2') }}"
+    dest: "{{ module_config.dest | default (install_dir + '/etc/application.properties') }}"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0600
+  vars:
+    application_properties: "{{ module_config.properties | default([]) }}"
+  notify: Restart module services
+  when: module_config is defined and (module_config.type == 'properties_local') and (module_config.properties is defined or module_config.src is defined)
+
+- name: "Install logrotate config file | module: {{ module_name }}"
+  include_role:
+    name: logrotate
+  vars:
+    logrotate_filename: "{{ module_name }}"
+    log_paths:
+      - "{{ logs_folder }}/archived/*.log"
+    logrotate_options: |
+      rotate 1
+      maxage 14
+      daily
+      compress
+      missingok
+      nocreate
+  when: logrotate_enabled
+
+# PKCS12 certificates for the microservices: some services (AFAIK the ones implemented in Python)
+# don't use the system cert store and require PKCS12-formatted certificate to authenticate the nginx proxy.
+# It should contain the one.* domain certificate in full (i. e. the whole chain). No keys needed.
+# We do the export for all services: at worst it will just be unused.
+- name: Store PKCS12-encoded CA certificate
+  when: |
+    nginx_cert_kind is defined
+    and (nginx_cert_kind == 'ownca' or
+    (nginx_cert_kind == 'provided' and
+    nginx_certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0))
+  block:
+
+    - name: OwnCA PKCS12
+      when: |
+        nginx_cert_kind is defined and nginx_cert_kind == 'ownca'
+      block:
+
+        - name: Get CA certificate content
+          slurp:
+            src: "{{ ca_cert_dir }}/ca.pem"
+          register: ca_certificate_content
+          delegate_to: "{{ groups['proxies'] | first }}"
+          run_once: yes
+
+        - name: Copy CA certificate content to all the hosts
+          copy:
+            content: "{{ ca_certificate_content['content'] | b64decode }}"
+            dest: "{{ install_dir }}/etc/ca.pem"
+            mode: '0644'
+
+        - name: Get one certificate content
+          slurp:
+            src: "{{ cert_dir }}/{{ nginx_hosts.one.crt }}"
+          register: one_certificate_content
+          delegate_to: "{{ groups['proxies'] | first }}"
+          run_once: yes
+
+        - name: Copy one certificate content to all the hosts
+          copy:
+            content: "{{ one_certificate_content['content'] | b64decode }}"
+            dest: "{{ install_dir }}/etc/one-cert.pem"
+            mode: '0644'
+
+        - name: store paths of the certificate
+          set_fact:
+            pkcs12_cert_file: "{{ install_dir }}/etc/one-cert.pem"
+            pkcs12_ca_file: "{{ install_dir }}/etc/ca.pem"
+
+    - name: Provided PKCS12
+      when: |
+        nginx_cert_kind is defined and
+        (nginx_cert_kind == 'provided' and
+        nginx_certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0)
+      block:
+
+        - name: "Get the file used for 'one' certificate"
+          set_fact:
+            one_certificate_index: "
+              {%- set out = namespace() -%}
+              {%- for c in nginx_certificates -%}
+                {%- if (c.cert | dprint | basename) == nginx_hosts.one.crt -%}
+                  {%- set out.i = (loop.index0 | dprint) -%}
+                {%- endif -%}
+              {%- endfor -%}
+              {{- out.i -}}
+            "
+
+        - name: Copy the certificates to the remote
+          copy:
+            src: "{{ item }}"
+            dest: "{{ install_dir }}/etc/"
+            owner: "{{ service_user }}"
+            group: "{{ service_group }}"
+            mode: 0400
+          loop:
+            - "{{ nginx_certificates[one_certificate_index | int].cert }}"
+            - "{{ nginx_certificates[one_certificate_index | int].ca }}"
+
+        - name: store paths of the certificate
+          set_fact:
+            pkcs12_cert_file: "{{ install_dir }}/etc/{{ nginx_certificates[one_certificate_index | int].cert | basename }}"
+            pkcs12_ca_file: "{{ install_dir }}/etc/{{ nginx_certificates[one_certificate_index | int].ca | basename }}"
+
+    # openssl_pkcs12 export operates on *remote* files
+    - name: Export the certificate
+      community.crypto.openssl_pkcs12:
+        action: export
+        certificate_path: "{{ pkcs12_cert_file }}"
+        other_certificates: "{{ pkcs12_ca_file }}"
+        other_certificates_parse_all: true
+        path: "{{ install_dir }}/etc/certstore.p12"
+        owner: "{{ service_user }}"
+        group: "{{ service_group }}"
+        mode: 0400
+        friendly_name: one
+        # encryption is not needed: it doesn't contain any keys, only certificates
+      notify: Restart module services

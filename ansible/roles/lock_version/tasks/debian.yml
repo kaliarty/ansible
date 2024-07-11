@@ -1,0 +1,6 @@
+---
+
+- name: "Hold the {{ package }} package"
+  dpkg_selections:
+    name: "{{ package }}"
+    selection: "{{ 'hold' if (locked | default(true) | bool) else 'install' }}"

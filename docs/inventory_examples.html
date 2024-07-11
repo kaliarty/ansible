@@ -1,0 +1,997 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Inventory examples - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#inventory-examples" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Inventory examples
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory.html" class="md-nav__link">
+        Ansible inventory
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_ansible.html" class="md-nav__link">
+        Running Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tat.html" class="md-nav__link">
+        Ansible installation tips & tricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hybrid.html" class="md-nav__link">
+        Hybrid DPE installation using Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Inventory examples
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="inventory_examples.html" class="md-nav__link md-nav__link--active">
+        Inventory examples
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-on-prem-installed-dependencies" class="md-nav__link">
+    Setup with on prem installed dependencies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-rds-postgresql" class="md-nav__link">
+    Setup with AWS RDS PostgreSQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-azure-postgresql" class="md-nav__link">
+    Setup with Azure PostgreSQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-rds" class="md-nav__link">
+    Setup with AWS RDS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-s3" class="md-nav__link">
+    Setup with AWS S3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-nginx-monitoring-enabled" class="md-nav__link">
+    Setup with Nginx monitoring enabled
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-partially-custom-repositories" class="md-nav__link">
+    Setup with partially custom repositories
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup with partially custom repositories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu" class="md-nav__link">
+    Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redhatcentos" class="md-nav__link">
+    RedHat/CentOS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-on-prem-installed-dependencies" class="md-nav__link">
+    Setup with on prem installed dependencies
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-rds-postgresql" class="md-nav__link">
+    Setup with AWS RDS PostgreSQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-azure-postgresql" class="md-nav__link">
+    Setup with Azure PostgreSQL
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-rds" class="md-nav__link">
+    Setup with AWS RDS
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-aws-s3" class="md-nav__link">
+    Setup with AWS S3
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-nginx-monitoring-enabled" class="md-nav__link">
+    Setup with Nginx monitoring enabled
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#setup-with-partially-custom-repositories" class="md-nav__link">
+    Setup with partially custom repositories
+  </a>
+  
+    <nav class="md-nav" aria-label="Setup with partially custom repositories">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#ubuntu" class="md-nav__link">
+    Ubuntu
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#redhatcentos" class="md-nav__link">
+    RedHat/CentOS
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="inventory-examples">Inventory examples</h1>
+<p>Example configuration snippets used to deploy Ataccama One Gen 2.0</p>
+<h2 id="setup-with-on-prem-installed-dependencies">Setup with on prem installed dependencies</h2>
+<pre><code class="language-yaml">db_user_one: &lt;one_user&gt;
+db_user_one_password: &lt;one_user_password&gt;
+db_user_dqit: &lt;dqit_user&gt;
+db_user_dqit_password: &lt;dqit_user_password&gt;
+db_user_rdm: &lt;rdm_user&gt;
+db_user_rdm_password: &lt;rdm_user_password&gt;
+db_user_mdm: &lt;mdm_user&gt;
+db_user_mdm_password: &lt;mdm_user_password&gt;
+...
+postgres:
+  host: &quot;{{ groups['one_database'][0] }}&quot;
+  database:
+    owner: &quot;{{ db_user_one }}&quot;
+    password: &quot;{{ db_user_one_password }}&quot;
+  port: &quot;5432&quot;
+...
+dqit:
+  host: &quot;{{ groups['dqit_server'][0] }}&quot;
+  ... # other dqit settings
+  database:
+    host: &quot;{{ groups['dqit_database'][0] }}&quot;
+    port: &quot;{{ postgres.port }}&quot;
+    name: dqit
+    owner: {{ db_user_dqit }}
+    owner_password: {{ db_user_dqit_password }}
+...
+rdm:
+  ... # other rdm settings
+  database:
+    host: &quot;{{ groups['rdm_database'][0] }}&quot;
+    port: &quot;5432&quot;
+    name: rdm
+    user: &quot;{{ db_user_rdm }}&quot;
+    password: &quot;{{ db_user_rdm_password }}&quot;
+...
+mdm:
+  ... # other mdm settings
+  database:
+    host: &quot;{{ groups['mdm_database'][0] }}&quot;
+    port: &quot;5432&quot;
+    user: &quot;{{ db_user_mdm }}&quot;
+    password: &quot;{{ db_user_mdm_password }}&quot;
+    databases:
+      - name: mdc_db
+        owner: mdm
+      - name: it_db
+        owner: mdm
+      - name: esb_db
+        owner: mdm
+      - name: mda_cache
+        owner: mdm
+      - name: external
+        owner: mdm
+      - name: log_db
+        owner: mdm
+      - name: eh_db
+        owner: mdm
+</code></pre>
+<h2 id="setup-with-aws-rds-postgresql">Setup with AWS RDS PostgreSQL</h2>
+<pre><code class="language-yaml">cloud_provider: 'aws'
+postgresql_admin_user: &lt;admin_user&gt;
+postgresql_admin_password: &lt;admin_password&gt;
+database_host_one: &lt;aws rds db hostname&gt;
+database_host_dqit: &lt;aws rds db hostname&gt;
+database_host_rdm: &lt;aws rds db hostname&gt;
+database_host_mdm: &lt;aws rds db hostname&gt;
+postgresql_domain: ''
+db_user_one: &lt;one_user&gt;
+db_user_one_password: &lt;one_user_password&gt;
+db_user_dqit: &lt;dqit_user&gt;
+db_user_dqit_password: &lt;dqit_user_password&gt;
+db_user_rdm: &lt;rdm_user&gt;
+db_user_rdm_password: &lt;rdm_user_password&gt;
+db_user_mdm: &lt;mdm_user&gt;
+db_user_mdm_password: &lt;mdm_user_password&gt;
+...
+postgres:
+  host: &quot;{{ database_host_one }}&quot;
+  database:
+    owner: &quot;{{ db_user_one }}&quot;
+    password: &quot;{{ db_user_one_password }}&quot;
+  port: &quot;5432&quot;
+  postgresql_server:
+    hostname: &quot;{{ database_host_one }}&quot;
+    admin_user: &quot;{{ postgresql_admin_user }}&quot;
+    admin_password: &quot;{{ postgresql_admin_password }}&quot;
+    parameters: &quot;?sslmode=require&quot;
+    users:
+      - name: &quot;{{ db_user_one }}&quot;
+        password: &quot;{{ db_user_one_password }}&quot;
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: mmm
+            extensions:
+              - btree_gin
+          - name: events
+          - name: dpm
+          - name: ai
+          - name: keycloak
+          - name: audit
+      - name: &quot;{{ db_user_dqit }}&quot;
+        password: &quot;{{ db_user_dqit_password }}&quot;
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: dqit
+...
+dqit:
+  host: &quot;{{ database_host_dqit }}&quot;
+  ... # other dqit settings
+  database:
+    host: &quot;{{ database_host_dqit }}&quot;
+    port: &quot;{{ postgres.port }}&quot;
+    name: dqit
+    owner: {{ db_user_dqit }}
+    owner_password: {{ db_user_dqit_password }}
+  postgresql_server:
+    hostname: &quot;{{ database_host_dqit }}&quot;
+    admin_user: &quot;{{ postgresql_admin_user }}&quot;
+    admin_password: &quot;{{ postgresql_admin_password }}&quot;
+    parameters: &quot;?sslmode=require&amp;amp;gssEncMode=disable&quot;
+    users:
+      - name: &quot;{{ db_user_dqit }}&quot;
+        password: &quot;{{ db_user_dqit_password }}&quot;
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: dqit
+...
+rdm:
+  ... # other rdm settings
+  database:
+    host: &quot;{{ database_host_rdm }}&quot;
+    port: &quot;5432&quot;
+    name: rdm
+    user: &quot;{{ db_user_rdm }}&quot;
+    password: &quot;{{ db_user_rdm_password }}&quot;
+  postgresql_server:
+    hostname: &quot;{{ database_host_rdm }}&quot;
+    admin_user: &quot;{{ postgresql_admin_user }}&quot;
+    admin_password: &quot;{{ postgresql_admin_password }}&quot;
+    parameters: &quot;?sslmode=require&amp;amp;gssEncMode=disable&quot;
+    users:
+      - name: &quot;{{ db_user_rdm }}&quot;
+        password: &quot;{{ db_user_rdm_password }}&quot;
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: rdm
+...
+mdm:
+  ... # other mdm settings
+  database:
+    host: &quot;{{ database_host_mdm }}&quot;
+    port: &quot;5432&quot;
+    user: &quot;{{ db_user_mdm }}&quot;
+    password: &quot;{{ db_user_mdm_password }}&quot;
+    databases:
+      - name: mdc_db
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: it_db
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: esb_db
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: mda_cache
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: external
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: log_db
+        owner: &quot;{{ db_user_mdm }}&quot;
+      - name: eh_db
+        owner: &quot;{{ db_user_mdm }}&quot;
+  postgresql_server:
+    hostname: &quot;{{ database_host_mdm }}&quot;
+    admin_user: &quot;{{ postgresql_admin_user }}&quot;
+    admin_password: &quot;{{ postgresql_admin_password }}&quot;
+    parameters: &quot;?sslmode=require&amp;amp;gssEncMode=disable&quot;
+    users:
+      - name: &quot;{{ db_user_mdm }}&quot;
+        password: &quot;{{ db_user_mdm_password }}&quot;
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: mdc_db
+          - name: it_db
+          - name: esb_db
+          - name: mda_cache
+          - name: external
+          - name: log_db
+          - name: eh_db
+</code></pre>
+<h2 id="setup-with-azure-postgresql">Setup with Azure PostgreSQL</h2>
+<p>Below are variables that must be set in vars.yml</p>
+<pre><code class="language-yaml">
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true
+cloud_provider: 'azure'  # this is used to indicate which cloud provider  database we are using during installation
+
+# This value is used to indicate private domain to which PGSQL database belong to Azure.
+# This must be a top-level domain.
+# E.g., if the fqdn is postgres.some.customer.domain, the value should be 'some.customer.domain'.
+postgresql_domain: &lt;pgsql_database_domain_name&gt;
+
+# Azure Postgres names are used in the 'user@domain' format.
+# Please, put only user part there.
+db_user_one: &lt;database_username&gt; # database user for one
+db_user_one_password: &lt;strong password&gt;  # password for one user
+db_user_dqit: &lt;database_username&gt; # database user for dqit
+db_user_dqit_password: &lt;strong password&gt; # password for dqit user
+db_user_rdm: &lt;database_username&gt; # database user for rdm
+db_user_rdm_password: &lt;strong password&gt; # password for rdm user
+db_user_mdm: &lt;database_username&gt; # database user for mdm
+db_user_mdm_password: &lt;strong password&gt; # password for mdm user
+
+postgresql_admin_user: &lt;postgres_admin_username&gt; # this is admin user of PGSQL database instance without @domain part
+postgresql_admin_password: &lt;strong password&gt;  # password of admin user of PGSQL database instance
+
+# The value must be a second-level domain.
+# E.g., if the fqdn is postgres.some.customer.domain, the value should be 'postgres'.
+one_db_host: &lt;azure pgsql database host for one&gt;  # database instance  for  one
+rdm_db_host: &lt;azure pgsql database host for rdm &gt;  # database instance  for rdm
+mdm_db_host: &lt;azure pgsql database host for mdm&gt;  # database instance  for mdm
+dqit_db_host: &lt;azure pgsql database host for dqit&gt; # database instance  for dqit
+
+
+all:
+  children:
+    monitoring_server:
+      hosts:
+        &lt;mon-server-hostname&gt;:
+    ai_server:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    testing_data:
+      hosts:
+        &lt;dependency-server-hostname&gt;:
+    one_app:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    processing:
+      hosts:
+        &lt;procesing-server-hostname&gt;:
+    dependencies:
+      hosts:
+        &lt;dependency-server-hostname&gt;:
+    proxies:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    rdm_server:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    dqit_server:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    frontend:
+      hosts:
+        &lt;one-server-hostname&gt;:
+    mdm_server:
+      hosts:
+        &lt;mdm-server-hostname&gt;:
+    orchestration_server:
+      hosts:
+        &lt;orch-server-hostname&gt;:
+    bastion:
+      hosts:
+        &lt;bastion-server-hostname&gt;:
+
+</code></pre>
+<p>If you don't have a dedicated bastion server, you can use a monitoring server as the bastion. It's needed only to operate with DBs.
+Bastion server is used as a proxy (jump host) to forward SQL commands into DBs which cannnot be accesed directly from orchestration server.</p>
+<h2 id="setup-with-aws-rds">Setup with AWS RDS</h2>
+<pre><code class="language-yaml">
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true
+cloud_provider: 'aws'  # this is used to indicate which cloud provider database we are using during installation
+
+
+# AWS RDS users. You may omit user variables if defaults suit.
+db_user_one: &lt;database_username&gt; # database user for one
+db_user_one_password: &lt;strong password&gt;  # password for one user
+db_user_dqit: &lt;database_username&gt; # database user for dqit
+db_user_dqit_password: &lt;strong password&gt; # password for dqit user
+db_user_rdm: &lt;database_username&gt; # database user for rdm
+db_user_rdm_password: &lt;strong password&gt; # password for rdm user
+db_user_mdm: &lt;database_username&gt; # database user for mdm
+db_user_mdm_password: &lt;strong password&gt; # password for mdm user
+
+postgresql_admin_user: &lt;postgres_admin_username&gt; # this is the admin user of AWS RDS
+postgresql_admin_password: &lt;strong password&gt;  # password of the AWS RDS admin user
+
+# The value must be a fqdn (fully qualified domain name).
+# Note that postgresql_domain variable is not needed in the case of AWS RDS.
+one_db_host: &lt;aws rds endpoint for one&gt;  # database endpoint for one
+rdm_db_host: &lt;aws rds endpoint for rdm &gt;  # database endpoint for rdm
+mdm_db_host: &lt;aws rds endpoint for mdm&gt;  # database endpoint for mdm
+dqit_db_host: &lt;aws rds endpoint for dqit&gt; # database endpoint for dqit
+
+
+all:
+  children:
+    monitoring_server:
+      hosts:
+        &lt;mon-server-hostname-or-ip&gt;:
+    ai_server:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    testing_data:
+      hosts:
+        &lt;dependency-server-hostname-or-ip&gt;:
+    one_app:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    processing:
+      hosts:
+        &lt;procesing-server-hostname-or-ip&gt;:
+    dependencies:
+      hosts:
+        &lt;dependency-server-hostname-or-ip&gt;:
+    proxies:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    rdm_server:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    dqit_server:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    frontend:
+      hosts:
+        &lt;one-server-hostname-or-ip&gt;:
+    mdm_server:
+      hosts:
+        &lt;mdm-server-hostname-or-ip&gt;:
+    orchestration_server:
+      hosts:
+        &lt;orch-server-hostname-or-ip&gt;:
+    bastion:
+      hosts:
+        &lt;bastion-server-hostname-or-ip&gt;:
+
+# In the case of bastion server you can use ssh proxy command
+#  vars:
+#    ansible_ssh_common_args: |-
+#      -o ProxyCommand=&quot;ssh -W %h:%p -q &lt;ansible_operator_ssh_username&gt;@&lt;bastion-server-external-hostname-or-ip&gt;&quot;
+#
+</code></pre>
+<p>If you don't have a dedicated bastion server, you can use a monitoring server as the bastion. It's needed only to operate with DBs.
+In the case of AWS RDS Aurora you must use read-write endpoints as database hosts.
+Bastion server is used as a proxy (jump host) to forward SQL commands into DBs which cannnot be accesed directly from the controller.</p>
+<pre><code class="language-yaml">    bastion:
+      hosts:
+        &lt;bastion_server_hostname&gt;:
+</code></pre>
+<p>Bastion server is used as a proxy (jump host) to forward SQL commands into DBs which cannnot be accesed directly from orchestration server.</p>
+<h2 id="setup-with-aws-s3">Setup with AWS S3</h2>
+<p>Since we are not going use Minio as your object storage, we should remove minio role from dependencies.yml playbook.
+Your AWS account should also possess necessary privileges to manipulate with object in your S3 bucket (e.g. s3:ListBucket + s3:<em>Object</em> ).</p>
+<pre><code class="language-yaml">minio_url: &lt;S3 bucket url&gt;
+minio:
+  secret_key: &lt;aws secret key&gt;
+  access_key: &lt;aws access key&gt;
+</code></pre>
+<h2 id="setup-with-nginx-monitoring-enabled">Setup with Nginx monitoring enabled</h2>
+<p>Nginx has the <code>ngx_http_stub_status_module</code> that provides access to basic status information.
+See <a href="https://nginx.org/en/docs/http/ngx_http_stub_status_module.html">official ngx_http_stub_status_module page</a> for details.
+Metrics are scraped by <code>nginx-prometheus-exporter</code>.</p>
+<pre><code class="language-yaml">nginx_status_stub_enabled: true
+nginx_exporter_port: 9113
+</code></pre>
+<h2 id="setup-with-partially-custom-repositories">Setup with partially custom repositories</h2>
+<p>You can partially replace the system repositories and repositories installed by the playbook with the custom ones. For example, when it's not possible to use HTTP-based repositories. The current limitation is that you can't replace repositories installed by external roles.</p>
+<h3 id="ubuntu">Ubuntu</h3>
+<pre><code class="language-yaml">system_custom_repos_content: |
+  deb https://mirror.dkm.cz/ubuntu/ focal main restricted
+  deb https://mirror.dkm.cz/ubuntu/ focal-updates main restricted
+  deb https://mirror.dkm.cz/ubuntu/ focal universe
+  deb https://mirror.dkm.cz/ubuntu/ focal-updates universe
+  deb https://mirror.dkm.cz/ubuntu/ focal multiverse
+  deb https://mirror.dkm.cz/ubuntu/ focal-updates multiverse
+  deb https://mirror.dkm.cz/ubuntu/ focal-backports main restricted universe multiverse
+  deb https://mirror.dkm.cz/ubuntu/ focal-security main restricted
+  deb https://mirror.dkm.cz/ubuntu/ focal-security universe
+  deb https://mirror.dkm.cz/ubuntu/ focal-security multiverse
+
+anomaly_detection_anomaly_detector_focal_libffi6_repo: https://mirror.dkm.cz/ubuntu
+anomaly_detection_anomaly_detector_focal_libffi6_path: pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
+
+fluentbit_apt_repo: &quot;deb https://packages.fluentbit.io/ubuntu/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main&quot;
+
+postgresql_apt_repo: &quot;deb https://apt.postgresql.org/pub/repos/apt focal-pgdg main&quot;
+postgresql_apt_repo_key: &quot;https://www.postgresql.org/media/keys/ACCC4CF8.asc&quot;
+
+azure_apt_repo_baseurl: https://packages.microsoft.com/repos/azure-cli/
+azure_repo_key_url: https://packages.microsoft.com/keys/microsoft.asc
+
+adoptopenjdk_apt_repo: 'deb https://adoptopenjdk.jfrog.io/adoptopenjdk/deb focal main'
+adoptopenjdk_apt_repo_key: 'https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public'
+adoptopenjdk_apt_repo_key_id: '8ED17AF5D7E675EB3EE3BCE98AC3B29174885C03'
+</code></pre>
+<h3 id="redhatcentos">RedHat/CentOS</h3>
+<pre><code class="language-yaml">system_custom_repos_content: |
+  [rhui-rhel-8-for-x86_64-baseos-rhui-rpms]
+  name=Red Hat Enterprise Linux 8 for x86_64 - BaseOS from RHUI (RPMs)
+  baseurl=https://rhui-1.microsoft.com/pulp/repos/content/dist/rhel8/rhui/$releasever/x86_64/baseos/os
+          https://rhui-2.microsoft.com/pulp/repos/content/dist/rhel8/rhui/$releasever/x86_64/baseos/os
+          https://rhui-3.microsoft.com/pulp/repos/content/dist/rhel8/rhui/$releasever/x86_64/baseos/os
+  enabled=1
+  gpgcheck=1
+  gpgkey=file:///etc/pki/rpm-gpg/RPM-GPG-KEY-redhat-release
+  sslverify=1
+  sslclientcert=/etc/pki/rhui/product/content.crt
+  sslclientkey=/etc/pki/rhui/private/key.pem
+
+fluentbit_yum_repo: https://packages.fluentbit.io/centos/7/$basearch/
+
+postgresql_yum_repo_url: &quot;https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-redhat-repo-latest.noarch.rpm&quot;
+
+azure_yum_repo_baseurl: https://packages.microsoft.com/yumrepos/azure-cli
+
+__adoptopenjdk_packages:
+  - adoptopenjdk-8-hotspot
+  - adoptopenjdk-11-hotspot
+  - adoptopenjdk-12-hotspot
+  - adoptopenjdk-13-hotspot
+  - adoptopenjdk-14-hotspot
+  - adoptopenjdk-15-hotspot
+
+adoptopenjdk_rpm_rhel8_repo: &quot;https://adoptopenjdk.jfrog.io/artifactory/rpm/centos/8/x86_64/&quot;
+adoptopenjdk_rpm_rhel8_repo_key: &quot;https://adoptopenjdk.jfrog.io/adoptopenjdk/api/gpg/key/public&quot;
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="hybrid.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Hybrid DPE installation using Ansible" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Hybrid DPE installation using Ansible
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="certificates.html" class="md-footer__link md-footer__link--next" aria-label="Next: Certificates" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Certificates
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

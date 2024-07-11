@@ -1,0 +1,49 @@
+---
+# this is default configuration for nginx proxy - minio
+nginx_minio_client_max_body_size: 1000m
+
+nginx_minio_proxy_headers:
+  - field: Connection
+    value: "''"
+
+nginx_minio_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/minio.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.minio.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+          client_max_body_size: "{{ nginx_minio_client_max_body_size }}"
+          ignore_invalid_headers: false
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.minio.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.minio.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.minio.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_minio_proxy_default_locations + nginx_default_webserver }}"
+        proxy:
+          read_timeout: "{{ nginx_minio_read_timeout }}"
+          connect_timeout: "{{ nginx_minio_connect_timeout }}"
+          send_timeout: "{{ nginx_minio_send_timeout }}"
+    upstreams:
+      - name: minio
+        ip_hash: true
+        servers:
+          - address: "{{ minio.host }}:{{ minio.http_port }}"
+            weight: 1
+
+nginx_minio_proxy_default_locations:
+  - location: /
+    core:
+      chunked_transfer_encoding: false
+    proxy:
+      pass: http://minio
+      buffering: false
+      set_header: "{{ nginx_minio_proxy_headers + nginx_proxy_headers }}"
+      http_version: "1.1"

@@ -1,0 +1,62 @@
+---
+# MMM depends on AI services
+- hosts: ai_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution
+  roles:
+    - anomaly_detection_anomaly_detector
+    - term_suggestions_feedback
+    - term_suggestions_api
+    - term_suggestions_neighbors
+    - term_suggestions_recommender
+  tags: aicore
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: one_app
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - audit
+    - mmm
+    - dpm
+    - workflow
+    - task
+    - comment
+    - dmm
+    - mde_lineage
+    - dqf
+  post_tasks:
+    - name: Wait for MMM-BE to come up (check monitoring endpoint ready)
+      uri:
+        url: "http://{{ ansible_host }}:{{ mmm.management_port }}/actuator/health/readiness"
+        status_code: 200
+      register: result
+      until: result.status == 200
+      retries: 60
+      delay: 10
+      when: check_availability | default(false) | bool
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: processing
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution
+  roles:
+    - role: dpe
+      vars:
+        keycloak_url: https://{{ nginx_hosts.one.hostname }}/auth
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: frontend
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution
+  roles:
+    - frontend
+  environment: "{{ environment_vars | default({}) }}"

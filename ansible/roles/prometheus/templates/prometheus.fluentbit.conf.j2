@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.*
+    Systemd_Filter  _SYSTEMD_UNIT=prometheus.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.*
+    Key_Name      MESSAGE
+    Parser        logfmt
+    Reserve_Data  On
+[FILTER]
+    Name          modify
+    Match         console.*
+    Remove        PRIORITY
+    Remove        SYSLOG_FACILITY
+    Hard_rename   _HOSTNAME hostname
+    Rename        msg message
+    Remove_regex  ^(_[A-Z_]+)$

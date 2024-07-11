@@ -1,0 +1,24 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ rdm.http_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['processing'] | default([])
+            + groups['one_app'] | default([])
+            + (groups['frontend'] if nginx_hosts.rdm.hostname is defined else groups['mdm_server'] | default([]))
+          }}"
+        - port: "{{ rdm.server.port }}"
+          source: "{{
+            groups['frontend'] | default([])
+            + groups['processing'] | default([])
+          }}"
+        - port: "{{ rdm.server.service_port }}"
+          source: "{{ groups['rdm_server'] | default([]) }}" # internal only
+        - port: "{{ rdm_monitoring_port }}"
+          source: "{{ groups['monitoring_server'] | default([]) }}"

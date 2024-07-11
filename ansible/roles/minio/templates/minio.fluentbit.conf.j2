@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.minio-storage
+    Systemd_Filter  _SYSTEMD_UNIT={{ minio_unitname }}.service

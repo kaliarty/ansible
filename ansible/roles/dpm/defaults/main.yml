@@ -1,0 +1,46 @@
+---
+# defaults file for dpm
+
+dpm_module_name: dpm
+dpm_version: "{{ packages.dpm.version }}"
+dpm_license_file: licenses/license.plf
+dpm_install_dir: "{{ deployment_folder }}/{{ dpm_module_name }}"
+
+dpm_package_download_type: "{{ packages.dpm.package_download_type | default('maven_artifact') }}"
+dpm_package_location: "{{ packages.dpm.package_location | default ('') }}"
+dpm_package_url: "{{ packages.dpm.package_url | default ('') }}"
+dpm_package_checksum: "{{ packages.dpm.package_checksum | default(omit) }}"
+
+dpm_service_user: dpm
+dpm_service_group: dpm
+
+dpm_services:
+  - name: dpm-server
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ dpm_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ dpm_jwt_key.private }}"
+    java_opts: "-Xms512m -Xmx1152m -XX:MaxRAM=1500m"
+
+dpm_java_heapdumps: "true"
+dpm_java_temp_folder: "{{ dpm_install_dir }}/tmp"
+
+dpm_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ dpm_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ dpm_install_dir }}/etc"
+  - src: "{{ dpm_license_file }}"
+    dest: "{{ dpm_install_dir }}/license/license.plf"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.dpm
+  artifact: dpm-assembly
+  version: "{{ packages.dpm.version }}"
+  extension: zip
+  classifier: linux
+
+dpm_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ dpm_install_dir }}/etc/application.properties"

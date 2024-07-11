@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.dqit
+    Systemd_Filter  _SYSTEMD_UNIT=dqit.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    name                   multiline
+    match                  console.dqit
+    multiline.key_content  MESSAGE
+    multiline.parser       java-dqit-multiline
+[FILTER]
+    Name          parser
+    Match         console.dqit
+    Key_Name      MESSAGE
+    Parser        java-dqit
+    Reserve_Data  On

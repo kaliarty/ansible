@@ -1,0 +1,261 @@
+---
+
+# Set below variables if you want to use Azure PGSQL in OneGen2.0
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true
+cloud_provider: 'aws'  # this is used to indicate which cloud provider database we are using during installation
+postgresql_domain: <pgsql_database_domain_name>  # this value is used to indicate private domain to which PGSQL database belong to Azure, only if REQUIRED!
+db_user_one: one
+
+postgresql_admin_user: <pgsql_admin_user>
+one_db_host: <one_db_host>
+
+amazon_package_download_link_root: 'https://ataccama.s3.amazonaws.com/products/releases'
+
+#### ONE 2.0 related variables
+deployment_folder: /opt/ataccama/one
+# these directories' privileges and ownership will be managed too. Necessary when restrictive umask (e. g. 027) is used.
+deployment_folder_managed_directories:
+  - /opt/ataccama
+temp_folder: /var/tmp
+env: prod
+
+ataccama_internal_encryption:
+  keystore: encryption/one-encryption.jceks
+  passwordfile: encryption/one-encryption.passwd
+  alias: one
+
+# Ataccama ONE license files.
+rdm_license_file: licenses/license.plf
+rdm_server_license_file: licenses/license.plf
+
+postgresql_port: 5432
+postgres:
+  host: "{{ one_db_host | default(groups['one_database'][0] if 'one_database' in groups else 'localhost') }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+  database:
+    owner: "{{ (db_user_one | default('one')) }}{{ ('@' ~ one_db_host) if one_db_host is defined and cloud_provider == 'azure' else '' }}"
+    password: "{{ db_user_one_password }}"
+  port: "{{ postgresql_port }}"
+  postgresql_server:
+    hostname: "{{ one_db_host | default(groups['one_database'][0] if 'one_database' in groups else 'localhost') }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    parameters: "{{ '?sslmode=require' if one_db_host is defined else '' }}"
+    port: "{{ postgresql_port }}"
+    users:
+      - name: "{{ db_user_one | default('one') }}"
+        password: "{{ db_user_one_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: keycloak
+
+rdm_fe_url: "{{ 'https://' + nginx_hosts.rdm.hostname if (nginx_hosts.rdm.hostname is defined) else ('http://' ~ vars['rdm']['host'] ~ ':' ~ rdm_http_port) }}"
+rdm_server_url: "{{ 'https://' + nginx_hosts.rdm_console.hostname if (nginx_hosts.rdm_console.hostname is defined) else ('http://' + vars['rdm']['server']['host'] + ':' + '8061') }}"
+rdm_deployment_name: "rdm-{{ env }}"
+rdm_http_port: "8060"
+rdm_server_monitoring_port: "12361"
+rdm:
+  database:
+    host: "{{ rdm_db_host | default(groups['rdm_database'][0] if 'rdm_database' in groups else 'localhost')  }}{{ ('.' ~ postgresql_domain) if postgresql_domain is defined else '' }}"
+    port: "{{ postgresql_port }}"
+    name: rdm
+    user: "{{ (db_user_rdm | default('rdm')) }}{{ ('@' ~ rdm_db_host) if rdm_db_host is defined else '' }}"
+    password: "{{ db_user_rdm_password }}"
+  postgresql_server:
+    hostname: "{{ rdm_db_host | default(groups['rdm_database'][0] if 'rdm_database' in groups else 'localhost')  }}"
+    admin_user: "{{ postgresql_admin_user | default('gen2psqladmin') }}"
+    admin_password: "{{ postgresql_admin_password }}"
+    port: "{{ postgresql_port }}"
+    parameters: "{{ '?sslmode=require&amp;gssEncMode=disable' if rdm_db_host is defined else '' }}"
+    users:
+      - name: "{{ (db_user_rdm | default('rdm')) }}"
+        password: "{{ db_user_rdm_password }}"
+        role_attr_flags: CREATEDB,CREATEROLE,NOSUPERUSER,INHERIT,LOGIN
+        databases:
+          - name: rdm
+  host: "{{ groups['rdm_server'][0] if 'rdm_server' in groups else 'localhost' }}"
+  http_port: "{{ rdm_http_port }}"
+  # Server config:
+  server:
+    host: "{{ groups['rdm_server'][0] if 'rdm_server' in groups else 'localhost' }}"
+    port: "8061"
+    service_port: "8069"
+
+opensearch_api_port: 9200
+opensearch_dashboards_server_port: 5601
+opensearch_dashboards:
+  host: "{{ groups['frontend'][0] }}"
+  port: "{{ opensearch_dashboards_server_port }}"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.opensearch_dashboards
+  auth_basic_name: admin
+  auth_basic_password: "{{ opensearch_dashboards_admin_password }}"
+
+grafana_server_port: "3000"
+grafana:
+  host: "{{ groups['frontend'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "{{ grafana_server_port  }}"
+
+monitoring_server:
+  host: "{{ groups['monitoring_server'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "9090"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.monitoring
+  auth_basic_name: admin
+  auth_basic_password: "{{ prometheus_admin_password }}"
+
+alertmanager:
+  host: "{{ groups['monitoring_server'][0] if 'monitoring_server' in groups else 'localhost' }}"
+  port: "9093"
+  auth_basic_enabled: true
+  auth_basic_user_file: /etc/nginx/.htpasswd.alertmanager
+  auth_basic_name: admin
+  auth_basic_password: "{{ alertmanager_admin_password }}"
+
+nginx_cert_kind: provided
+nginx_certificates:
+  - cn: "one.{{ nginx_domain }}"
+    kind: provided
+    cert: "files/certificates/{{ nginx_domain }}.crt"
+    cert_key: "files/certificates/{{ nginx_domain }}.key"
+
+nginx_domain: "{{ ansible_domain }}"
+nginx_status_stub_enabled: true
+nginx_exporter_port: 9113
+nginx_hosts:
+  one:
+    enabled: true
+    hostname: "one.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  rdm:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  rdm_console:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm-console.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  opensearch_dashboards:
+    enabled: true
+    hostname: "kibana.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  monitoring:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "monitoring.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  alertmanager:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "alertmanager.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+  grafana:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "grafana.{{ nginx_domain }}"
+    crt: "star.{{ nginx_domain }}-fullchain.crt"
+    crt_key: "star.{{ nginx_domain }}.key"
+
+_nginx_allowed_proxy_hosts:
+  - one
+  - rdm
+  - rdm_console
+  - opensearch_dashboards
+  - monitoring
+  - alertmanager
+  - grafana
+
+_nginx_config_http_template:
+  - "{{ nginx_one_proxy_config if nginx_hosts.one.enabled else {} }}"
+  - "{{ nginx_rdm_proxy_config if nginx_hosts.rdm.enabled else {} }}"
+  - "{{ nginx_rdm_console_proxy_config if nginx_hosts.rdm_console.enabled else {} }}"
+  - "{{ nginx_opensearch_dashboards_proxy_config if nginx_hosts.opensearch_dashboards.enabled else {} }}"
+  - "{{ nginx_monitoring_proxy_config if nginx_hosts.monitoring.enabled else {} }}"
+  - "{{ nginx_alertmanager_proxy_config if nginx_hosts.alertmanager.enabled else {} }}"
+  - "{{ nginx_grafana_proxy_config if nginx_hosts.grafana.enabled else {} }}"
+  - "{{ nginx_status_stub_config if nginx_status_stub_enabled else {} }}"
+  - "{{ nginx_default_http }}"
+
+fluentbit_http_port: "2020"
+fluentd_port: 24224
+fluentd_http_metrics_port: "24231"
+
+firewall_manage: true
+firewall_fact_dir: /etc/ansible/facts.d/firewall
+firewall_fact_suffix: .in # suffix of files that will be assembled to a complete FW config; include a leading dot
+
+# custom rules that will be added to firewall config; this will be used as a value for 'iptables' key.
+# Meant for use-cases like "customer uses its own monitoring agent that must be network-accessible".
+# If only some hosts need its own rules, consider overriding it for specific groups or hosts only.
+custom_firewall_rules: []
+monitoring_manage: true
+monitoring_fact_dir: /etc/ansible/facts.d/monitoring
+monitoring_fact_suffix: .in # suffix of files that will be assembled to a complete monitoring config; include a leading dot
+
+keycloak_database_name: keycloak
+# NOTE: following configuration allows to override specific options inside
+# keycloak client definitions - this must be done for clients having pre-defined URLs
+keycloak_client_json_files:
+  cloud_portal:
+    file: cloud-portal
+    options:
+      adminUrl: ""
+      baseUrl: ""
+  dpm_public_client:
+    file: dpm-webapp-public-client
+    options:
+      redirectUris:
+        - "*"
+  dqit_steps_client:
+    file: dqit-steps-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+      redirectUris:
+        - "*"
+  dqit_webapp_client:
+    file: dqit-webapp-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+      redirectUris:
+        - "*"
+  frontend_public_client:
+    file: one-webapp-public-client
+    options: []
+  mdm_webapp_public_client:
+    file: mdm-webapp-public-client
+    options:
+      redirectUris:
+        - "*"
+      webOrigins:
+        - ""
+  rdm_public_client:
+    file: rdm-webapp-public-client
+    options:
+      redirectUris:
+        - "{{ rdm_fe_url }}/*"
+      webOrigins:
+        - "{{ rdm_fe_url }}"
+  runtime_server:
+    file: runtime-server-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+
+# Uncomment this to pass environment variables to Ansible tasks (e. g. to configure a proxy)
+#environment_vars:
+#  http_proxy: http://1.2.3.4:3128
+#  https_proxy: http://1.2.3.4:3128
+
+## AIP project configurations
+## either local_file or remote_url should be set
+#mdm_server_project:
+#  local_file: "path/to/MDC_Models.zip"
+#  remote_url: "path/to/MDC_Models"
+#  project_path: templates/model_projects/GeneralMDM.mdc
+#mdm_server_project_templates: templates/GeneralMDM
+## paths below can be either local files on the controller, or an URL
+#rdm_server_config_files_zip: "/path/to/RDM_Models.zip"

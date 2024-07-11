@@ -1,0 +1,1384 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      font-family: "Gilroy";
+      min-width: 1000px;
+    }
+
+    table {
+      text-decoration: none;
+      width: 100%;
+      text-align: center;
+      border-collapse: collapse;
+    }
+
+    th {
+      font-weight: 500;
+      font-size: 17px;
+      color: #ffffff;
+      background-color: #512da8;
+    }
+
+    td {
+      font-size: 15px;
+      color: #000000;
+      padding-right: 20px;
+      border-radius: 4px;
+      border-color: #e9c4c4;
+      background-color: #fff;
+    }
+
+    td,
+    table th {
+      white-space: pre-wrap;
+      padding: 10px 0px;
+      line-height: 15px;
+      vertical-align: middle;
+      border: 0.1rem solid #512da8;
+    }
+
+    tr:hover td {
+      color: #000000;
+      cursor: default;
+    }
+
+    .container {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .box {
+      white-space: normal;
+    }
+
+    .box div {
+      width: auto;
+      display: inline-block;
+      border: 1px solid black;
+      border-radius: 5px;
+      padding: 1px 8px;
+      background-color: #EDE7F6;
+      color: #840459;
+    }
+
+    .box nav {
+      background-color: #FAE4EE;
+      padding: 8px 18px;
+      border: 1px solid #F4BAD6;
+      border-radius: 5px;
+      color: #311B92;
+      margin: 8px;
+      margin-left: 25px;
+    }
+
+    a {
+      color: #ffffff;
+      background-color: #311B92;
+      border-radius: 5px;
+      padding: 1px 8px;
+      text-decoration: none;
+    }
+
+    li {
+      color: #aa0363;
+      margin-bottom: 8px;
+      margin-top: 8px;
+    }
+
+    li span {
+      color: #000000;
+    }
+
+    /* Style the tab */
+    .tab {
+      float: left;
+      position: fixed;
+      width: 250px;
+      min-height: 100vh;
+      background: linear-gradient(180deg, rgba(49, 27, 146, 1) 0%, rgba(132, 4, 89, 1) 50%);
+      border-right: 5px solid #00ACC1;
+    }
+
+    /* Style the buttons inside the tab */
+    .tab button {
+      display: block;
+      background-color: inherit;
+      color: white;
+      padding: 0px 16px;
+      width: 100%;
+      border: none;
+      outline: none;
+      text-align: left;
+      cursor: pointer;
+      transition: 0.3s;
+      font-size: 17px;
+    }
+
+    /* Change background color of buttons on hover */
+    .tab button:hover {
+      background-color: #d1c4e9;
+      color: #840459;
+      box-shadow: -5px 0px 0px 0px #e0f7fa, 5px 0px 0px 0px #e0f7fa;
+      border-left: 5px solid #aa0363;
+    }
+
+    /* Create an active/current "tab button" class */
+    .tab button.active {
+      background-color: #fff;
+      color: #311b92;
+      box-shadow: -5px 0px 0px 0px white, 5px 0px 0px 0px white;
+      border-left: 5px solid #e80073;
+    }
+
+    /* Style the tab content */
+    .tabcontent {
+      padding-top: 15px;
+      padding-right: 30px;
+      padding-bottom: 20px;
+      padding-left: 30px;
+      border-left: none;
+      height: 100%;
+      margin-left: 250px;
+    }
+
+    /* Accordion */
+    .accordion__item {
+      min-width: auto;
+      margin-bottom: 0.5rem;
+      border-radius: 0.25rem;
+      box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 15%);
+    }
+
+    .accordion__header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      color: #fff;
+      font-weight: 500;
+      background-color: #840459;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      cursor: pointer;
+      transition: background-color 0.2s ease-out;
+      height: 30px;
+    }
+
+    .accordion__header::after {
+      width: 2rem;
+      height: 2rem;
+      margin-left: auto;
+      background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='%23ffffff'%3e%3cpath fill-rule='evenodd' d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+      background-repeat: no-repeat;
+      background-size: 2rem;
+      background-color: #aa0363;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+      box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 15%);
+      content: "";
+    }
+
+    .accordion__item_show .accordion__header::after {
+      transform: rotate(-180deg);
+      background-color: #0097a7;
+      border-top-left-radius: 0.25rem;
+      border-top-right-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+      border-bottom-right-radius: 0.25rem;
+      box-shadow: 0 0.125rem 0.25rem rgb(0 0 0 / 15%);
+    }
+
+    .accordion__header:hover {
+      background-color: #311b92;
+    }
+
+    .accordion__item_hidden .accordion__header {
+      border-bottom-right-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .accordion__body {
+      padding: 0.75rem 1rem;
+      overflow: hidden;
+      background: #fff;
+      border-bottom-right-radius: 0.25rem;
+      border-bottom-left-radius: 0.25rem;
+    }
+
+    .accordion__item:not(.accordion__item_show) .accordion__body {
+      display: none;
+    }
+
+    #myBtn {
+      display: none;
+      position: fixed;
+      bottom: 30px;
+      left: 215px;
+      z-index: 99;
+      font-size: 18px;
+      border: 5px solid #00ACC1;
+      border-radius: 5px;
+      background-color: #840459;
+      cursor: pointer;
+      padding: 8px;
+      transform: rotate(-45deg);
+    }
+
+    #myBtn:hover {
+      background-color: #311b92;
+    }
+  </style>
+</head>
+
+<body style="margin: 0; padding: 0;">
+  <button onclick="topFunction()" id="myBtn" title="Jump up!">&#128640;</button>
+  <div class="tab">
+    <div style="height: 80px; color: white; margin-top: 30px; text-align: center; font-size: 22px"><b
+        style="font-size: 34px;">ataccama</b><br><em>Summary File</em></div>
+    <hr style="margin: 15px" color="#9575cd" size="3" margin="10">
+
+    <button class="tablinks" onclick="openTab(event, 'Tab1')" id="defaultOpen">
+      <h3>Security Guidelines</h3>
+    </button>
+    <button class="tablinks" onclick="openTab(event, 'Tab2')">
+      <h3>Handover Info</h3>
+    </button>
+    <button class="tablinks" onclick="openTab(event, 'Tab3')">
+      <h3>Product Info</h3>
+    </button>
+    <button class="tablinks" onclick="openTab(event, 'Tab4')">
+      <h3>3rd Party Info</h3>
+    </button>
+    <button class="tablinks" onclick="openTab(event, 'Tab5')">
+      <h3>Servers Info</h3>
+    </button>
+    <button class="tablinks" onclick="openTab(event, 'Tab6')">
+      <h3>Backup & Restore Overview</h3>
+    </button>
+    {# Ataccama logo in the ASCII art  #}
+    <div style="font-weight: bold; font-size: 3px; position:fixed; left: 25px; bottom: 0px; margin: 10px; color: white">
+      <pre>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;..------...&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..:=================+:..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;.-=========================+...&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..*==============================:.&nbsp;&nbsp;&nbsp;&nbsp;.+=========*.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..+==================================:.&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-================++**+=================...+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.*============+-..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...:=============:.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;*===========:.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..+===========:+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.-==========+.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...===========+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.==========+.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.====================*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-==========-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:===================*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:==========.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.===================*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:=========+.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.===================*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;:==========.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;-===================*.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.==========:.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+===================*.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.*==========-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.*====================*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.===========*..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+==========++=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.============*..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...+============.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.==============+:...&nbsp;&nbsp;...:+=============+..+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.*====================================-&nbsp;&nbsp;&nbsp;+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+================================*.&nbsp;&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..*============================-.&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;...*======================:..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.+=========*&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.&nbsp;.-*+==========+:-..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;.-:::::::::-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;..&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+  </pre>
+    </div>
+  </div>
+
+  <div id="Tab1" class="tabcontent">
+    <h2>Security Guidelines</h2>
+    <div class="container">
+      <div class="box">
+        We care about the client environment security and want to deliver it with the best security practices. Due to the security policies
+        , some of the steps are not possible to be made during the Ansible Playbooks run and require manual interaction once the deployment is completed.
+        <nav>
+          &#128161; <b>Please note</b>, that the owner of the secret sharing and rotation is the client Server Admin Team
+          . Please contact them in case of any questions regarding accessing the environment applications.
+        </nav>
+        Below you will find useful information on how passwords come into the Environment
+        , where you can find them to share with End-user, and how to rotate them.
+        <h3>User access and credentials</h3>
+        During deployment of Ataccama and the 3rd part components we configured the secrets in the inventory file
+        . These secrets are used across the Environment as login credentials for the standard username - <div>admin</div><br>
+        Once deployment is completed, it is a good practice to delete the <div>one/ansible/inventories/<b>your-inventory</b>/group_vars/all/_secrets.yml</div> file from the inventory
+        . But of course, you need to save it first for your needs and share it with the End users.<br>
+        Below are the passwords you need for accessing the applications, the rest of the passwords in the file are technical, and not required for you.
+        <nav>
+          &#128161; <b>Please</b>, store the information below and delete the file from the server right after!
+        </nav>
+        <h4>3rd Party applications:</h4>
+        <ul>
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}
+          <li><b>minio_secret_key</b><span> - contain the password for accessing the MinIO application. After deployment, the password is configured in the Linux service config files and can be changed there</span></li>
+          {% endif %}
+          <li><b>grafana_admin_password</b><span> - contain the password for accessing the Grafana application. After deployment, the password is configured in the Grafana itself and can be changed using <div>grafana-cli</div></span></li>
+          <li><b>opensearch_dashboards_admin_password</b><span> - contain the password for accessing the OpenSearch Dashboards. After deployment
+          , the password is configured in the Nginx basic authentication and can be changed in the config file located at <div>/etc/nginx</div> folder</span></li>
+          <li><b>prometheus_admin_password</b><span> - contain the password for accessing the Prometheus application. After deployment
+          , the password is configured in the Nginx basic authentication and can be changed in the config file located at <div>/etc/nginx</div> folder</span></li>
+          <li><b>alertmanager_admin_password</b><span> - contain the password for accessing the Alert Manager application. After deployment
+          , the password is configured in the Nginx basic authentication and can be changed in the config file located at <div>/etc/nginx</div> folder</span></li>
+          <li><b>keycloak_one_admin.password</b><span> - contain the password for accessing the Keycloak Admin Console. After deployment, the password is configured in the Keycloak <div>master</div> realm (see information about the Keycloak realms below).</span></li>
+        </ul>
+        <h4>Access to the databases:</h4>
+        <ul>
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}
+          <li><b>db_user_one_password</b><span> - contain the password for the ONE Application databases, user</span> <div>one</div></li>
+          {% endif %}
+          {% if groups['dqit_server'][0] is defined %}
+          <li><b>db_user_dqit_password</b><span> - contain the password for the DQIT Application database, user</span> <div>dqit</div></li>
+          {% endif %}
+          {% if groups['rdm_server'][0] is defined %}
+          <li><b>db_user_rdm_password</b><span> - contain the password for the RDM Application database, user</span> <div>rdm</div></li>
+          {% endif %}
+          {% if groups['mdm_server'][0] is defined %}
+          <li><b>db_user_mdm_password</b><span> - contain the password for the MDM Application databases, user</span> <div>mdm</div></li>
+          {% endif %}
+        </ul>
+        <h4>Access to the Ataccama applications:</h4>
+        <ul>
+          <li><b>keycloak_one_admin.password</b><span> - contains the password for accessing the Ataccama pages. After deployment
+          , the password is configured in the Keycloak <div>ataccamaone</div> realm (see information about the Keycloak realms below).</span></li>
+          <li><b>keycloak_monitoring_user.password</b><span> - contains the password for backend connection from the Prometheus to Ataccama
+          applications and gathering health check status and other metrics. After deployment, the password is configured in the Keycloak
+          <div>ataccamaone</div> realm (see information about the Keycloak realms below).</span></li>
+        </ul>
+        <h3>Keycloak Realms</h3>
+        In the Keycloak application, there are 2 Realms settings
+        <nav>A realm manages a set of users, credentials, roles, and groups. A user belongs to and logs into a realm. Realms are isolated from one another and can only manage and authenticate the users that they control.</nav>
+         These realms are:
+         <ul>
+          <li><b>Master realm</b><span> - This realm was created for you when you first started Keycloak. It contains the administrator account created during the run
+             of the Ataccama Ansible playbook. Use the master realm only to create and manage the realms in your system.</span></li>
+          <li><b>Ataccamaone realm</b><span> - realm created by the Ataccama Ansible playbook. Used for managing the user's access to the Ataccama applications they need.</span></li>
+         </ul>
+         You may notice, that initially after the Ataccama deployment is completed, you using an <div>admin</div> user for accessing both - Keycloak Admin Console and Ataccama pages. However, they have different passwords. It is because technically it is 2 users, 1 per realm.<br>
+         If you want to change a password for an <div>admin</div> user, you need to do it for the specific realm.
+      </div>
+    </div>
+  </div>
+
+  <div id="Tab2" class="tabcontent">
+    <h2>Handover Info</h2>
+
+
+    <div class="container">
+      <div class="box">
+        The documentation below assumed that Ataccama deployed into the suggested default location
+        <div>{{ deployment_folder }}</div>
+        <h3>Accessing Ataccama and 3rd Party applications</h3>
+        The platform has a set of UI pages that can be accessed from the browser:<br>
+
+        <ul>
+          <b>For the End-user, the main pages to access are:</b>
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.one.hostname }}">https://{{ nginx_hosts.one.hostname }}</a><span> - Ataccama ONE Main page</span></li>
+          {% endif %}
+          {% if groups['dqit_server'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.dqit.hostname }}">https://{{ nginx_hosts.dqit.hostname }}</a><span> - Ataccama DQIT main page</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.dqit_console.hostname }}">https://{{ nginx_hosts.dqit_console.hostname }}</a><span> - Ataccama DQIT backend page</span></li>
+          {% endif %}
+          {% if groups['rdm_server'][0] is defined %}
+           <li><a target="_blank" href="https://{{ nginx_hosts.rdm.hostname }}">https://{{ nginx_hosts.rdm.hostname }}</a><span> - Ataccama RDM main page</span></li>
+           <li><a target="_blank" href="https://{{ nginx_hosts.rdm_console.hostname }}">https://{{ nginx_hosts.rdm_console.hostname }}</a><span> - Ataccama RDM console main page</span></li>
+          {% endif %}
+          {% if groups['mdm_frontend'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.mda.hostname }}">https://{{ nginx_hosts.mda.hostname }}</a><span> - Ataccama MDM main page</span></li>
+          {% endif %}
+          {% if groups['mdm_server'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.console.hostname }}">https://{{ nginx_hosts.console.hostname }}</a><span> - Ataccama MDM console main page</span></li>
+          {% endif %}
+          {% if groups['orchestration_server'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.orchestration.hostname }}">https://{{ nginx_hosts.orchestration.hostname }}</a><span> - Orchestration main page</span></li>
+          {% endif %}
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}
+            <b>We have additional Ataccama pages, dedicated to the Ataccama ONE Application Administrators:</b>
+            <li><a target="_blank" href="https:///{{ nginx_hosts.dpm.hostname }}">https:///{{ nginx_hosts.dpm.hostname }}</a><span> - Monitoring of the Data Processing Engine and status/logs of the running jobs</span></li>
+            <b>There are more Ataccama URLs used across the environment, but they have no UI and are used only for the communication between applications:</b>
+            <li><a target="_blank" href="https://{{ nginx_hosts.dpm_grpc.hostname }}">https://{{ nginx_hosts.dpm_grpc.hostname }}</a><span> - used for connection from Ataccama Desktop to Server for accessing DPM/DPE applications</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.mmm_grpc.hostname }}">https:/{{ nginx_hosts.mmm_grpc.hostname }}</a><span> - used for connection from Ataccama Desktop to Server for accessing MMM Backend application</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.audit.hostname }}">https://{{ nginx_hosts.audit.hostname }}</a><span> - used for connection from Ataccama Desktop to Server for accessing Audit application</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.one.hostname }}/graphql">https://{{ nginx_hosts.one.hostname }}/graphql</a> and <a target="_blank" href="https://{{ nginx_hosts.one.hostname }}/subscriptions">https://{{ nginx_hosts.one.hostname }}/subscriptions</a><span> - as well are the technical URLs, not for the End or Admin users</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.mde_lineage.hostname }}">https://{{ nginx_hosts.mde_lineage.hostname }}</a><span> - technical URL, not for the End or Admin users</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.dqf.hostname }}">https://{{ nginx_hosts.dqf.hostname }}</a><span> - technical URLs, not for the End or Admin users</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.dqf_grpc.hostname }}">https://{{ nginx_hosts.dqf_grpc.hostname }}</a><span> - technical URLs, not for the End or Admin users</span></li>
+          {% endif %}
+          <b>In addition to the Ataccama pages, we have a set of URLs for accessing 3rd party applications used across environments:</b>
+          <li><a target="_blank" href="https://{{ nginx_hosts.one.hostname }}/auth">https://{{ nginx_hosts.one.hostname }}/auth</a><span> - Keycloak URL, for managing users permissions and SSO integration</span></li>
+          {% if groups['monitoring_server'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.monitoring.hostname }}/targets">https://{{ nginx_hosts.monitoring.hostname }}/targets</a><span> - Prometheus is an application that gathers a set of Metrics and provides this info to Grafana. Prometheus is used as well for monitoring the Health check of every service installed by Ataccama Ansible-automated scripts</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.alertmanager.hostname }}">https://{{ nginx_hosts.alertmanager.hostname }}</a><span> - another part of the Prometheus for setting alerts</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.grafana.hostname }}">https://{{ nginx_hosts.grafana.hostname }}</a><span> - Grafana provides charts and graphs for the metrics gathered by Prometheus</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.opensearch_dashboards.hostname }}">https://{{ nginx_hosts.opensearch_dashboards.hostname }}</a><span> - OpenSearch Dashboards is a tool that provides visual access to the Logs gathered across the environment</span></li>
+          {% endif %}
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}
+            <li><a target="_blank" href="https://{{ nginx_hosts.minio.hostname }}">https://{{ nginx_hosts.minio.hostname }}</a><span> - MinIO backend connection</span></li>
+            <li><a target="_blank" href="https://{{ nginx_hosts.minio_ui.hostname }}">https://{{ nginx_hosts.minio_ui.hostname }}</a><span> - MinIO Browser main page</span></li>
+          {% endif %}
+        </ul>
+
+        <h3>ONE Desktop connection</h3>
+        Before registering a connection to the ONE Platform, we need to import Ataccama certificates into the Ataccama Desktop application.<br>
+        The required certificate you can find in the <div>/etc/ssl/one20</div> folder of the {{ 'Front-End' if (groups['frontend'][0] is defined) and (groups['one_app'] is not defined or groups['frontend'][0] != groups['one_app'][0]) else 'ONE App' }} server, you need the file with extension <div>.crt</div>.
+        Copy it to your Windows machine into the folder of the Ataccama Desktop app, open PowerShell, and navigate into the <div>C:\<b>&#60;path-to-build&#62;</b>\jre\bin</div> folder<br>
+        Then execute the following command:<br>
+        <nav>.\keytool.exe -trustcacerts -keystore C:\<b>&#60;path-to-build&#62;</b>\jre\lib\security\cacerts -storepass changeit -import -file C:\<b>&#60;path-to-certificate&#62;</b>\<b>&#60;certificate-name&#62;</b></nav>
+        Now restart the Desktop application, to start it with the latest changes in the Java certificates, and proceed with the Server connection configuration.
+
+        <h4>Registering a New Server</h4>
+        To create a new server connection:
+        <ul>
+            <li><span>Right-click <b>Servers</b> in the File Explorer and select <b>New Server</b>.</span></li>
+            <li><span>Select <b>Implementation</b> <em>"Ataccama ONE Platform"</em></span></li>
+            <li><span>You don't need to fill everything manually, configuration is loaded after filling in the URL of ONE: <a target="_blank" href="https://{{ nginx_hosts.one.hostname }}">https://{{ nginx_hosts.one.hostname }}</a></span></li>
+            <li><span>To use SSO login select the <div>OpenID Connect via Web Browser</div> <b>Type</b> in the <b>Authentication</b> section;</span></li>
+            <li><span>Use the <b>Test Connection</b> button to log in to the server, it will redirect you to the browser for entering credentials. Just follow the message in the prompt windows
+                Once the new server is registered, it will show up in the File Explorer tree.</span></li>
+        </ul>
+        <nav>&#128161; <b>NOTE:</b> For more connections, please see: <br><a target="_blank" href="https://support.ataccama.com/home/docs/aip/latest/development-guides/one-desktop-development-guide/creating-a-new-server-connection">https://support.ataccama.com/home/docs/aip/latest/development-guides/one-desktop-development-guide/creating-a-new-server-connection</a></nav>
+
+        <h3>Operating the Linux services</h3>
+        All deployed Ataccama and 3rd Party applications are running as Linux services. Most of them you can find in the
+        <div>/etc/systemd/system</div> directory,
+        logging components (elasticsearch, td-agent, and td-agent-bit) are in the <div>/lib/systemd/system/</div><br>
+        You can stop/start/restart services using default Linux operation commands, you may need a sudo permission to be
+        able to execute commands:
+        <nav>
+          systemctl stop <b>&#60;service-name&#62;</b><br>
+          systemctl start <b>&#60;service-name&#62;</b><br>
+          systemctl restart <b>&#60;service-name&#62;</b><br>
+          systemctl status <b>&#60;service-name&#62;</b>
+        </nav>
+        for example, if you want to restart Ataccama DPE Module, you would run the following commands:
+        <nav>
+          systemctl stop <b>dpe</b><br>
+          systemctl start <b>dpe</b><br>
+          systemctl restart <b>dpe</b><br>
+          systemctl status <b>dpe</b>
+        </nav>
+        A list of the Linux services and the server where they are located you may find on the <div>Servers Info</div>
+        <a href='javascript:;' onClick="openTab(event, 'Tab5');return false;">page</a>.
+        <h3>Accessing Ataccama logs</h3>
+        <h4>Linux Service Logs</h4>
+        Every application stores logs in their default location, however, as we running every application as a Linux
+        service you can always easily get it using the <div>journalctl</div> command:
+        <nav>
+          <em> # Read all logs:</em><br>
+          journalctl -u <b>&#60;service-name&#62;</b><br>
+          <em> # Read latest logs and show newly generated logs:</em><br>
+          journalctl -u <b>&#60;service-name&#62;</b> -f
+        </nav>
+        Journalctl is a utility for <b>querying and displaying logs from journald, systemd's logging service.</b> Since
+        journald stores log data in a binary format instead of a plaintext format, journalctl is the standard way of
+        reading log messages processed by journald.<br>
+        For example, if you would like to see logs of the Ataccama MMM Backend application, you may use the following
+        commands:
+        <nav>
+          <em> # Read all logs:</em><br>
+          journalctl -u <b>mmm-backend</b><br>
+          <em> # Read latest logs and show newly generated logs:</em><br>
+          journalctl -u <b>mmm-backend</b> -f
+        </nav>
+        <nav>
+          &#128161; <b>Hint:</b> It is useful to see the startup logs, you can combine commands to see the newly
+          generated startup logs immediately, without delay executing the following command:<br>
+          <div>systemctl restart <b>&#60;service-name&#62;</b> && journalctl -u <b>&#60;service-name&#62;</b> -f</div>
+          <br>
+          For example, when restarting Ataccama DPE module:<br>
+          <div>systemctl restart <b>dpe</b> && journalctl -u <b>dpe</b> -f</div>
+        </nav>
+        <h4>Important logs physical location</h4>
+        Sometimes it may be required to open the log file for closer investigation, below is the information every to
+        find the most important logs:
+        <ul>
+          <li><span>Ataccama application logs are useful to review in case of incorrect behavior of the application. Can
+              be found in the application directory.</span></li>
+          <ul>
+            <li>
+              <div>{{ deployment_folder }}/<b>&#60;app-name&#62;</b>/log/*.json</div>
+            </li>
+          </ul>
+          <li><span>Nginx application log is useful in case you experience issues with accessing the application, or its
+              login page and see the relevant error messages in the browser. File location:</span></li>
+          <ul>
+            <li>
+              <div>/var/log/nginx/error.log</div>
+            </li>
+          </ul>
+          <li><span>Keycloak application logs are useful in case you cannot log in to the application, or experience
+              issues with the integration with SSO Identity Provider. Everything related to the accessing application.
+              Logs journal at the dependencies server:</span></li>
+          <ul>
+            <li>
+              <div>journalctl -u keycloak-server</div>
+            </li>
+          </ul>
+          <li><span>OpenSearch application logs are useful in case you facing a mismatch in the content of the
+              application (catalogItems/datasources/roles/etc.). OpenSearch is responsible for this. Logs directory
+              at the dependencies server:</span></li>
+          <ul>
+            <li>
+              <div>/var/log/opensearch/opensearch.log</div>
+            </li>
+          </ul>
+        </ul>
+        <h4>OpenSearch Dashboards</h4>
+        Ataccama Platform is delivered with the OpenSearch Dashboards which in combination with OpenSearch, FluentD and FluentBit, forms The
+        Platform logging service.<br>
+        The Platform logging service. integrates OpenSearch, Fluentd, and OpenSearch Dashboards service stack provided for all
+        customers. The logging service collects all logs generated by the platform. OpenSearch Dashboards User interface can be accessed via URL:
+        <a target="_blank" href="https://{{ nginx_hosts.opensearch_dashboards.hostname }}">https://{{ nginx_hosts.opensearch_dashboards.hostname }}</a>
+        <h3>Servers shutdown and restart order</h3>
+        If it is required to shut down services for a weekend or for a maintenance reason, it is a good practice to do
+        it in the proper order.<br>
+        To startup servers, use the same order as servers mentioned on the <div>Servers Info</div> <a href='javascript:;' onClick="openTab(event, 'Tab5');return false;">page</a>.<br>
+        To shut down servers, use the backward order as servers mentioned on the <div>Servers Info</div> <a href='javascript:;' onClick="openTab(event, 'Tab5');return false;">page</a>.<br>
+        After servers are started, you don't need to startup any services manually -
+        all of them start on the server boot. You can check the status of the applications at the Prometheus targets
+        page described below.
+
+        <h3>Monitoring health checks of the Environment - Prometheus Targets</h3>
+        On the <a target="_blank"
+          href="https://{{ nginx_hosts.monitoring.hostname }}/targets">https://{{ nginx_hosts.monitoring.hostname }}/monitoring</a>
+        page, you can follow the Health check of all services installed within the Environment.
+        Common error message you can see there:
+        <ul>
+          <li><b>connection refused</b><span> - means that the application not running, or does not listen on the
+              required port. Please go to the relevant server and try to restart the application</span></li>
+          <li><b>context deadline exceeded</b><span> - port is closed, you need to update firewall or security group rules</span></li>
+          <li><b>connection timed out</b><span> - port is closed, you need to update firewall or security group rules</span></li>
+          <li><b>unauthorized</b> <span>, or</span> <b>403 forbidden</b><span> - Prometheus does not have permission to
+              connect to the application, it can be an SSL issue or wrong credentials</span></li>
+        </ul>
+
+
+        <h3>SSL Certificates Rotation</h3>
+        During the Ataccama deployment, we use SSL certificates to secure connections between modules, as well as
+        between end-users and the environment.<br>
+        SSL certificates tend to expire, and we need to renew them every 1 or couple of years. We use 3 types of
+        certificates at the environment:
+        <ul>
+          <li><span>Organization-level ROOT certificate</span></li>
+          <li><span>Organization-level CA certificate</span></li>
+          <li><span>Ataccama dedicated server certificate, which contains the SubjectAlternativeNames with a list of the
+              DNS used in the environment</span></li>
+        </ul>
+        During the deployment process, we import these certificates into Java Truststore container to allow the
+        handshake process between modules when they communicate with each other. This is done at every server.<br>
+        When importing a certificate, we assign an easily found alias containing Ataccama or the organization name.<br>
+        We can find the expiration date of the certificate using the following command:
+        <nav>
+          <em># Find the imported certificates, the outcome of the command will be a list of aliases to use in the
+            following command</em><br>
+          keytool -list -keystore /etc/alternatives/<b>&#60;jre-symlink&#62;</b>/lib/security/cacerts | grep ata<br>
+          Warning: use -cacerts option to access cacerts keystore<br>
+          Enter keystore password: changeit<br>
+          ataccama-<b>&#60;client-name&#62;</b>-root-cert, May 17, 2022, trustedCertEntry,<br>
+          ataccama_cert, May 30, 2022, trustedCertEntry,<br>
+          ata.admin@psone-mon:~$<br><br>
+          <em># using one of the aliases above, we can get an expiration date</em><br>
+          keytool -list -keystore /etc/alternatives/<b>&#60;jre-symlink&#62;</b>/lib/security/cacerts -v -alias<br>
+          ataccama_cert | grep "Valid from"<br>
+          Warning: use -cacerts option to access cacerts keystore<br>
+          Enter keystore password: changeit<br>
+          Valid from: Mon May 30 06:41:25 UTC 2022 until: Sun Aug 28 06:41:24 UTC 2022
+        </nav>
+        From the example below, we can see that we need to replace SSL certificates before <div>Sun Aug 28 06:41:24 UTC
+          2022</div><br>
+        Do this check of every imported certificate.
+        <h4>Rotation process</h4>
+        We have 3 places where the certificate needs to be updated:
+        <ul>
+          <li><span>Nginx - certificates located at the <div>/etc/ssl/one20</div> folder. The only thing we need to do
+              is just to replace existing <div>.crt</div> and <div>.key</div>
+              files with the new files, keeping the same file name. Once you have replaced the files, please do the test of your changes
+              using the following command <div>nginx -t</div>, and then restart the Nginx via the <div>systemctl restart nginx</div> command.
+              Please note, that the <div>.crt</div> file should include all certificates.</span></li>
+          <li><span>Java - at every server, we need to delete the certificate we want to replace, and import the new
+              one, see example below:
+              <nav><em># Deleting expired certificate</em><br>
+                keytool -delete -alias <b>&#60;alias-name&#62;</b> -keystore
+                /etc/alternatives/<b>&#60;jre-symlink&#62;</b>/lib/security/cacerts
+                <br><br>
+                <em># Importing new certificate</em><br>
+                keytool -import -alias <b>&#60;alias-name&#62;</b> -keystore
+                /etc/alternatives/<b>&#60;jre-symlink&#62;</b>/lib/security/cacerts -file
+                /path/to/directory/<b>&#60;file-name&#62;</b>.<b>&#60;extension&#62;</b>
+              </nav>
+            </span></li>
+          <li><span>Python truststore container for AiCore modules - the action needs to be performed only at the server
+              where AiCore components are deployed:</span></li>
+          <nav><em># Backup files first!</em><br>
+            find {{ deployment_folder }}/ -name cacert.pem -exec sh -c 'cp $1 $1.backup' find-sh {} \;
+            <br><br>
+            <em># Append the custom fullchain certificate</em><br>
+            find {{ deployment_folder }}/ -name cacert.pem -exec sh -c 'cat
+            <b>/path/to/directory/&#60;file-name&#62;</b>.<b>&#60;extension&#62;</b> &#62;&#62; $1' find-sh {} \;
+          </nav>
+        </ul>
+        <h3>Keycloak SSO Integration</h3>
+        Keycloak is a separate 3rd party service that you managed in the Ataccama Platform. Applications are configured
+        to point to and be secured by this service.
+        Keycloak uses open protocol standards like <a target="_blank" href="https://openid.net/connect/">OpenID
+          Connect</a> or <a target="_blank" href="http://saml.xml.org/saml-specifications">SAML 2.0</a>
+        to secure the Ataccama application and be integrated with Identity Providers (IDPs).<br><br>
+        Browser applications redirect a user's browser from the application to the SSO authentication server where they
+        enter their credentials.
+        This redirection is important because users are completely isolated from applications and applications never see
+        a user's credentials.<br><br>
+        Applications instead are given an identity token or assertion that is cryptographically signed. These tokens can
+        have identity information like username,
+        address, email, and other profile data. They also hold permission data so that applications can make
+        authorization decisions.<br><br>
+        These tokens can also be used to make secure invocations on REST-based services.
+        <h4>License rotation</h4>
+        Ataccama license is issues for the fixed period and can be updated using the Ansible play book.
+        You need to add new licenses into <div>files/licenses/</div>  folder, and then update license file names in your
+        inventory file <div>vars.yml</div>. Once it is done, you can run the <div>ansible-palybook</div> command with the additional parameters:<br>
+        <nav>
+          ansible-playbook -u <your-username> -i one/ansible/inventories/[custom-inventory]/hosts.yml one/ansible/site.yml -b --tags license,restart
+        </nav>
+      </div>
+    </div>
+  </div>
+
+  <div id="Tab3" class="tabcontent">
+    <h2>Product Info</h2>
+    <p>Information about versions of Ataccama products installed in the environment, etc.</p>
+
+
+    <div style="background-color:#512da8;border-radius:5px;border:2px solid #512da8;">
+      <table>
+        <tbody>
+          <tr>
+            <th>Ataccama product</th>
+            <th>Description</th>
+            <th>Version</th>
+          </tr>
+          {% if groups['one_app'] is defined and groups['one_app'][0] is defined %}<tr>
+            <td><b>Ataccama MMM Backend</b></td>
+            <td>Metadata Management Module</td>
+            <td>{{ packages.mmm_be.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama MMM Frontend</b></td>
+            <td>ONE Web Application</td>
+            <td>{{ packages.mmm_fe.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama DPM</b></td>
+            <td>Data Processing Module</td>
+            <td>{{ packages.dpm.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama DPE</b></td>
+            <td>Data Processing Engine</td>
+            <td>{{ packages.dpe.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama Audit Module</b></td>
+            <td>...</td>
+            <td>{{ packages.audit.version }}</td>
+          <tr>
+            <td><b>Ataccama DMM Module</b></td>
+            <td>...</td>
+            <td>{{ packages.dmm.version }}</td>
+          <tr>
+            <td><b>Ataccama Task Module</b></td>
+            <td>...</td>
+            <td>{{ packages.task.version }}</td>
+          <tr>
+            <td><b>Ataccama Workflow Module</b></td>
+            <td>...</td>
+            <td>{{ packages.workflow.version }}</td>
+          <tr>
+            <td><b>Ataccama Comment Module</b></td>
+            <td>...</td>
+            <td>{{ packages.comment.version }}</td>
+          <tr>
+            <td><b>Ataccama DQF Module</b></td>
+            <td>...</td>
+            <td>{{ packages.dqf.version }}</td>
+          <tr>
+            <td><b>Ataccama MDE Lineage Module</b></td>
+            <td>...</td>
+            <td>{{ packages.mde_lineage.version }}</td>
+          </tr>{% endif %}
+          {% if groups['ai_server'][0] is defined %}<tr>
+            <td><b>Ataccama Anomaly Detector</b></td>
+            <td>AiCore module</td>
+            <td>{{ packages.anomaly_detection_anomaly_detector.version }}</td>
+          </tr>
+          <tr>
+            <td rowspan="4"><b>Ataccama Term Suggestions</b></td>
+            <td>AiCore module - Feedback</td>
+            <td>{{ packages.term_suggestions_feedback.version }}</td>
+          </tr>
+          <tr>
+            <td>AiCore module - Neighbors</td>
+            <td>{{ packages.term_suggestions_neighbors.version }}</td>
+          </tr>
+          <tr>
+            <td>AiCore module - Recommender</td>
+            <td>{{ packages.term_suggestions_recommender.version }}</td>
+          </tr>
+          <tr>
+            <td>AiCore module - API</td>
+            <td>{{ packages.term_suggestions_recommender.version }}</td>
+          </tr>{% endif %}
+          {% if groups['mdm_server'][0] is defined %}<tr>
+            <td><b>Atacama MDM fronend</b></td>
+            <td>MDM Web Application</td>
+            <td>{{ packages.mdm.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama MDM backend</b></td>
+            <td>MDM Server</td>
+            <td>{{ packages.mdm_server.version }}</td>
+          </tr>{% endif %}
+          {% if groups['rdm_server'][0] is defined %}<tr>
+            <td><b>Ataccama RDM frontend</b></td>
+            <td>RDM Web Application<br>ONE runtime</td>
+            <td>{{ packages.rdm.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama RDM backend</b></td>
+            <td>RDM Server</td>
+            <td>{{ packages.server.version }}</td>
+          </tr>{% endif %}
+          {% if groups['dqit_server'][0] is defined %}<tr>
+            <td><b>Ataccama DQ Issue Tracker</b></td>
+            <td>Web Application</td>
+            <td>{{ packages.dqit.version }}</td>
+          </tr>
+          <tr>
+            <td><b>Ataccama DQIT backend</b></td>
+            <td>DQIT Runtime</td>
+            <td>{{ packages.server.version }}</td>
+          </tr>{% endif %}
+          {% if groups['orchestration_server'][0] is defined %}<tr>
+            <td><b>Ataccama Orchestration server</b></td>
+            <td>DQC Runtime</td>
+            <td>{{ packages.server.version }}</td>
+          </tr>{% endif %}
+        </tbody>
+      </table>
+    </div>
+  </div>
+  </div>
+
+  <div id="Tab4" class="tabcontent">
+    <h2>3rd Party Info</h2>
+    <p>Information about versions of 3rd Pathy components installed in the environment, etc.</p>
+    <div style="background-color:#512da8;border-radius:5px;border:2px solid #512da8;">
+      <table>
+        <tbody>
+          <tr>
+            <th>3rd Party application</th>
+            <th>Description</th>
+            <th>Version</th>
+          </tr>
+          <tr>
+            <td><b>Fluentd</b></td>
+            <td>Log collector</td>
+            <td>4</td>
+          </tr>
+          <tr>
+            <td><b>Fluent Bit</b></td>
+            <td>log processor and collector</td>
+            <td>1.9.0</td>
+          </tr>
+          <tr>
+            <td><b>Prometheus</b></td>
+            <td>Monitoring, performance data collection and alerting</td>
+            <td>{{ prometheus_version }}</td>
+          </tr>
+          <tr>
+            <td><b>OpenSearch Dashboards</b></td>
+            <td>Log analysis and visualization tool</td>
+            <td>{{ opensearch_dashboards_version }}</td>
+          </tr>
+          <tr>
+            <td><b>Grafana</b></td>
+            <td>performance data visualization tool, performance dashboard</td>
+            <td>{{ grafana_version }}</td>
+          </tr>
+          </tr>
+          <tr>
+            <td><b>PostgreSQL</b></td>
+            <td>RDBMS server</td>
+            <td>{{ gen2_postgres_version }}</td>
+          </tr>
+          <tr>
+            <td><b>MinIO</b></td>
+            <td>Object storage</td>
+            <td>{{ gen2_minio_version }}</td>
+          </tr>
+          <tr>
+            <td><b>Keycloak</b></td>
+            <td>Single Sign On provider</td>
+            <td>{{ keycloak_version }}</td>
+          </tr>
+          <tr>
+            <td><b>Nginx</b></td>
+            <td>Web server / frontend proxy</td>
+            <td>{% if ansible_os_family == 'Debian' %}{{ gen2_nginx_version_ubuntu }}{% elif ansible_os_family == "RedHat" %}{% if ansible_distribution_major_version == "7" %}{{ gen2_nginx_version_rhel7 }}{% else %}{{ gen2_nginx_version_rhel8 }}{% endif %}{% endif %}</td>
+          </tr>
+          <tr>
+            <td><b>OpenSearch for Monitoring</b></td>
+            <td>...</td>
+            <td>{{ opensearch_version_logging }}</td>
+          </tr>
+          <tr>
+            <td><b>OpenSearch for ONE Gen2</b></td>
+            <td>...</td>
+            <td>{{ opensearch_version_gen2 }}</td>
+          </tr>
+          <tr>
+            <td><b>Alertmanager</b></td>
+            <td>...</td>
+            <td>{{ alertmanager_version }}</td>
+          </tr>
+          <tr>
+            <td><b>Tomcat</b></td>
+            <td>...</td>
+            <td>{{ tomcat_version }}</td>
+          </tr>
+          <tr>
+            <td rowspan="7"><b>Exporters</b></td>
+            <td>Blackbox</td>
+            <td>{{ blackbox_exporter_version }}</td>
+          </tr>
+          <tr>
+            <td>Postgres</td>
+            <td>{{ gen2_postgres_exporter_version }}</td>
+          </tr>
+          <tr>
+            <td>Node</td>
+            <td>{{ node_exporter_version }}</td>
+          </tr>
+          <tr>
+            <td>Process</td>
+            <td>{{ process_exporter_version }}</td>
+          </tr>
+          <tr>
+            <td>Nginx</td>
+            <td>{{ gen2_nginx_exporter_version }}</td>
+          </tr>
+          <tr>
+            <td>JMX</td>
+            <td>{{ jmx_exporter_version }}</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div id="Tab5" class="tabcontent">
+    <h2>Servers Info</h2>
+    <p>Information about environment servers and services</p>
+{% for item in vms if vms[item].vm_role|length %}
+    <div class="accordion" id="accordion-1">
+      <div class="accordion__item">
+        <div class="accordion__header">
+          <b>
+            <h3>{{ vms[item].vm_role }}</h3>
+          </b>&nbsp;&nbsp; | &nbsp;&nbsp;<b>{{ vms[item].vm_hostname }}</b>{# &nbsp;&nbsp; | &nbsp;&nbsp;Ubuntu focal - 20.04&nbsp;&nbsp; | &nbsp;&nbsp;CPU 4&nbsp;&nbsp; | &nbsp;&nbsp;RAM 12 #}
+        </div>
+        <div class="accordion__body">
+          <div style="background-color:#512da8;border-radius:5px;border:2px solid #512da8;">
+            <table>
+              <tbody>
+                <tr>
+                  <th>Application</th>
+                  <th>Directory</th>
+                  <th>Service name</th>
+                  <th>user : group</th>
+                </tr>
+{% if (groups['monitoring_server'][0] is defined) and (vms[item].vm_hostname == groups['monitoring_server'][0]) %}
+                <tr>
+                  <td><b>Fluentd</b></td>
+                  <td>/opt/td-agent</td>
+                  <td>td-agent</td>
+                  <td>td-agent : td-agent</td>
+                </tr>
+{% endif %}
+{% if groups['monitoring_server'][0] is defined %}
+                <tr>
+                  <td><b>Fluent Bit</b></td>
+                  <td>/etc/td-agent-bit</td>
+                  <td>td-agent-bit</td>
+                  <td>root : root</td>
+                </tr>
+{% endif %}
+{% if (groups['monitoring_server'][0] is defined) and (vms[item].vm_hostname == groups['monitoring_server'][0]) %}
+                <tr>
+                  <td><b>Prometheus</b></td>
+                  <td>/var/lib/prometheus</td>
+                  <td>prometheus</td>
+                  <td>prometheus : prometheus</td>
+                </tr>
+{% endif %}
+{% if groups['monitoring_server'][0] is defined %}
+                <tr>
+                  <td><b>process exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>process_exporter</td>
+                  <td>process-exp : process-exp</td>
+                </tr>
+                <tr>
+                  <td><b>node exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>node_exporter</td>
+                  <td>node-exp : node-exp</td>
+                </tr>
+{% endif %}
+{% if (groups['monitoring_server'][0] is defined) and (vms[item].vm_hostname == groups['monitoring_server'][0]) %}
+                <tr>
+                  <td><b>mmm exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>ataccama_mmm_exporter</td>
+                  <td>mmm-exporter : mmm-exporter</td>
+                </tr>
+                <!--tr>
+                  <td><b>opensearch exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>opensearch_exporter</td>
+                  <td>opensearch_exporter : opensearch_exporter</td>
+                </tr-->
+                <tr>
+                  <td><b>OpenSearch</b></td>
+                  <td>/var/lib/opensearch</td>
+                  <td>OpenSearch</td>
+                  <td>opensearch : opensearch</td>
+                </tr>
+{% endif %}
+{% for group in groups if 'database' in group %}
+{% if vms[item].vm_hostname in groups[group] %}
+                <tr>
+                  <td><b>PostgreSQL - {{ group }}</b></td>
+                  <td>/var/log/postgresql<br>/var/lib/postgresql</td>
+                  <td>{% if ansible_os_family == 'Debian' %}postgresql@13-main{% else %}postgresql-13{% endif %}</td>
+                  <td>postgresql</td>
+                  <td>postgres : postgres</td>
+                </tr>
+{% endif %}
+{% endfor %}
+{% for group in groups if 'database' in group %}
+{% if vms[item].vm_hostname in groups[group] %}
+                <tr>
+                  <td><b>postgres exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>postgres_exporter</td>
+                  <td>postgres : postgres</td>
+                </tr>
+{% endif %}
+{% endfor %}
+{% if (groups['dependencies'][0] is defined) and (vms[item].vm_hostname == groups['dependencies'][0]) %}
+                <tr>
+                  <td><b>MinIO</b></td>
+                  <td>/opt/minio<br>/var/minio/data</td>
+                  <td>minio-storage</td>
+                  <td>minio : minio</td>
+                </tr>
+                <tr>
+                  <td><b>Keycloak</b></td>
+                  <td>/opt/keycloak</td>
+                  <td>keycloak-server</td>
+                  <td>keycloak : keycloak</td>
+                </tr>
+                <tr>
+                  <td><b>OpenSearch</b></td>
+                  <td>/var/lib/opensearch</td>
+                  <td>opensearch</td>
+                  <td>opensearch : opensearch</td>
+                </tr>
+{% if groups['monitoring_server'][0] is defined %}
+                <!--tr>
+                  <td><b>opensearch exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>opensearch_exporter</td>
+                  <td>opensearch_exporter : opensearch_exporter</td>
+                </tr-->
+{% endif %}
+{% endif %}
+{% if (groups['one_app'] is defined and groups['one_app'][0] is defined) and (vms[item].vm_hostname == groups['one_app'][0]) %}
+                <tr>
+                  <td><b>DPM</b></td>
+                  <td>{{ deployment_folder }}/dpm</td>
+                  <td>dpm-server</td>
+                  <td>dpm : dpm</td>
+                </tr>
+                <tr>
+                  <td><b>Audit</b></td>
+                  <td>{{ deployment_folder }}/audit</td>
+                  <td>audit-server</td>
+                  <td>audit : audit</td>
+                </tr>
+                <tr>
+                  <td><b>Comment</b></td>
+                  <td>{{ deployment_folder }}/comment</td>
+                  <td>comment</td>
+                  <td>comment : comment</td>
+                </tr>
+                <tr>
+                  <td><b>MMM</b></td>
+                  <td>{{ deployment_folder }}/mmm-backend</td>
+                  <td>mmm-backend</td>
+                  <td>mmm-backend : mmm-backend</td>
+                </tr>
+                <tr>
+                  <td><b>OneData</b></td>
+                  <td>{{ deployment_folder }}/dmm</td>
+                  <td>dmm</td>
+                  <td>dmm : dmm</td>
+                </tr>
+                <tr>
+                  <td><b>Task</b></td>
+                  <td>{{ deployment_folder }}/task</td>
+                  <td>task</td>
+                  <td>task : task</td>
+                </tr>
+                <tr>
+                  <td><b>Workflow</b></td>
+                  <td>{{ deployment_folder }}/workflow</td>
+                  <td>workflow</td>
+                  <td>workflow : workflow</td>
+                </tr>
+                <tr>
+                  <td><b>MDE Lineage</b></td>
+                  <td>{{ deployment_folder }}/mde-lineage</td>
+                  <td>mde-lineage</td>
+                  <td>lineage : lineage</td>
+                </tr>
+                <tr>
+                  <td><b>DQF</b></td>
+                  <td>{{ deployment_folder }}/dqf</td>
+                  <td>dqf</td>
+                  <td>dqf : dqf</td>
+                </tr>
+{% endif %}
+{% if (groups['ai_server'][0] is defined) and (vms[item].vm_hostname == groups['ai_server'][0]) %}
+                <tr>
+                  <td><b>Anomaly Detection - Anomaly Detector</b></td>
+                  <td>{{ deployment_folder }}/anomaly-detection-anomaly-detector</td>
+                  <td>anomaly-detection-anomaly-detector</td>
+                  <td>ad-anomalydetector : ad-anomalydetector</td>
+                </tr>
+                <tr>
+                  <td><b>Term Suggestions - API</b></td>
+                  <td>{{ deployment_folder }}/term-suggestions-neighbors</td>
+                  <td>term-suggestions-api</td>
+                  <td>ts-api : ts-api</td>
+                </tr>
+                <tr>
+                  <td><b>Term Suggestions - Neighbors</b></td>
+                  <td>{{ deployment_folder }}/term-suggestions-neighbors</td>
+                  <td>term-suggestions-neighbors</td>
+                  <td>ts-neighbors : ts-neighbors</td>
+                </tr>
+                <tr>
+                  <td><b>Term Suggestions - Feedback</b></td>
+                  <td>{{ deployment_folder }}/term-suggestions-feedback</td>
+                  <td>term-suggestions-feedback</td>
+                  <td>ts-feedback : ts-feedback</td>
+                </tr>
+                <tr>
+                  <td><b>Term Suggestions - Recommender</b></td>
+                  <td>{{ deployment_folder }}/term-suggestions-recommender</td>
+                  <td>term-suggestions-recommender</td>
+                  <td>ts-recommender : ts-recommender</td>
+                </tr>
+{% endif %}
+{% if (groups['processing'][0] is defined) and (vms[item].vm_hostname == groups['processing'][0]) %}
+                <tr>
+                  <td><b>DPE</b></td>
+                  <td>{{ deployment_folder }}/dpe</td>
+                  <td>dpe</td>
+                  <td>dpe : dpe</td>
+                </tr>
+{% endif %}
+{% if (groups['proxies'][0] is defined) and (vms[item].vm_hostname == groups['proxies'][0]) %}
+{% if groups['monitoring_server'][0] is defined %}
+                <tr>
+                  <td><b>nginx exporter</b></td>
+                  <td>/opt/prometheus/exporters/dist</td>
+                  <td>nginx_exporter</td>
+                  <td>nginx_exporter : nginx_exporter</td>
+                </tr>
+{% endif %}
+                <tr>
+                  <td><b>Nginx</b></td>
+                  <td>/usr/share/nginx/html_ataccama<br>/etc/ssl/one20</td>
+                  <td>nginx</td>
+                  <td>nginx : nginx</td>
+                </tr>
+{% endif %}
+{% if (groups['frontend'][0] is defined) and (vms[item].vm_hostname == groups['frontend'][0]) %}
+{% if groups['monitoring_server'][0] is defined %}
+                <tr>
+                  <td><b>Grafana</b></td>
+                  <td>Grafana</td>
+                  <td>grafana-server</td>
+                  <td>grafana : grafana</td>
+                </tr>
+                <tr>
+                  <td><b>OpenSearch Dashboards</b></td>
+                  <td>...</td>
+                  <td>opensearch-dashboards</td>
+                  <td>opensearch-dashboards : opensearch-dashboards</td>
+                </tr>
+{% endif %}
+                <tr>
+                  <td><b>ONE Webapp</b></td>
+                  <td>{{ deployment_folder }}/one-webapp</td>
+                  <td>one-webapp</td>
+                  <td>one-webapp : one-webapp</td>
+                </tr>
+{% endif %}
+{% if (groups['mdm_frontend'][0] is defined) and (vms[item].vm_hostname == groups['mdm_frontend'][0]) and (groups['mdm_server'][0] != groups['mdm_frontend'][0]) %}
+                <tr>
+                  <td><b>MDM Webapp</b></td>
+                  <td>{{ deployment_folder }}/mdm</td>
+                  <td>mdm-webapp</td>
+                  <td>mdm : mdm</td>
+                </tr>
+{% endif %}
+{% if (groups['mdm_server'][0] is defined) and (vms[item].vm_hostname == groups['mdm_server'][0]) %}
+{% if (groups['mdm_frontend'][0] is defined) and (groups['mdm_server'][0] == groups['mdm_frontend'][0]) %}
+                <tr>
+                  <td><b>MDM Webapp</b></td>
+                  <td>{{ deployment_folder }}/mdm</td>
+                  <td>mdm-webapp</td>
+                  <td>mdm : mdm</td>
+                </tr>
+{% endif %}
+                <tr>
+                  <td><b>MDM Server</b></td>
+                  <td>{{ deployment_folder }}/mdm-server</td>
+                  <td>mdm-server</td>
+                  <td>mdm-server : mdm-server</td>
+                </tr>
+                <tr>
+                  <td><b>MDM Configuration</b></td>
+                  <td>{{ deployment_folder }}/mdm-server-config</td>
+                  <td>Not a service</td>
+                  <td>mdm-server : mdm-server</td>
+                </tr>
+{% endif %}
+{% if (groups['rdm_server'][0] is defined) and (vms[item].vm_hostname == groups['rdm_server'][0]) %}
+                <tr>
+                  <td><b>RDM Webapp</b></td>
+                  <td>{{ deployment_folder }}/rdm</td>
+                  <td>rdm-webapp</td>
+                  <td>rdm : rdm</td>
+                </tr>
+                <tr>
+                  <td><b>RDM Server</b></td>
+                  <td>{{ deployment_folder }}/../server</td>
+                  <td>server-rdm</td>
+                  <td>rdm-server : rdm-server</td>
+                </tr>
+{% endif %}
+{% if (groups['orchestration_server'][0] is defined) and (vms[item].vm_hostname == groups['orchestration_server'][0]) %}
+                <tr>
+                  <td><b>Orchestration Server</b></td>
+                  <td>{{ deployment_folder }}/../server</td>
+                  <td>server-orchestration</td>
+                  <td>orchestration-server : orchestration-server</td>
+                </tr>
+{% endif %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+{% endfor %}
+{% for item in vms %}
+    </div>
+{% endfor %}
+  </div>
+
+  <div id="Tab6" class="tabcontent">
+    <h2>Backup & Restore Overview</h2>
+    <div class="container">
+      <div class="box">
+        We have 3 sensitive data storing components in the Ataccama Environment:
+        <ul>
+          <li>PostgreSQL Database at the Database Server<br>
+            <span>For Ataccama ONE <b>Gen2</b> all of the important information is stored in the Database
+            . It is a core thing of which we should have a backup. Database to which Ataccama <b>ONE Gen2</b> is connected stores all the data processing results, plans, components, etc.</span></li>
+          <li>Minio storage at the Dependencies Server<br>
+            <span>Another component that may store information physically on the server is Minio storage - this application may have your flat files with the dataset, some Ataccama temporary files
+            , or reports.</span></li>
+        </ul>
+        All other server does not contain any sensitive information, losing of which would lead to losing any produced content in the application. The only information required to be backed up is
+         application configuration files.
+         <h3>Backup approach</h3>
+         Below is information on what backup processes need to be done for the server in the Ataccama Environment.
+         <h4>For Database Server</h4>
+         We can split the backup process into 3 phases:
+         <ul>
+          <li>Create an image of the Linux VM<span> - can be used to restore the whole VM in case of any hardware physical or software OS issues</span></li>
+          <li>Backup of the mounted drive used for storing PostgreSQL DB data<span> - can be used to restore the mounted drive in case of any hardware physical or software filesystem issues;<br>
+            The default location where PostgreSQL stores DB data is: <div>/var/lib/postgresql</div>.</span></li>
+          <li>Using backup options of the PostgreSQL (Official documentation: <a target="_blank" href="https://www.postgresql.org/docs/13/backup.html">https://www.postgresql.org/docs/13/backup.html</a> )
+            <span> - can be used in case of any DB issues, required rollback, or making backup prior to upgrading to higher Ataccama versions.</span></li>
+         </ul>
+         <h4>For Dependencies Server</h4>
+         We can split the backup process into 3 phases:
+         <ul>
+          <li>Create an image of the Linux VM<span> - can be used to restore the whole VM in case of any hardware physical or software OS issues;</span></li>
+          <li>Backup of the mounted drive used for storing Minio data<span> - can be used to restore the mounted drive in case of any hardware physical or software filesystem issues;<br>
+            Requires periodical backup of the driver used as storage for MinIO. By default configured into the following directory: <div>/var/minio/data</div>. Above in the <b>Changing Data directory for MinIO</b> section
+            , you can find an instruction on how to change the DATA directory for MinIO.</span></li>
+         </ul>
+         <h4>For ONE App, AiCore, Processing and Monitoring Servers</h4>
+         For these servers we should always approach with the full VM backup:
+         <ul>
+          <li>Create an image of the Linux VM<span> - can be used to restore the whole VM in case of any hardware physical or software OS issues.</span></li>
+         </ul>
+         <h3>Backup frequency</h3>
+         The first full backup should be scheduled immediately after servers are configured. The initial backup can take longer on a large server.<br>
+         As we saw from the required backups for the servers, we have different levels depending on the issue that caused to do the restore process. From this we can set the backup frequency as follows:
+         <ul>
+          <li>Monthly backup<br><span>Doing a full VM image backup. It will keep the image of the configured server with all applications deployed there, and can be used in case:</span>
+            <ul>
+            <li><span>Hardware-related issues</span></li><li><span>Software OS-related issues</span></li><li><span>Issue related to Ataccama or 3rd party services
+            , issues caused failings in the startup of the services when it is not possible to solve issues by changing service configuration</span></li>
+            </ul>
+          </li>
+          <li>Weekly backup<br><span>Doing a backup of the Mounted drives for the case of losing the entire mounted drive, and can be used in case:</span>
+            <ul>
+            <li><span>Hardware-related issues</span></li><li><span>Mounted drive filesystem-related issues</span></li><li><span>When accidentally deleting any content stored on the mounted drive</span></li>
+            </ul>
+          </li>
+          <li>Daily backup<br><span>The only daily activity that needs to be done for the Database server, doing PostgreSQL DB backup. It can be daily full or incremental backup of the database or any other ways supported by PostgreSQL.</span>
+          </li>
+         </ul>
+         <h3>Restore</h3>
+         Restore process needs to be done in case of notice of incorrect behavior of the application, losing servers hardware, or in case of needs to rollback any changes on the servers.<br>
+         Ataccama does not specify any detailed steps on the backup and Restore activities as they should be maintained by the client's systems administrators according to their best practices and policies.<br>
+         <h3>Troubleshooting</h3>
+         In case of servers are set to do auto-backup at some period of time, and will be done for an actively running environment, it may happen that data processes running at that time will be backed asynchronously. After restoring servers you may notice that DPM component actively writing into its logs this message:
+        <nav>
+        Sep 26 08:49:42 ip-10.0.0.1.internal dpm-server[5130]: {"@timestamp":"2022-09-26T08:49:42.303Z","@version":"1","message":"actionId=synchronizeEngineEvents status=FINISH engineId=dahiufh987Iaue-q-feeoifj092 Engine is possibly not synchronized. Checking the synchronization., reason=Job status out of sync at engine dahiufh987Iaue-q-feeoifj092","logger_name":"com.ataccama.dpm.plugin.executor.events.engine.synchronization.SynchronizeEngineEventListener","thread_name":"eventProcessingExecutor-2","severity":"INFO","level_value":20000,"correlationId":"ia9c3f","actionId":"synchronizeEngineEvents","status":"FINISH","engineId":"dahiufh987Iaue-q-feeoifj092","message":"Engine is possibly not synchronized. Checking the synchronization.","reason":"Job status out of sync at engine dahiufh987Iaue-q-feeoifj092","application":"oneApplication"}
+        </nav>
+        In this case, navigate to you Data Processing server where DPE components installed, and do the following:
+        <nav>
+        systemctl stop dpe<br>
+        cd /opt/ataccama/one/dpe<br>
+        zip storage.zip -r storage<br>
+        cd storage<br>
+        rm -rf *<br>
+        systemctl start dpe<br>
+        </nav>
+        After these steps, navigate to server with DPM installed and check its logs, the message should not apear there anymore.
+      </div>
+    </div>
+  </div>
+
+                        <script>
+                          function openTab(evt, Tabname) {
+                            var i, tabcontent, tablinks;
+                            tabcontent = document.getElementsByClassName("tabcontent");
+                            for (i = 0; i < tabcontent.length; i++) {
+                              tabcontent[i].style.display = "none";
+                            }
+                            tablinks = document.getElementsByClassName("tablinks");
+                            for (i = 0; i < tablinks.length; i++) {
+                              tablinks[i].className = tablinks[i].className.replace(" active", "");
+                            }
+                            document.getElementById(Tabname).style.display = "block";
+                            evt.currentTarget.className += " active";
+                          }
+
+                          // Get the element with id="defaultOpen" and click on it
+                          document.getElementById("defaultOpen").click();
+                        </script>
+
+                        <script>
+                          class ItcAccordion {
+                            constructor(target, config) {
+                              this._el = typeof target === 'string' ? document.querySelector(target) : target;
+                              const defaultConfig = {
+                                alwaysOpen: true
+                              };
+                              this._config = Object.assign(defaultConfig, config);
+                              this.addEventListener();
+                            }
+                            addEventListener() {
+                              this._el.addEventListener('click', (e) => {
+                                const elHeader = e.target.closest('.accordion__header');
+                                if (!elHeader) {
+                                  return;
+                                }
+                                if (!this._config.alwaysOpen) {
+                                  const elOpenItem = this._el.querySelector('.accordion__item_show');
+                                  if (elOpenItem) {
+                                    elOpenItem !== elHeader.parentElement ? elOpenItem.classList.toggle('accordion__item_show') : null;
+                                  }
+                                }
+                                elHeader.parentElement.classList.toggle('accordion__item_show');
+                              });
+                            }
+                          }
+
+                          new ItcAccordion('#accordion-1');
+                          new ItcAccordion('#accordion-2');
+                        </script>
+
+                        <script>
+                          // When the user scrolls down 20px from the top of the document, show the button
+                          window.onscroll = function () { scrollFunction() };
+
+                          function scrollFunction() {
+                            if (document.body.scrollTop > 20 || document.documentElement.scrollTop > 20) {
+                              document.getElementById("myBtn").style.display = "block";
+                            } else {
+                              document.getElementById("myBtn").style.display = "none";
+                            }
+                          }
+
+                          // When the user clicks on the button, scroll to the top of the document
+                          function topFunction() {
+                            document.body.scrollTop = 0;
+                            document.documentElement.scrollTop = 0;
+                          }
+                        </script>
+
+</body>
+
+</html>

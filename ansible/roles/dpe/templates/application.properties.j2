@@ -1,0 +1,111 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url={{ keycloak_url }}
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.admin.client-id=dpe-admin-client
+ataccama.authentication.keycloak.token.client-id=dpe-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+internal.encryption.keystore={{ dpe_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ dpe_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ dpe_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ dpe_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# MinIO configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+ataccama.one.object-storage.required-writable-buckets=executor;tableau-thumbnails
+ataccama.one.object-storage.try-create=true
+ataccama.one.object-storage.fail-fast=false
+
+# DPE Drivers and plugins config
+ataccama.one.dpe.drivers.path=${ataccama.path.root}/lib/jdbc
+ataccama.one.dpe.service.persistence.location=${ataccama.path.storage}
+
+plugin.executor-launch-model.ataccama.one.launch-type-properties.LOCAL.cpdelim=;
+plugin.executor-launch-model.ataccama.one.launch-type-properties.LOCAL.cp.runtime=../../../lib/runtime/*;../../../lib/jdbc/*;../../../lib/runtime/ext/*
+
+plugin.jdbcdatasource.ataccama.one.data-source.allowed-table-types=TABLE,VIEW
+{% if 'mdm_server' in groups.keys() %}
+plugin.mdm-datasource.enabled=true
+plugin.mda.enabled=true
+{% endif %}
+{% if 'rdm_server' in groups.keys() %}
+plugin.rdm-datasource.enabled=true
+{% endif %}
+
+# Filesystem configuration
+plugin.local-fs-datasource.ataccama.one.mounted.paths.examplefs={{ dpe.filesystem_dir }}/filesystem
+plugin.local-fs-datasource.ataccama.one.mounted.paths.party={{ dpe.filesystem_dir }}/filesystem/party
+
+# Shared file system
+ataccama.one.object-storage.bucket-prefix=
+ataccama.one.object-storage.bucket-suffix=
+ataccama.one.object-storage.bucket-executor-name=${ataccama.one.object-storage.bucket-prefix}executor${ataccama.one.object-storage.bucket-suffix}
+
+# Tableau thumbnails
+ataccama.one.object-storage.bucket-tableau-thumbnail-name=${ataccama.one.object-storage.bucket-prefix}tableau-thumbnails${ataccama.one.object-storage.bucket-suffix}
+
+# Required properties
+ataccama.one.object-storage.required-writable-buckets=${ataccama.one.object-storage.bucket-executor-name},${ataccama.one.object-storage.bucket-tableau-thumbnail-name}
+ataccama.one.object-storage.try-create=true
+ataccama.one.object-storage.fail-fast=false
+
+# DPM configuration
+ataccama.client.connection.dpm.host={{ dpm.host }}
+ataccama.client.connection.dpm.grpc.port={{ dpm.grpc_port }}
+
+### Custom monitoring metrics enabled
+ataccama.one.dpe.service.debug=false
+ataccama.one.dpe.health-checks.expose-as-metrics=true
+management.endpoint.health.dpm.enabled=true
+
+### DPM jwt keys
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.module=dpm
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.uri={{ dpm.host }}:{{ dpm.http_port }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.name={{ dpm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.content={{ dpm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.fingerprint={{ dpm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% if 'rdm_server' in groups.keys() and rdm_jwt_key is defined %}
+### RDM jwt keys
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.module=rdm
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.uri={{ rdm.host }}:{{ rdm.http_port }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.name={{ rdm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.content={{ rdm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.fingerprint={{ rdm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+
+{{ dpe_additional_config | default('') }}
+
+plugin.manta-integration.enabled=false
+
+# JDBC drivers
+spring.profiles.active=JDBC_DRIVERS

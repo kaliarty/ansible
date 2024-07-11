@@ -1,0 +1,14 @@
+---
+_java_packages_adoptiumopenjdk:
+  - temurin-{{ java_distribution_version }}-jdk
+
+_default_java_adoptiumopenjdk: temurin-{{ java_distribution_version }}-jdk
+
+_java_packages_openjdk:
+  - java-{{ java_distribution_version }}-openjdk
+  - java-{{ java_distribution_version }}-openjdk-devel
+
+_default_java_openjdk: java-{{ java_distribution_version }}-openjdk
+
+adoptiumopenjdk_rpm_repo: "{{ adoptiumopenjdk_rpm_rhel9_repo }}"
+adoptiumopenjdk_rpm_repo_key: "{{ adoptiumopenjdk_rpm_rhel9_repo_key }}"

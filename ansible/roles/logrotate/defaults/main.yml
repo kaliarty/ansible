@@ -1,0 +1,8 @@
+---
+# defaults file for logrotate
+
+logrotate_options: |
+  rotate 4
+  minsize 10M
+  maxsize 1000M
+  daily

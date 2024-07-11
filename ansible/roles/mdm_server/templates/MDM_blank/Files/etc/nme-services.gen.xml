@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<serviceConfig>
+  <services>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.GetInstanceByIdServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.GetMasterByIdServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.GenericTraversalMasterService"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ListInstancesServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ListMastersServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ProcessDeltaService"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ProcessMatchService"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ProcessPurgeService"/>
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.IdentifyMasterService" entity="party" masterLayer="masters" name="identifyParty"/>-->
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.IdentifyMixedMasterService" entity="party" masterLayer="masters" name="identifyPartyMixed"/>-->
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.CleanseService" entity="party" name="dqf_party"/>-->
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.CleanseService" entity="address" name="dqf_address"/>-->
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.CleanseService" entity="contact" name="dqf_contact"/>-->
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.CleanseService" entity="rel_party2party" name="dqf_p2p"/>-->
+    <service class="com.ataccama.nme.internal.engine.services.handlers.BatchControlServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ModelStatisticsServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ModelServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.handlers.ReadWriteControlServiceBundle"/>
+    <service class="com.ataccama.nme.internal.engine.services.override.OverridesServiceBundle"/>
+    <!--        <service class="com.ataccama.nme.internal.engine.services.handlers.ProcessMasterService" masterLayer="masters"/>-->
+  </services>
+  <endpoints>
+    <endpoint class="com.ataccama.nme.internal.engine.services.endpoints.HttpEndpoint" pathPrefix="/soapOverHttp" listenerNames="all">
+      <format class="com.ataccama.nme.internal.engine.services.endpoints.SoapFormat"/>
+    </endpoint>
+    <endpoint class="com.ataccama.nme.internal.engine.services.endpoints.HttpEndpoint" pathPrefix="/xmlRpcOverHttp" listenerNames="all">
+      <format class="com.ataccama.nme.internal.engine.services.endpoints.XmlRpcFormat"/>
+    </endpoint>
+  </endpoints>
+  <accessControlHandlers/>
+</serviceConfig>

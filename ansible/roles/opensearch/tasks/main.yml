@@ -1,0 +1,74 @@
+---
+# tasks file for opensearch
+
+- name: Tune the system settings
+  include_tasks: system_settings.yml
+
+- name: Install and configure OpenSearch
+  include_tasks: install.yml
+
+- name: Manage OpenSearch plugins
+  include_tasks: plugin.yml
+  vars:
+    plugin: "{{ item }}"
+  with_items: "{{ opensearch_plugins }}"
+  when: opensearch_plugins | length > 0
+
+- name: Configure OpenSearch security
+  include_tasks: security.yml
+  when: opensearch_security_enabled
+
+- name: Force OpenSearch restart before import
+  meta: flush_handlers
+
+- name: Wait for OpenSearch started
+  uri:
+    url: "http://{{ ansible_fqdn }}:{{ opensearch_api_port }}/_cluster/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Configure OpenSearch ISM policies
+  include_tasks: ism_policy.yml
+  vars:
+    policy: "{{ item }}"
+  with_items: "{{ opensearch_ism_policies }}"
+  when: opensearch_ism_policies | length > 0
+
+- name: Configure OpenSearch Index templates
+  include_tasks: index_template.yml
+  vars:
+    index_template: "{{ item }}"
+  with_items: "{{ opensearch_index_templates }}"
+  when: opensearch_index_templates | length > 0
+
+- name: Configure OpenSearch monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: OpenSearch
+      description: "OpenSearch - an open source search engine"
+      version: "{{ opensearch_version }}"
+      details:
+        # copied from external role
+        os_user: "{{ opensearch_system_user }}"
+        os_group: "{{ opensearch_system_user }}"
+        services:
+          - opensearch
+        directories:
+          - "{{ opensearch_install_dir }}"
+          - "{{ opensearch_config_dir }}"
+          - "{{ opensearch_log_dir }}"
+          - "{{ opensearch_data_dirs }}"
+  tags: summary

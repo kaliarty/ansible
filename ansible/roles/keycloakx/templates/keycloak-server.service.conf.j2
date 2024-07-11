@@ -1,0 +1,14 @@
+# Ansible managed
+[Service]
+Environment="CONTAINER_RUNTIME=false"
+Environment="KC_HOME={{ keycloak_dir }}"
+Environment="KC_HOSTNAME={{ nginx_hosts.one.hostname }}"
+Environment="KC_TEST_USERS_INCLUDED={{ keycloak_demo_users | lower }}"
+Environment="KC_USE_MULTIPLE_ENVIRONMENT_SUBDOMAINS=false"
+Environment="KC_CLIENTS_REDIRECT_URIS_WILDCARDED=false"
+Environment="KC_CLIENTS_WEB_ORIGINS_WILDCARDED=false"
+Environment="KC_CLIENTS_URIS_DELIMITER=-"
+Environment="KC_MANTA_REALM_INITIALIZATION_ENABLED=false"
+Environment="KEYCLOAK_ADMIN={{ keycloak_admin.username }}"
+Environment="KEYCLOAK_ADMIN_PASSWORD={{ keycloak_admin.password }}"
+Environment="JAVA_OPTS=-Dkeycloak.profile.feature.token_exchange=enabled"

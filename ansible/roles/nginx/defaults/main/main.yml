@@ -1,0 +1,136 @@
+---
+# this is default configuration for nginx role
+
+# nginx hosts, certs & keys defaults
+nginx_hosts: {}
+_nginx_allowed_proxy_hosts:
+  - one
+  - cs
+  - dpm
+  - dpm_grpc
+  - minio
+  - minio_ui
+  - mmm_grpc
+  - console
+  - mda
+  - rdm
+  - rdm_console
+  - dqit
+  - dqit_console
+  - opensearch_dashboards
+  - monitoring
+  - alertmanager
+  - orchestration
+  - grafana
+  - audit
+  - mde_lineage
+  - dqf
+  - dqf_grpc
+
+nginx_cert_dir: /etc/ssl/one20
+nginx_ca_cert_dir: /etc/ssl/one20
+nginx_cert_kind: selfsigned
+nginx_config_html_path: /usr/share/nginx/html_ataccama
+nginx_ssl_dir: /etc/nginx/conf.d
+
+nginx_status_stub_enabled: false
+nginx_status_stub_port: 8001
+
+# default bits for nginxinc.nginx configuration
+nginx_headers:
+  - name: Strict-Transport-Security
+    value: '"max-age=15768000; includeSubDomains"'
+    always: true
+
+nginx_proxy_headers:
+  - field: Host
+    value: $host
+  - field: X-Real-IP
+    value: $remote_addr
+  - field: X-Forwarded-For
+    value: $proxy_add_x_forwarded_for
+  - field: X-Forwarded-Proto
+    value: $scheme
+
+nginx_listen_ssl:
+  - address: 0.0.0.0
+    port: 443
+    ssl: true
+    http2: true
+
+nginx_default_http_error_pages:
+  - code:
+      - 401
+    uri: /401.html
+  - code:
+      - 403
+    uri: /403.html
+  - code:
+      - 404
+    uri: /404.html
+  - code:
+      - 500
+      - 502
+      - 503
+      - 504
+    uri: /50x.html
+
+nginx_default_webserver:
+  - location: "~ '/ataccama_assets/(.*)'"
+    auth_basic:
+      realm: false
+    core:
+      alias: "{{ nginx_config_html_path }}/ataccama_assets/$1"
+  - location: "~ '/ataccama_styles.css'"
+    auth_basic:
+      realm: false
+    core:
+      alias: "{{ nginx_config_html_path }}/ataccama_styles.css"
+  - location: "~ '^/(50x.html|401.html|403.html|404.html)'"
+    auth_basic:
+      realm: false
+    core:
+      alias: "{{ nginx_config_html_path }}/$1"
+
+epel_repo:
+  name: epel
+  description: "Extra Packages for Enterprise Linux $releasever - $basearch"
+  metalink: "https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch&infra=$infra&content=$contentdir"
+  gpgkey: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"
+
+_nginx_config_http_template:
+  - "{{ nginx_one_proxy_config if nginx_hosts.one.enabled else {} }}"
+  - "{{ nginx_dpm_proxy_config if nginx_hosts.dpm.enabled else {} }}"
+  - "{{ nginx_dpm_grpc_proxy_config if nginx_hosts.dpm_grpc.enabled else {} }}"
+  - "{{ nginx_dqf_proxy_config if nginx_hosts.dqf.enabled else {} }}"
+  - "{{ nginx_dqf_grpc_proxy_config if nginx_hosts.dqf_grpc.enabled else {} }}"
+  - "{{ nginx_minio_proxy_config if nginx_hosts.minio.enabled else {} }}"
+  - "{{ nginx_minio_console_proxy_config if nginx_hosts.minio_ui.enabled else {} }}"
+  - "{{ nginx_mmm_grpc_proxy_config if nginx_hosts.mmm_grpc.enabled else {} }}"
+  - "{{ nginx_console_proxy_config if nginx_hosts.console.enabled else {} }}"
+  - "{{ nginx_mda_proxy_config if nginx_hosts.mda.enabled else {} }}"
+  - "{{ nginx_rdm_proxy_config if nginx_hosts.rdm.enabled else {} }}"
+  - "{{ nginx_rdm_console_proxy_config if nginx_hosts.rdm_console.enabled else {} }}"
+  - "{{ nginx_dqit_proxy_config if nginx_hosts.dqit.enabled else {} }}"
+  - "{{ nginx_dqit_console_proxy_config if nginx_hosts.dqit_console.enabled else {} }}"
+  - "{{ nginx_opensearch_dashboards_proxy_config if nginx_hosts.opensearch_dashboards.enabled else {} }}"
+  - "{{ nginx_monitoring_proxy_config if nginx_hosts.monitoring.enabled else {} }}"
+  - "{{ nginx_alertmanager_proxy_config if nginx_hosts.alertmanager.enabled else {} }}"
+  - "{{ nginx_orchestration_proxy_config if nginx_hosts.orchestration.enabled else {} }}"
+  - "{{ nginx_grafana_proxy_config if nginx_hosts.grafana.enabled else {} }}"
+  - "{{ nginx_audit_proxy_config if nginx_hosts.audit.enabled else {} }}"
+  - "{{ nginx_mde_lineage_proxy_config if nginx_hosts.mde_lineage.enabled else {} }}"
+  - "{{ nginx_status_stub_config if nginx_status_stub_enabled else {} }}"
+  - "{{ nginx_default_http }}"
+
+nginx_basic_auth:
+  default_htpasswd_file: /etc/nginx/.htpasswd
+  default_user: admin
+  default_password: "{{ nginx_default_password }}"
+
+nginx_keycloak_host: "{{ groups['dependencies'][0] }}"
+nginx_keycloak_port: "8080"
+
+nginx_minio_read_timeout: 600
+nginx_minio_connect_timeout: 600
+nginx_minio_send_timeout: 600

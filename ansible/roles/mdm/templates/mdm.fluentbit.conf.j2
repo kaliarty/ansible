@@ -1,0 +1,28 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ mdm_install_dir }}/log/access.json.log
+    Tag     accesslog.mdm_webapp
+    Parser  json
+
+[INPUT]
+    Name            systemd
+    Tag             console.mdm
+    Systemd_Filter  _SYSTEMD_UNIT=mdm-webapp.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.mdm
+    Key_Name      message
+    Parser        mdm
+    Reserve_Data  On
+

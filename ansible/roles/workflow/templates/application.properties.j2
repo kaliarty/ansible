@@ -1,0 +1,50 @@
+{{ ansible_managed | comment }}
+logging.level.root=info
+logging.level.com.ataccama.workflows=debug
+
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ workflow_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ workflow_database_user }}
+spring.datasource.password={{ workflow_database_password }}
+
+management.server.port={{ workflow_management_port }}
+server.port={{ workflow_port }}
+ataccama.server.grpc.port={{ workflow_grpc_port }}
+
+ataccama.authentication.internal.jwt.generatorkey={{ workflow_jwt_key.private }}
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=workflow-service-token-client
+ataccama.authentication.keycloak.admin.client-id=workflow-service-admin-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+ataccama.one.workflow-service.task-service-url=http://{{ task_host }}:{{ task_port }}
+{# Do not use mmm.url as Workflow appends /graphgl #}
+ataccama.one.workflow-service.mmm-be-url=http://{{ mmm.host }}:{{ mmm_http_port }}
+ataccama.one.workflow-service.comment-service-url=http://{{ comment_host }}:{{ comment_port }}
+
+{# Production logging settings #}
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+#Task jwt key
+ataccama.one.platform.deployments.{{ task_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.module=task
+ataccama.one.platform.deployments.{{ task_deployment_name }}.uri={{ task_host }}:{{ task_port }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.content={{ task_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.fingerprint={{ task_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.roles[0]=IMPERSONATION

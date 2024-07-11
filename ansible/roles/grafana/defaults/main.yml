@@ -1,0 +1,5 @@
+---
+# defaults file for grafana
+
+grafana_logs_dir: /var/log/grafana
+grafana_default_version: 9.3.2

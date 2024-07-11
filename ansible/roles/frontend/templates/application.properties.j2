@@ -1,0 +1,140 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Authentication configuration
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.token.client-id=one-webapp-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+ataccama.one.webserver.sso.realm=ataccamaone
+ataccama.one.webserver.sso.base-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.one.webserver.sso.auth-url=https://{{ nginx_hosts.one.hostname }}/auth/realms/ataccamaone/protocol/openid-connect/auth
+ataccama.one.webserver.sso.token-url=https://{{ nginx_hosts.one.hostname }}/auth/realms/ataccamaone/protocol/openid-connect/token
+ataccama.one.webserver.sso.logout-url=https://{{ nginx_hosts.one.hostname }}/auth/realms/ataccamaone/protocol/openid-connect/logout
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+internal.encryption.keystore={{ frontend_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ frontend_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ frontend_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ frontend_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# MMM configuration
+ataccama.one.webserver.audit.apiUrl={{ audit_url }}/graphql
+ataccama.one.webserver.backend.audit.api-url={{ audit_url }}/graphql
+ataccama.one.webserver.backend.mmm.api-url={{ mmm_url }}
+ataccama.one.webserver.backend.mmm.subscription-url=wss://{{ nginx_hosts.one.hostname }}/subscriptions
+ataccama.one.webserver.backend.mmm.startup-wait.url=http://{{ mmm.host }}:{{ mmm_management_port }}/actuator/health/startup
+ataccama.one.webserver.content-security.extra-urls={'img-src': {'{{ minio_url }}'}, 'connect-src': {'{{ minio_url }}'}}
+ataccama.one.webserver.content-security.plugin={'gql-playground': {'connect-src': {'{{ frontend_url }}', '{{ dpm_url }}'}, 'style-src': {"'unsafe-inline'"}}}
+
+# MMM grpc configuration
+ataccama.client.connection.mmm.host={{ mmm.host }}
+ataccama.client.connection.mmm.grpc.port={{ mmm.grpc_port }}
+
+{% if event_storage_enabled %}
+# Event storage database configuration
+ataccama.one.event.storage.frontend.global.jdbcUrl=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ frontend.es_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+ataccama.one.event.storage.frontend.global.user={{ postgres.database.owner }}
+ataccama.one.event.storage.frontend.global.password={{ postgres.database.password }}
+ataccama.one.event.storage.frontend.global.batchSize=5
+{% endif %}
+
+# Monitoring configuration
+management.endpoint.shutdown.enabled=true
+management.endpoints.web.exposure.include=health,info,shutdown,metrics,prometheus
+management.endpoint.health.show-details=always
+management.metrics.web.server.auto-time-requests=false
+
+
+# Object storage (MinIO) configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+
+### Platform configuration for ONE Desktop
+## URL of an MMM GraphQL endpoint (host:port) [string]': ""
+ataccama.one.platform.config.mmm.url={{ mmm_url }}
+## Host of an MMM gRPC endpoint [string]': ""
+ataccama.one.platform.config.mmm.host={{ nginx_hosts.mmm_grpc.hostname }}
+## Port of an MMM gRPC endpoint [string]': ""
+ataccama.one.platform.config.mmm.port=443
+## Turns TLS on for GRPC connection to MMM (Default = true) [boolean]': ""
+ataccama.one.platform.config.mmm.tls.enabled=true
+## URL of MMM frontend [string]': ""
+ataccama.one.platform.config.mmm.web.url=https://{{ nginx_hosts.one.hostname }}
+## URL of DPM admin frontend [string]': ""
+ataccama.one.platform.config.dpm.web.url={{ dpm_url }}
+## Host of an DPM gRPC endpoint [string]': ""
+ataccama.one.platform.config.dpm.host={{ nginx_hosts.dpm_grpc.hostname }}
+## Port of an DPM gRPC endpoint [string]': ""
+ataccama.one.platform.config.dpm.port=443
+## Turns TLS on for GRPC connection to DPM (Default = true) [boolean]': ""
+ataccama.one.platform.config.dpm.tls.enabled=true
+## DPM public key [string]': ""
+ataccama.one.platform.config.dpm.public.key={{ dpm_jwt_key.content | b64encode }}
+## Authentication type. Values: OpenID Connect (Default), Basic [string]': ""
+ataccama.one.platform.config.auth.type=OpenID Connect
+## Keycloak token endpoint URL (Used by OpenID Connect auth.) [string]': ""
+ataccama.one.platform.config.keycloak.endpoint.url=https://{{ nginx_hosts.one.hostname }}/auth
+
+### Manta configuration
+plugin.manta-integration.enabled=false
+
+### Observability tab
+ataccama.one.webserver.ff.props.observability={{ ff_props_observability | default(false) | lower }}
+ataccama.one.webserver.ff.props.observabilityonboarding={{ ff_props_observability | default(false) | lower }}
+
+### Data Export
+ataccama.one.webserver.ff.props.csvdataexport={{ ff_props_csvdataexport | default(true) | lower }}
+
+### Workflow approval
+ataccama.one.webserver.ff.props.reviewrequest={{ ff_props_reviewrequest | default(true) | lower }}
+
+### Snowflake pushdown
+ataccama.one.webserver.ff.props.profiling.snowflakepushdown={{ ff_snowflakepushdown | default(true) | lower }}
+
+### Posthog
+ataccama.one.webserver.ff.props.disableposthog={{ ff_disableposthog | default(true) | lower }}
+
+### Catalog lineage
+ataccama.one.webserver.ff.props.cataloglineage={{ ff_props_catalog_lineage | default(true) | lower }}
+ataccama.one.webserver.backend.lineage.api-url={{ mde_lineage_url }}
+
+### MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.grpc_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### Mde_lineage jwt keys
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.module=mde-lineage
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.uri={{ mde_lineage_host }}:{{ mde_lineage_grpc_port }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.name={{ mde_lineage_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.content={{ mde_lineage_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.fingerprint={{ mde_lineage_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.roles[0]=IMPERSONATION

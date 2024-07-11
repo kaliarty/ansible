@@ -1,0 +1,69 @@
+---
+# tasks file for dpm
+
+- name: Configure firewall for DPM
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install DPM
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ dpm_module_name }}"
+    module_version: "{{ dpm_version }}"
+    install_dir: "{{ dpm_install_dir }}"
+    service_user: "{{ dpm_service_user }}"
+    service_group: "{{ dpm_service_group }}"
+    module_services: "{{ dpm_services }}"
+    package_download_type: "{{ dpm_package_download_type }}"
+    package_location: "{{ dpm_package_location }}"
+    package_url: "{{ dpm_package_url }}"
+    package_checksum: "{{ dpm_package_checksum }}"
+    module_config: "{{ dpm_config }}"
+    deploy_files: "{{ dpm_files }}"
+    enable_java_heapdumps: "{{ dpm_java_heapdumps }}"
+    java_temp_folder: "{{ dpm_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure DPM logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for DPM to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ ansible_host }}:{{ dpm.http_port }}/actuator/health/readiness"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 60 # MMM (our dependency) might still be starting, use a timeout longer than usual
+  delay: 5
+  when: check_availability | default(false) | bool
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Configure monitoring for DPM
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: DPM
+      description: "Ataccama platform module: DPM"
+      version: "{{ dpm_version }}"
+      details:
+        directories: "{{ [ dpm_install_dir ] }}"
+        os_user: "{{ dpm_service_user }}"
+        os_group: "{{ dpm_service_group }}"
+        services: "{{ dpm_services | map(attribute='name') | list }}"
+  tags:
+    - summary

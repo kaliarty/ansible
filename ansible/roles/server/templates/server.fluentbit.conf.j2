@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.{{ server_instance }}_server
+    Systemd_Filter  _SYSTEMD_UNIT=server-{{ server_instance }}.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    name                   multiline
+    match                  console.{{ server_instance }}_server
+    multiline.key_content  MESSAGE
+    multiline.parser       java-server-multiline
+[FILTER]
+    Name          parser
+    Match         console.{{ server_instance }}_server
+    Key_Name      MESSAGE
+    Parser        java-server
+    Reserve_Data  On

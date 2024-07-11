@@ -1,0 +1,19 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ postgresql_conf.port | default(5432) }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['ai_server'] | default([])
+            + groups['one_app'] | default([])
+            + groups['dqit_server'] | default([])
+            + groups['frontend'] | default([])
+            + groups['dependencies'] | default([])
+            + groups['mdm_server'] | default([])
+            + groups['rdm_server'] | default([])
+          }}"

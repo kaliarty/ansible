@@ -1,0 +1,47 @@
+---
+# defaults file for dpm
+
+audit_module_name: audit
+audit_version: "{{ packages.audit.version }}"
+audit_license_file: licenses/license.plf
+audit_install_dir: "{{ deployment_folder }}/{{ audit_module_name }}"
+
+audit_package_download_type: "{{ packages.audit.package_download_type | default('maven_artifact') }}"
+audit_package_location: "{{ packages.audit.package_location | default ('') }}"
+audit_package_url: "{{ packages.audit.package_url | default ('') }}"
+audit_package_checksum: "{{ packages.audit.package_checksum | default(omit) }}"
+
+audit_system_user: audit
+audit_system_group: audit
+
+audit_java_temp_folder: "{{ audit_install_dir }}/tmp"
+
+audit_services:
+  - name: audit-server
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ audit_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ audit_jwt_key.private }}"
+    java_opts: "{{ audit_server_java_opts | default('-Xms256m -Xmx384m -XX:MaxRAM=500m') }}"
+
+audit_files:
+  - src: "{{ audit_license_file }}"
+    dest: "{{ audit_install_dir }}/license/license.plf"
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ audit_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ audit_install_dir }}/etc"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.audit
+  artifact: audit-assembly
+  version: "{{ packages.audit.version }}"
+  extension: zip
+  classifier: linux
+
+audit_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ audit_install_dir }}/etc/application.properties"
+
+audit_java_heapdumps: "true"

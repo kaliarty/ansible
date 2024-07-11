@@ -1,0 +1,9 @@
+---
+# Vars file for JMX monitoring
+server_jmx:
+  install_dir: "{{ server_instance_dir }}"
+  jar_file: jmx_prometheus_javaagent.jar
+  javaagent_version: 0.16.1
+  port: "{{ jmx.port }}"
+
+monitoring_java_opts: "-javaagent:{{ server_jmx.install_dir }}/{{ server_jmx.jar_file }}={{ server_jmx.port }}:{{ server_jmx.install_dir }}/jmx-prometheus-config.yml"

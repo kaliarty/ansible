@@ -1,0 +1,13 @@
+---
+
+- name: Setup firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        
+        - port: 9090  # Prometheus
+          source: "{{ groups['frontend'] + groups['one_app'] | default([]) }}"
+        - port: 9093  # Prometheus Alertmanager
+          source: "{{ groups['frontend'] + groups['one_app'] | default([]) }}"

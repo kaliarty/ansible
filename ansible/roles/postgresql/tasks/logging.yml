@@ -1,0 +1,13 @@
+---
+
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: postgresql.conf
+        template: postgresql.fluentbit.conf.j2
+    fluentbit_parsers_d:
+      - name: postgresql.parser.conf
+        template: postgresql-parser.fluentbit.conf.j2

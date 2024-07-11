@@ -1,0 +1,361 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "iteration": 1631528247047,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "OK"
+                },
+                "1": {
+                  "color": "dark-red",
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "2": {
+                  "color": "dark-orange",
+                  "index": 2,
+                  "text": "OUT OF SERVICE"
+                },
+                "4": {
+                  "color": "dark-purple",
+                  "index": 3,
+                  "text": "UNKNOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 13,
+        "x": 0,
+        "y": 0
+      },
+      "id": 5,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dependency_health{depender!=\"mmm-beXX\"} > 0",
+          "interval": "",
+          "legendFormat": "{{depender}} -> {{dependency}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Dead dependencies",
+      "type": "status-history"
+    },
+    {
+      "datasource": null,
+      "gridPos": {
+        "h": 17,
+        "w": 11,
+        "x": 13,
+        "y": 0
+      },
+      "id": 14,
+      "options": {
+        "content": "## How to use this dashboard: ##\n\n1. First panel `Dead dependencies` shows only health checks that are not OK. All **reported** problems will be visible there. Please note that if component from whatever reason does not report it's metrics you will not see it there.\n2. Other panels are dedicated to particular components. Each row in panel shows state of certain health check. You can filter displayed components in dashboard header.\n\n🐞 If you are not seeing any data/panels make sure that exposing of health checks as metrics is configured for all components. \nI.e `ataccama.one.mmm.health-checks.expose-as-metrics=true` for MMM-BE. 🐞\n\n\n## Questions that this dashboard show be able to answer: ##\n\n- Is certain component up and running?\n- Can component connect to all of it's dependencies? I.e. is MMM-BE connected to DPM?\n- Was there some infrastructure issue?\n- Was some component unavailable for some time?\n\n## Known limitations ⚠️ ##\n\n- Exposing of metrics is currently supported only by MMM-BE, DPM, DPE\n- Health checks are currently executed eagerly every time Prometheus is scraping metrics endpoint\n- Health checks are currently executed serially one-by-one so if any health checks waits unreasonably long for some timeout it will affect all other metrics gathering\n- customer Data Sources are not included\n- not all health checks are already implemented",
+        "mode": "markdown"
+      },
+      "pluginVersion": "8.0.6",
+      "title": "About this dashboard",
+      "type": "text"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "OK"
+                },
+                "1": {
+                  "color": "dark-red",
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "2": {
+                  "color": "dark-orange",
+                  "index": 2,
+                  "text": "OUT OF SERVICE"
+                },
+                "3": {
+                  "color": "dark-purple",
+                  "index": 3,
+                  "text": "UNKNOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 13,
+        "x": 0,
+        "y": 8
+      },
+      "id": 2,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "repeat": "depender",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dependency_health{depender=\"$depender\"}",
+          "interval": "",
+          "intervalFactor": 5,
+          "legendFormat": "{{dependency}}",
+          "refId": "A"
+        }
+      ],
+      "title": "$depender - dependencies",
+      "type": "status-history"
+    },
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "OK"
+                },
+                "1": {
+                  "color": "dark-red",
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "2": {
+                  "color": "dark-orange",
+                  "index": 2,
+                  "text": "OUT OF SERVICE"
+                },
+                "3": {
+                  "color": "dark-purple",
+                  "index": 3,
+                  "text": "UNKNOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 13,
+        "x": 0,
+        "y": 26
+      },
+      "id": 7,
+      "maxPerRow": 3,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "repeat": "dpe",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dependency_health{pod=\"$dpe\"}",
+          "interval": "",
+          "intervalFactor": 5,
+          "legendFormat": "{{dependency}}",
+          "refId": "A"
+        }
+      ],
+      "title": "$dpe - dependencies",
+      "type": "status-history"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": null,
+        "definition": "label_values(ataccama_one_dependency_health, depender)",
+        "description": "All components except DPE",
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "Component",
+        "multi": true,
+        "name": "depender",
+        "options": [],
+        "query": {
+          "query": "label_values(ataccama_one_dependency_health, depender)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "^(?!.*dpe).*$",
+        "skipUrlSync": false,
+        "sort": 2,
+        "type": "query"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "All",
+          "value": "$__all"
+        },
+        "datasource": null,
+        "definition": "label_values(ataccama_one_dependency_health, pod)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": true,
+        "label": "DPEs",
+        "multi": true,
+        "name": "dpe",
+        "options": [],
+        "query": {
+          "query": "label_values(ataccama_one_dependency_health, pod)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "^(.*dpe.*)$",
+        "skipUrlSync": false,
+        "sort": 1,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Health checks",
+  "uid": "A-T17Tn7l",
+  "version": 1
+}

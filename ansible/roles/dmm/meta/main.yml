@@ -1,0 +1,18 @@
+---
+galaxy_info:
+  author: t_smat
+  description: Self Managed Automation Team
+  company: Ataccama
+
+  min_ansible_version: 2.9
+
+  license: internal
+
+  platforms:
+    # update when we verify this on Ubuntu
+    - name: EL
+      versions:
+        - 8
+    - name: Ubuntu
+      versions:
+        - 20

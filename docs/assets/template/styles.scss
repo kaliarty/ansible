@@ -1,0 +1,44 @@
+@media print {
+  html {
+    font-size: 95%;
+    font-family: serif;
+  }
+
+  body {
+    font-size: 10.5pt;
+    font-family: 'Droid Serif';
+  }
+
+  article {
+    font-size: 0.8rem;
+    line-height: 1.6;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6,
+  label {
+    font-family: 'Droid Sans';
+  }
+
+  pre,
+  code,
+  var,
+  samp,
+  kbd,
+  tt {
+    font-family: 'Droid Sans Mono';
+    font-size: 0.8em;
+  }
+
+  pre code,
+  pre var,
+  pre samp,
+  pre kbd,
+  pre tt {
+    font-size: 100%;
+  }
+}

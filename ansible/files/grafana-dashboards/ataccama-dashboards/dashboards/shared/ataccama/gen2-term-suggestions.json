@@ -1,0 +1,4788 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "gnetId": null,
+  "graphTooltip": 1,
+  "id": 62,
+  "iteration": 1662626126475,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "collapsed": false,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 99,
+      "panels": [],
+      "title": "MMM general",
+      "type": "row"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 1
+      },
+      "id": 113,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "rate(ataccama_one_grpc_client_call_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", method=~\"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning\", status=\"OK\"}[$__rate_interval])",
+          "interval": "$scrape_interval",
+          "legendFormat": "{{method}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Sucessful gRPC call rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 1
+      },
+      "id": 115,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "rate(ataccama_one_grpc_client_call_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", method=~\"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning\", status!=\"OK\"}[$__rate_interval])",
+          "interval": "$scrape_interval",
+          "legendFormat": "{{method}} ({{status}})",
+          "refId": "A"
+        }
+      ],
+      "title": "Failed gRPC call rate",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 9
+      },
+      "id": 81,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_grpc_client_call_seconds_max{clusterName=~\"$cluster\", namespace=~\"$namespace\", method=~\"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning\", status=\"OK\"}",
+          "interval": "$scrape_interval",
+          "legendFormat": "Max {{method}} ",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "rate(ataccama_one_grpc_client_call_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\", method=~\"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning\", status=\"OK\"}[$__rate_interval])/rate(ataccama_one_grpc_client_call_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", method=~\"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning\", status=\"OK\"}[$__rate_interval])",
+          "hide": false,
+          "interval": "$scrape_interval",
+          "legendFormat": "Avg {{method}}",
+          "refId": "B"
+        }
+      ],
+      "title": "Succesfull gRPC calls duration",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "hidden",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 50,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineStyle": {
+              "fill": "solid"
+            },
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "decimals": 1,
+          "mappings": [],
+          "max": 1,
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "string"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 17
+      },
+      "id": 117,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "hidden",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_mmm_term_suggestions_resynchronization_status{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+          "format": "time_series",
+          "interval": "$scrape_interval",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "Resynchronization initialization status",
+      "type": "timeseries"
+    },
+    {
+      "datasource": "${datasource}",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "unit": "s"
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 17
+      },
+      "id": 109,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_mmm_term_suggestions_resynchronization_setup_seconds_max{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+          "interval": "$scrape_interval",
+          "legendFormat": "Maximal",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "rate(ataccama_one_mmm_term_suggestions_resynchronization_setup_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])/rate(ataccama_one_mmm_term_suggestions_resynchronization_setup_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+          "hide": false,
+          "interval": "$scrape_interval",
+          "legendFormat": "Average",
+          "refId": "B"
+        }
+      ],
+      "title": "Resynchronizations initialization time",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 25
+      },
+      "id": 97,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 2
+          },
+          "id": 95,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_updated_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{type}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Term suggestions update rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 2
+          },
+          "id": 83,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_received_attributes_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "Total received attributes",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_received_attributes_with_terms_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])  ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Attributes with terms",
+              "refId": "B"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_received_batches_non_empty_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Non empty batches",
+              "refId": "C"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_received_terms_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Total received suggested terms",
+              "refId": "D"
+            }
+          ],
+          "title": "Received update data rates",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 10
+          },
+          "id": 101,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "ataccama_one_mmm_term_suggestions_update_seconds_max{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "interval": "$scrape_interval",
+              "legendFormat": "Maximal",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / rate(ataccama_one_mmm_term_suggestions_update_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Average",
+              "refId": "B"
+            }
+          ],
+          "title": "Term suggestions update time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Note: number of terms isn't unique - one term can be counted multiple times if suggested on multiple attributes",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 10
+          },
+          "id": 107,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_attributes_non_existent_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "Attributes",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_update_terms_non_existent_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Terms",
+              "refId": "B"
+            }
+          ],
+          "title": "Nonexistent entities for update",
+          "type": "timeseries"
+        }
+      ],
+      "title": "MMM term suggestions update",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 26
+      },
+      "id": 91,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 3
+          },
+          "id": 79,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_save_items_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Rate of outbox item save from core events",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 3
+          },
+          "id": 89,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "ataccama_one_mmm_term_suggestions_outbox_unsent_items{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Unsent outbox items",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 11
+          },
+          "id": 85,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_items_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Outbox item dispatch rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "fixedColor": "red",
+                "mode": "fixed"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 11
+          },
+          "id": 103,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_failed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Failed dispatch rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "The time consists of fetching outbox items, processing those items (fetching needed data + mapping) and sending to ai service",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 19
+          },
+          "id": 77,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "Average",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "ataccama_one_mmm_term_suggestions_outbox_dispatch_seconds_max{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Maximal",
+              "refId": "B"
+            }
+          ],
+          "title": "Overall dispatch time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 27
+          },
+          "id": 105,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_processing_entity_updated_items_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entity}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Processed outbox items rate per entity",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "s"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 27
+          },
+          "id": 93,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "multi"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "ataccama_one_mmm_term_suggestions_outbox_dispatch_processing_entity_updated_seconds_max{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entity}} max",
+              "refId": "A"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_processing_entity_updated_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])/rate(ataccama_one_mmm_term_suggestions_outbox_dispatch_processing_entity_updated_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entity}} average",
+              "refId": "B"
+            }
+          ],
+          "title": "Outbox item processing time per entity",
+          "type": "timeseries"
+        }
+      ],
+      "title": "MMM outbox",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 27
+      },
+      "id": 62,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "description": "How much are different versions of the metrics used (number of clusters having at least microservice with that version).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 4
+          },
+          "id": 58,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_info) by(clusterName))",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "13.1",
+              "refId": "D"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_microservice_info) by(clusterName))",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "13.3 \"local\"",
+              "refId": "E"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_recommender_microservice_microservice_info) by(clusterName))",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "13.4",
+              "refId": "F"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_term_suggestions_recommender_microservice_microservice_info) by(clusterName))",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "13.6",
+              "refId": "G"
+            }
+          ],
+          "title": "Distribution of metrics versions in all clusters",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "How many clusters operate on which version of the Term Suggestions services.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 4
+          },
+          "id": 67,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_info) by (clusterName, version)) by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.1"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_microservice_info) by (clusterName, version)) by(version)",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_recommender_microservice_microservice_info) by (clusterName, version)) by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_term_suggestions_recommender_microservice_microservice_info) by (clusterName, version)) by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Distribution of microservices versions in all clusters",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of versions of microservices among clusters",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 12
+          },
+          "id": 69,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_info) by (clusterName, version)) by(clusterName, version)",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{clusterName}} - {{version}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Clusters with metrics version - 13.1",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of versions of microservices among clusters",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 12
+          },
+          "id": 70,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_microservice_microservice_info) by (clusterName, version)) by(clusterName, version)",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{clusterName}} - {{version}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Clusters with metrics version - 13.3 \"local\"",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of versions of microservices among clusters",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 20
+          },
+          "id": 66,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_aicore_recommender_microservice_microservice_info) by (clusterName, version)) by(clusterName, version)",
+              "interval": "$scrape_interval",
+              "legendFormat": "{{clusterName}} - {{version}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Clusters with metrics version - 13.4",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of versions of microservices among clusters",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 20
+          },
+          "id": 68,
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(avg(ataccama_one_term_suggestions_recommender_microservice_microservice_info) by (clusterName, version)) by(clusterName, version)",
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{clusterName}} - {{version}}",
+              "refId": "A"
+            }
+          ],
+          "title": "Clusters with metrics version - 13.6",
+          "type": "piechart"
+        }
+      ],
+      "title": "Overall statistics - not for specific cluster",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "id": 50,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "description": "Number of profiled attributes (with fingerprints) in the AI DB for each namespace. (It can have non-integer values, probably due to Thanos compression of past measurements)",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 14
+          },
+          "id": 54,
+          "interval": "$scrape_interval",
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_database_attributes_present{clusterName=~\"$cluster\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_database_attributes_present{clusterName=~\"$cluster\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__database_attributes_present{clusterName=~\"$cluster\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Attributes in AI DBs per namespace",
+          "type": "bargauge"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of feedback from users processed in total for each namespace.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 23
+          },
+          "id": 59,
+          "interval": "$scrape_interval",
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\"}) without(instance, pod, type)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\"}) without(instance, pod, type)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\"}) without(instance, pod, type)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{namespace}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Feedbacks processed in total per namespace",
+          "type": "bargauge"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of instances of each microservice running at given time for a given cluster and namespace. BEWARE: The dashboards are not prepared for multiple instances of the same microservice running in parallel!",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 32
+          },
+          "id": 72,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.1"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_recommender_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.4 - Recommender"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_neighbors_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.4 - Neighbors"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_feedback_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.4 - Feedback"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_term_suggestions_recommender_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.6 - Recommender"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_term_suggestions_neighbors_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.6 - Neighbors"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_term_suggestions_feedback_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{name}} - {{version}}",
+              "refId": "13.6 - Feedback"
+            }
+          ],
+          "title": "Number of instances of each microservice running at given time",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "What versions of services are used at given cluster.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 32
+          },
+          "id": 64,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_info{clusterName=~\"$cluster\"})by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.1"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_microservice_info{clusterName=~\"$cluster\"})by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_recommender_microservice_microservice_info{clusterName=~\"$cluster\"})by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_term_suggestions_recommender_microservice_microservice_info{clusterName=~\"$cluster\"}) by(version)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{version}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Distribution of microservices versions in current cluster",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "What versions of services are used at given cluster and namespace.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                }
+              },
+              "mappings": []
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 32
+          },
+          "id": 63,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "pieType": "pie",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})by(version, name)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})by(version, name)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_aicore_recommender_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"})by(version, name)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "count(ataccama_one_term_suggestions_recommender_microservice_microservice_info{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) by(version, name)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Services versions in cluster and namespace",
+          "type": "piechart"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of profiled attributes (with fingerprints) in the AI DB.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 0,
+            "y": 40
+          },
+          "id": 48,
+          "interval": "$scrape_interval",
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "value"
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(instance, pod)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "B"
+            }
+          ],
+          "title": "Attributes in AI DB",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "How much filled is the Neighbors index (relative to its  configured capacity). If it reaches 100%, the microservice stop working and the capacity will need to be increased (together with memory requirements of the service).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 80
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 6,
+            "y": 40
+          },
+          "id": 21,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(pod, instance) ataccama_one_aicore_ai_ts_neighbors_index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "format": "time_series",
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(pod, instance) ataccama_one_aicore_neighbors_index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_neighbors__index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(pod, instance) ataccama_one_term_suggestions_neighbors__index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Index fill",
+          "type": "gauge"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of terms for which AI suggestions are disabled / number of terms we could theoretically provide suggestions for. ",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "#EAB839",
+                    "value": 80
+                  },
+                  {
+                    "color": "red",
+                    "value": 90
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 12,
+            "y": 40
+          },
+          "id": 31,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_recommender_terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod) (ataccama_one_aicore_ai_ts_recommender_terms_known{clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ataccama_one_aicore_ai_ts_recommender_terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_recommender_terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod) (ataccama_one_aicore_recommender_terms_known{clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ataccama_one_aicore_recommender_terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_recommender__terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod) (ataccama_one_term_suggestions_recommender__terms_known{clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ataccama_one_term_suggestions_recommender__terms_disabled{clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Percentage of disabled terms",
+          "type": "gauge"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "How many profiled attributes do have at least one term assigned.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 0
+                  },
+                  {
+                    "color": "yellow",
+                    "value": 20
+                  },
+                  {
+                    "color": "green",
+                    "value": 40
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 6,
+            "x": 18,
+            "y": 40
+          },
+          "id": 47,
+          "options": {
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showThresholdLabels": false,
+            "showThresholdMarkers": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_recommender_recommendation_progress_with_ground_truth{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_aicore_ai_ts_recommender_recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_recommender_recommendation_progress_with_ground_truth{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_aicore_recommender_recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_recommender__recommendation_progress_with_ground_truth{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_term_suggestions_recommender__recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Percentage of attributes with assignments",
+          "type": "gauge"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Durations of various DB queries.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "s",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": [
+              {
+                "__systemRef": "hideSeriesFrom",
+                "matcher": {
+                  "id": "byNames",
+                  "options": {
+                    "mode": "exclude",
+                    "names": [
+                      "get_attribute_suggestions, "
+                    ],
+                    "prefix": "All except:",
+                    "readOnly": true
+                  }
+                },
+                "properties": [
+                  {
+                    "id": "custom.hideFrom",
+                    "value": {
+                      "legend": false,
+                      "tooltip": false,
+                      "viz": true
+                    }
+                  }
+                ]
+              }
+            ]
+          },
+          "gridPos": {
+            "h": 9,
+            "w": 24,
+            "x": 0,
+            "y": 48
+          },
+          "id": 51,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_aicore_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.1 + 13.3 \"local\" - all services"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_neighbors_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_aicore_neighbors_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.4 - neighbors"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_recommender_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_aicore_recommender_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.4 - recommender"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_feedback_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_aicore_feedback_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.4 - feedback"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_neighbors_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_term_suggestions_neighbors_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.6 - neighbors"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_recommender_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_term_suggestions_recommender_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.6 - recommender"
+            },
+            {
+              "datasource": {
+                "uid": "${datasource}"
+              },
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_feedback_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_term_suggestions_feedback_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "13.6 - feedback"
+            },
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_api_database_query_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) / on(operation, component, instance) rate(ataccama_one_term_suggestions_api_database_query_seconds_count{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{operation}}, {{component}}",
+              "refId": "A"
+            }
+          ],
+          "title": "DB operations durations",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Term Suggestions - General",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 29
+      },
+      "id": 111,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 6
+          },
+          "id": 87,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_api_grpc_server_commands_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{type}}",
+              "refId": "B"
+            }
+          ],
+          "title": "TS API call rate",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "hidden",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 50,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "max": 1,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 6
+          },
+          "id": 119,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_api__restoration_is_running{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "A"
+            }
+          ],
+          "title": "Restoration state",
+          "type": "timeseries"
+        }
+      ],
+      "title": "Term Suggestions - API",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 30
+      },
+      "id": 29,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "description": "How often is the recommendation process restarted, per hour (i.e. all the suggestions need to be recomputed because there is some change in underlying data).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "starts / hour",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 7
+          },
+          "id": 45,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_ai_ts_recommender_recommendation_starts_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) * 3600",
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_recommender_recommendation_starts_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) * 3600",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_recommender__recommendation_starts_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval]) * 3600",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Recommendation starts per hour",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "How many attributes do not have up-to-date suggestions - they should be eventually recomputed. [There is currently a bug in this metric so this number does not have to go to 0] ",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 7
+          },
+          "id": 39,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": false,
+              "expr": "ataccama_one_aicore_ai_ts_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} - on(clusterName) ataccama_one_aicore_ai_ts_recommender_recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": false,
+              "expr": "ataccama_one_aicore_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} - on(clusterName) ataccama_one_aicore_recommender_recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": false,
+              "expr": "ataccama_one_term_suggestions_neighbors__index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"} - on(clusterName) ataccama_one_term_suggestions_recommender__recommendation_progress{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Attributes with outdated suggestions",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of attributes for which neighbors were calculated per second spent in the query.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "neighbors / second (of CPU time)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 15
+          },
+          "id": 41,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "increase(ataccama_one_aicore_ai_ts_neighbors_neighbors_distances_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", k=\"1\"}[$__rate_interval]) / on(instance)increase(ataccama_one_aicore_grpc_server_processing_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\", service=\"aicore-neighbors-svc\", stage=\"processing\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "increase(ataccama_one_aicore_neighbors_neighbors_distances_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", k=\"1\"}[$__rate_interval]) / on(instance)increase(ataccama_one_aicore_neighbors_grpc_server_processing_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\", service=\"aicore-neighbors-svc\", stage=\"processing\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "increase(ataccama_one_term_suggestions_neighbors__neighbors_distances_count{clusterName=~\"$cluster\", namespace=~\"$namespace\", k=\"1\"}[$__rate_interval]) / on(instance)increase(ataccama_one_term_suggestions_neighbors_grpc_server_processing_seconds_sum{clusterName=~\"$cluster\", namespace=~\"$namespace\", stage=\"processing\"}[$__rate_interval])",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Rate of neighbors calculation",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of processed attributes (i.e. their suggestions are recomputed) per second (of real time). Note: This is an underestimation because the processing might not run all the time, but the time is still taken into account.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "attributes / seconds (of real time)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 15
+          },
+          "id": 43,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.1.2",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_ai_ts_recommender_attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_recommender_attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_recommender__attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Rate of attribute processing",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Average number of suggestions suggested per attribute.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 23
+          },
+          "id": 27,
+          "interval": "$scrape_interval",
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "value"
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_recommender_suggestions_created_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_aicore_ai_ts_recommender_attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_recommender_suggestions_created_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_aicore_recommender_attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_recommender__suggestions_created_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(instance, pod)ataccama_one_term_suggestions_recommender__attributes_processed_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Suggestions per attribute",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "How many attributes are in the database (including deleted), index and what is the index limit.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "log": 10,
+                  "type": "log"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 24,
+            "x": 0,
+            "y": 31
+          },
+          "id": 20,
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.3.3",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "format": "time_series",
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "database",
+              "refId": "13.1 + 13.3 \"local\" - database"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "index",
+              "refId": "13.1 + 13.3 \"local\" - index present"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "limit",
+              "refId": "13.1 + 13.3 \"local\" - index limit"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "database",
+              "refId": "13.4 - database"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "index",
+              "refId": "13.4 - index present"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "limit",
+              "refId": "13.4 - index limit"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__database_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "database",
+              "refId": "13.6 - database"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__index_attributes_present{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "index",
+              "refId": "13.6 - index present"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__index_attributes_limit{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance) ",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "limit",
+              "refId": "13.6 - index limit"
+            }
+          ],
+          "title": "Database and index fill",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Statistics derived from the confusion matrix.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineStyle": {
+                  "fill": "solid"
+                },
+                "lineWidth": 3,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "min": 0,
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 11,
+            "w": 24,
+            "x": 0,
+            "y": 39
+          },
+          "id": 33,
+          "options": {
+            "legend": {
+              "calcs": [
+                "last",
+                "max"
+              ],
+              "displayMode": "table",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.1.2",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "(2 * ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) / ignoring(entry) (2 * ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "format": "time_series",
+              "interval": "$scrape_interval",
+              "legendFormat": "F1 score",
+              "refId": "13.1 + 13.3 \"local\" - F1 Score"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Precision",
+              "refId": "13.1 + 13.3 \"local\" - Precision"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Recall",
+              "refId": "13.1 + 13.3 \"local\" - Recall"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "(2 * ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) / ignoring(entry) (2 * ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "format": "time_series",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "F1 score",
+              "refId": "13.4 - F1 Score"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Precision",
+              "refId": "13.4 - Precision"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_aicore_recommender_suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Recall",
+              "refId": "13.4 - Recall"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "(2 * ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) / ignoring(entry) (2 * ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "format": "time_series",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "F1 score",
+              "refId": "13.6 - F1 Score"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"false_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Precision",
+              "refId": "13.6 - Precision"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) (ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"true_positive\", clusterName=~\"$cluster\", namespace=~\"$namespace\"} + ignoring(entry) ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{entry=\"false_negative\", clusterName=~\"$cluster\", namespace=~\"$namespace\"})",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "Recall",
+              "refId": "13.6 - Recall"
+            }
+          ],
+          "title": "Confusion matrix derivations",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Confusion matrix of the term suggestions process. false_negative: We should be suggesting (term is already assigned manually), but we are not.\n false_positive: We probably shouldn't be suggesting (no term was manually assigned), but we are [This number can be overestimated!]\ntrue_negative: We are probably correctly not suggesting as there are no terms assigned [This number can be underestimated!]\ntrue_positive: We are correctly suggesting and the term was manually confirmed = assigned.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "max": 1,
+              "min": 0,
+              "thresholds": {
+                "mode": "percentage",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "percentunit"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 50
+          },
+          "id": 35,
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) group_left sum(ataccama_one_aicore_ai_ts_recommender_suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(entry)) without(pod, instance)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entry}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_recommender_suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) group_left sum(ataccama_one_aicore_recommender_suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(entry)) without(pod, instance)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entry}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"} / ignoring(entry) group_left sum(ataccama_one_term_suggestions_recommender__suggestions_confusion_matrix{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(entry)) without(pod, instance)",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{entry}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Confusion matrix",
+          "type": "stat"
+        }
+      ],
+      "title": "Term Suggestions - Recommender",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 31
+      },
+      "id": 18,
+      "panels": [
+        {
+          "cards": {
+            "cardPadding": null,
+            "cardRound": null
+          },
+          "color": {
+            "cardColor": "#73BF69",
+            "colorScale": "sqrt",
+            "colorScheme": "interpolateGreens",
+            "exponent": 0.5,
+            "mode": "spectrum"
+          },
+          "dataFormat": "tsbuckets",
+          "datasource": "${datasource}",
+          "description": "Distribution of distances of the k-th neighbor in a recent batch of queries.",
+          "gridPos": {
+            "h": 7,
+            "w": 24,
+            "x": 0,
+            "y": 8
+          },
+          "heatmap": {},
+          "hideZeroBuckets": false,
+          "highlightCards": true,
+          "id": 25,
+          "legend": {
+            "show": true
+          },
+          "reverseYBuckets": false,
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(increase(ataccama_one_aicore_ai_ts_neighbors_neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])  / ignoring(le) group_left increase(ataccama_one_aicore_ai_ts_neighbors_neighbors_distances_count{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(increase(ataccama_one_aicore_neighbors_neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])  / ignoring(le) group_left increase(ataccama_one_aicore_neighbors_neighbors_distances_count{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(increase(ataccama_one_term_suggestions_neighbors__neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])  / ignoring(le) group_left increase(ataccama_one_term_suggestions_neighbors__neighbors_distances_count{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}[$__rate_interval])) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Distance distribution for given neighbor over time",
+          "tooltip": {
+            "show": true,
+            "showHistogram": false
+          },
+          "type": "heatmap",
+          "xAxis": {
+            "show": true
+          },
+          "xBucketNumber": null,
+          "xBucketSize": null,
+          "yAxis": {
+            "decimals": null,
+            "format": "none",
+            "logBase": 1,
+            "max": null,
+            "min": null,
+            "show": true,
+            "splitFactor": null
+          },
+          "yBucketBound": "auto",
+          "yBucketNumber": null,
+          "yBucketSize": null
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of distances of k-th neighbor since the last Neighbors service restart.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 15
+          },
+          "id": 23,
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_neighbors_neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_neighbors_neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_neighbors__neighbors_distances_bucket{k=\"$neighbor\", clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Cumulative (since last restart) distance distribution for given neighbor",
+          "type": "bargauge"
+        }
+      ],
+      "title": "Term Suggestions - Neighbors",
+      "type": "row"
+    },
+    {
+      "collapsed": true,
+      "datasource": "${datasource}",
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 32
+      },
+      "id": 56,
+      "panels": [
+        {
+          "datasource": "${datasource}",
+          "description": "How many feedbacks were processed since the last restart of the Feedback service.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "feedbacks of given type",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": false,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              }
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 9
+          },
+          "id": 60,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "list",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{type}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{type}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\"}",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{type}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Feedbacks processed total",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Percentage of positive feedbacks (accepted suggestions) to all feedbacks (accepted + rejected).",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "percent"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 9
+          },
+          "id": 73,
+          "interval": "$scrape_interval",
+          "options": {
+            "colorMode": "value",
+            "graphMode": "area",
+            "justifyMode": "auto",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "text": {},
+            "textMode": "auto"
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} / ignoring(type) (ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} + ignoring(type) ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}) * 100",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} / ignoring(type) (ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} + ignoring(type) ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}) * 100",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": false,
+              "expr": "ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} / ignoring(type) (ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"} + ignoring(type) ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}) * 100",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Accepted suggestions ratio",
+          "type": "stat"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Number of processed feedbacks per second (of real time). Note: This is an underestimation because the processing might not run all the time, but the time is still taken into account.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "palette-classic"
+              },
+              "custom": {
+                "axisLabel": "attributes / seconds (of real time)",
+                "axisPlacement": "auto",
+                "barAlignment": 0,
+                "drawStyle": "line",
+                "fillOpacity": 0,
+                "gradientMode": "none",
+                "hideFrom": {
+                  "legend": false,
+                  "tooltip": false,
+                  "viz": false
+                },
+                "lineInterpolation": "linear",
+                "lineWidth": 1,
+                "pointSize": 5,
+                "scaleDistribution": {
+                  "type": "linear"
+                },
+                "showPoints": "auto",
+                "spanNulls": true,
+                "stacking": {
+                  "group": "A",
+                  "mode": "none"
+                },
+                "thresholdsStyle": {
+                  "mode": "off"
+                }
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  },
+                  {
+                    "color": "red",
+                    "value": 80
+                  }
+                ]
+              },
+              "unit": "none"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 0,
+            "y": 17
+          },
+          "id": 74,
+          "interval": "$scrape_interval",
+          "options": {
+            "legend": {
+              "calcs": [],
+              "displayMode": "hidden",
+              "placement": "bottom"
+            },
+            "tooltip": {
+              "mode": "single"
+            }
+          },
+          "pluginVersion": "8.1.2",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"}[$__rate_interval]) + ignoring(type) rate(ataccama_one_aicore_ai_ts_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"}[$__rate_interval]) + ignoring(type) rate(ataccama_one_aicore_feedback_feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "rate(ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"positive\"}[$__rate_interval]) + ignoring(type) rate(ataccama_one_term_suggestions_feedback__feedbacks_total{clusterName=~\"$cluster\", namespace=~\"$namespace\", type=\"negative\"}[$__rate_interval])",
+              "format": "time_series",
+              "hide": false,
+              "instant": false,
+              "interval": "$scrape_interval",
+              "intervalFactor": 1,
+              "legendFormat": "",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Rate of feedbacks processing",
+          "type": "timeseries"
+        },
+        {
+          "datasource": "${datasource}",
+          "description": "Distribution of thresholds (aggregated over terms) since the last Feedback service restart.",
+          "fieldConfig": {
+            "defaults": {
+              "color": {
+                "mode": "thresholds"
+              },
+              "mappings": [],
+              "thresholds": {
+                "mode": "absolute",
+                "steps": [
+                  {
+                    "color": "green",
+                    "value": null
+                  }
+                ]
+              },
+              "unit": "short"
+            },
+            "overrides": []
+          },
+          "gridPos": {
+            "h": 8,
+            "w": 12,
+            "x": 12,
+            "y": 17
+          },
+          "id": 75,
+          "options": {
+            "displayMode": "gradient",
+            "orientation": "auto",
+            "reduceOptions": {
+              "calcs": [
+                "lastNotNull"
+              ],
+              "fields": "",
+              "values": false
+            },
+            "showUnfilled": true,
+            "text": {}
+          },
+          "pluginVersion": "8.2.5",
+          "targets": [
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_ai_ts_feedback_thresholds_bucket{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.1 + 13.3 \"local\""
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_aicore_feedback_thresholds_bucket{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.4"
+            },
+            {
+              "datasource": "${datasource}",
+              "exemplar": true,
+              "expr": "sum(ataccama_one_term_suggestions_feedback__thresholds_bucket{clusterName=~\"$cluster\", namespace=~\"$namespace\"}) without(pod, instance)",
+              "format": "heatmap",
+              "hide": false,
+              "interval": "$scrape_interval",
+              "legendFormat": "{{le}}",
+              "refId": "13.6"
+            }
+          ],
+          "title": "Cumulative (since last restart) distribution of thresholds",
+          "type": "bargauge"
+        }
+      ],
+      "title": "Term Suggestions - Feedback",
+      "type": "row"
+    }
+  ],
+  "refresh": false,
+  "schemaVersion": 32,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "default",
+          "value": "default"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "datasource",
+        "options": [],
+        "query": "prometheus",
+        "queryValue": "",
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "type": "datasource"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "onprem",
+          "value": "onprem"
+        },
+        "datasource": "${datasource}",
+        "definition": "label_values(clusterName)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "",
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(clusterName)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "onprem",
+          "value": "onprem"
+        },
+        "datasource": "${datasource}",
+        "definition": "label_values(namespace)",
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": "",
+        "multi": false,
+        "name": "namespace",
+        "options": [],
+        "query": {
+          "query": "label_values(namespace)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 1,
+        "tagValuesQuery": "",
+        "tagsQuery": "",
+        "type": "query",
+        "useTags": false
+      },
+      {
+        "auto": false,
+        "auto_count": 30,
+        "auto_min": "10s",
+        "current": {
+          "selected": false,
+          "text": "15s",
+          "value": "15s"
+        },
+        "description": null,
+        "error": null,
+        "hide": 0,
+        "label": null,
+        "name": "scrape_interval",
+        "options": [
+          {
+            "selected": true,
+            "text": "15s",
+            "value": "15s"
+          },
+          {
+            "selected": false,
+            "text": "30s",
+            "value": "30s"
+          },
+          {
+            "selected": false,
+            "text": "1m",
+            "value": "1m"
+          },
+          {
+            "selected": false,
+            "text": "5m",
+            "value": "5m"
+          },
+          {
+            "selected": false,
+            "text": "10m",
+            "value": "10m"
+          },
+          {
+            "selected": false,
+            "text": "15m",
+            "value": "15m"
+          },
+          {
+            "selected": false,
+            "text": "30m",
+            "value": "30m"
+          },
+          {
+            "selected": false,
+            "text": "1h",
+            "value": "1h"
+          },
+          {
+            "selected": false,
+            "text": "3h",
+            "value": "3h"
+          },
+          {
+            "selected": false,
+            "text": "6h",
+            "value": "6h"
+          },
+          {
+            "selected": false,
+            "text": "12h",
+            "value": "12h"
+          },
+          {
+            "selected": false,
+            "text": "1d",
+            "value": "1d"
+          },
+          {
+            "selected": false,
+            "text": "7d",
+            "value": "7d"
+          },
+          {
+            "selected": false,
+            "text": "14d",
+            "value": "14d"
+          },
+          {
+            "selected": false,
+            "text": "30d",
+            "value": "30d"
+          }
+        ],
+        "query": "15s,30s,1m,5m,10m,15m,30m,1h,3h,6h,12h,1d,7d,14d,30d",
+        "queryValue": "",
+        "refresh": 2,
+        "skipUrlSync": false,
+        "type": "interval"
+      },
+      {
+        "allValue": null,
+        "current": {
+          "selected": false,
+          "text": "1",
+          "value": "1"
+        },
+        "description": "Neighbor to show metric for",
+        "error": null,
+        "hide": 0,
+        "includeAll": false,
+        "label": null,
+        "multi": false,
+        "name": "neighbor",
+        "options": [
+          {
+            "selected": true,
+            "text": "1",
+            "value": "1"
+          },
+          {
+            "selected": false,
+            "text": "2",
+            "value": "2"
+          },
+          {
+            "selected": false,
+            "text": "3",
+            "value": "3"
+          },
+          {
+            "selected": false,
+            "text": "4",
+            "value": "4"
+          },
+          {
+            "selected": false,
+            "text": "5",
+            "value": "5"
+          }
+        ],
+        "query": "1, 2, 3, 4, 5",
+        "queryValue": "",
+        "skipUrlSync": false,
+        "type": "custom"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-3h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "utc",
+  "title": "Ataccama / Gen 2 - AI - Term Suggestions",
+  "uid": "ehfpzaunzs",
+  "version": 3
+}

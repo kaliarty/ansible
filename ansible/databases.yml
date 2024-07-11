@@ -1,0 +1,216 @@
+---
+- hosts: one_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  pre_tasks:
+    - name: Change PostgreSQL port
+      include_role:
+        name: postgresql
+      vars:
+        ansible_become: true
+        postgresql_global_config_options:
+          - option: port
+            value: "{{ postgresql_port }}"
+        postgresql_users: [ ]
+        postgresql_databases: [ ]
+      when: ansible_os_family == 'Debian'
+      tags:
+        - keycloak
+  roles:
+    - role: postgresql
+      vars:
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ postgres.database.owner }}"
+            password: "{{ postgres.database.password }}"
+            port: "{{ postgresql_port }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          # FIXME [security]: each database should have own user (and ideally with less permissions)
+          # MMM databases
+          - name: "{{ mmm.database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+            schemas:
+              - "{{ mmm.lineage_database_schema }}"
+            extensions:
+              - btree_gin
+          - name: "{{ mmm.es_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # DPM database
+          - name: "{{ dpm.database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # AI database
+          - name: "{{ apyc.database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # Keycloak database
+          - name: "{{ database_name_keycloak }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # audit database
+          - name: "{{ audit.database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # schema checks database
+          - name: "{{ mmm.schema_check_database_name }}"
+          # task database
+          - name: "{{ database_name_task }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # workflow database
+          - name: "{{ workflow_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # comment database
+          - name: "{{ comment_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # dmm database
+          - name: "{{ dmm_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+          # mde database
+          - name: "{{ mde_lineage_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+            extensions:
+              - uuid-ossp
+          # dqf database
+          - name: "{{ dqf_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+            port: "{{ postgresql_port }}"
+        instance_name: onedb
+      tags:
+        - keycloak
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: dqit_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  pre_tasks:
+    - name: Change PostgreSQL port
+      include_role:
+        name: postgresql
+      vars:
+        ansible_become: true
+        postgresql_global_config_options:
+          - option: port
+            value: "{{ postgresql_port }}"
+        postgresql_users: [ ]
+        postgresql_databases: [ ]
+      when: ansible_os_family == 'Debian'
+  roles:
+    - role: postgresql
+      vars:
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ dqit.database.owner }}"
+            password: "{{ dqit.database.owner_password }}"
+            port: "{{ postgresql_port }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          - name: "{{ dqit.database.name }}"
+            owner: "{{ dqit.database.owner }}"
+            port: "{{ postgresql_port }}"
+        instance_name: dqitdb
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: rdm_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  pre_tasks:
+    - name: Change PostgreSQL port
+      include_role:
+        name: postgresql
+      vars:
+        ansible_become: true
+        postgresql_global_config_options:
+          - option: port
+            value: "{{ postgresql_port }}"
+        postgresql_users: [ ]
+        postgresql_databases: [ ]
+      when: ansible_os_family == 'Debian'
+  roles:
+    - role: postgresql
+      vars:
+        # defined in _packages.yml
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ rdm.database.user }}"
+            password: "{{ rdm.database.password }}"
+            port: "{{ postgresql_port }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          # RDM database
+          - name: "{{ rdm.database.name }}"
+            owner: "{{ rdm.database.user }}"
+            port: "{{ postgresql_port }}"
+        instance_name: rdmdb
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  pre_tasks:
+    - name: Change PostgreSQL port
+      include_role:
+        name: postgresql
+      vars:
+        ansible_become: true
+        postgresql_global_config_options:
+          - option: port
+            value: "{{ postgresql_port }}"
+        postgresql_users: [ ]
+        postgresql_databases: [ ]
+      when: ansible_os_family == 'Debian'
+  roles:
+    - role: postgresql
+      vars:
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ mdm.database.user }}"
+            password: "{{ mdm.database.password }}"
+            port: "{{ postgresql_port }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          # MDM databases
+          - name: mdc_db
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: esb_db
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: it_db
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: mda_cache
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: external
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: log_db
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+          - name: eh_db
+            owner: "{{ mdm.database.user }}"
+            port: "{{ postgresql_port }}"
+        instance_name: mdmdb
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: one_database, rdm_database, mdm_database, dqit_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution_major_version
+    - os_family
+  roles:
+    - postgresql_exporter
+  environment: "{{ environment_vars | default({}) }}"

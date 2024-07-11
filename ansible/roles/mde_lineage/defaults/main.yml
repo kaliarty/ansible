@@ -1,0 +1,47 @@
+---
+# defaults file for lineage
+
+mde_lineage_module_name: mde-lineage
+mde_lineage_version: "{{ packages.mde_lineage.version }}"
+mde_lineage_install_dir: "{{ deployment_folder }}/{{ mde_lineage_module_name }}"
+mde_lineage_database_user: "{{ postgres.database.owner }}"
+mde_lineage_database_password: "{{ postgres.database.password }}"
+
+mde_lineage_package_download_type: "{{ packages.mde_lineage.package_download_type | default('maven_artifact') }}"
+mde_lineage_package_location: "{{ packages.mde_lineage.package_location | default ('') }}"
+mde_lineage_package_url: "{{ packages.mde_lineage.package_url | default ('') }}"
+mde_lineage_package_checksum: "{{ packages.mde_lineage.package_checksum | default(omit) }}"
+
+mde_lineage_service_user: lineage
+mde_lineage_service_group: lineage
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.mde.services.lineageservice
+  artifact: "mde-lineage-service"
+  version: "{{ packages.mde_lineage.version }}"
+  extension: zip
+
+mde_lineage_services:
+  - name: mde-lineage
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ mde_lineage_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ mde_lineage_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ mde_lineage_jwt_key.private }}"
+    java_opts: "{{ mde_lineage_be_java_opts | default('-Xms512m -Xmx1512m -XX:MaxRAM=1800m') }}"
+
+mde_lineage_java_heapdumps: "true"
+mde_lineage_java_temp_folder: "{{ mde_lineage_install_dir }}/tmp"
+
+mde_lineage_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ mde_lineage_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ mde_lineage_install_dir }}/etc"
+
+mde_lineage_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ mde_lineage_install_dir }}/etc/application.properties"
+
+mde_postgres_parameters: "currentSchema=mde_lineage"

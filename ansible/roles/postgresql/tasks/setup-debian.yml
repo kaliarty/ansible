@@ -1,0 +1,18 @@
+---
+# setup tasks for non default versions of Postgres on Debian systems
+
+- name: Install Postgresql repo and key
+  block:
+    - name: Install Postgres repository apt key | Debian (Ubuntu)
+      become: true
+      apt_key:
+        url: "{{ postgresql_apt_repo_key }}"
+        state: present
+
+    - name: Add postgres repository | Debian (Ubuntu)
+      become: true
+      apt_repository:
+        repo: "{{ postgresql_apt_repo | default(omit, true) }}"
+        state: present
+
+  when: postgresql_apt_repo is defined

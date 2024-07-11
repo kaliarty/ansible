@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<server>
+    <port>{{ dqit.server.service_port }}</port>
+    <runtimeConfiguration>dqit.runtimeConfig</runtimeConfiguration>
+    <serverComponents>
+        <component class="com.ataccama.dqc.web.HttpDispatcher">
+            <listeners>
+                <listenerBean name="default" port="{{ dqit.server.http_port }}" threads="3" ssl="none">
+                    <contexts>
+                        <listenerContext path="/" htmlErrorPages="false">
+                            <filterChains>
+                                <filterChain path="/*" filters="securityFilter">
+                                    <conditions />
+                                </filterChain>
+                            </filterChains>
+                            <securityFilter loginUrl="/sso/login" class="com.ataccama.server.http.security.keycloak.KeycloakSecurity">
+                                <identityProviders>
+                                    <identityProvider configName="keycloak-local" clientId="dqit-webapp-token-client" pattern="/**" />
+                                </identityProviders>
+                                <interceptUrls>
+                                    <interceptUrl access="permitAll" pattern="/Contact_validate" />
+                                    <interceptUrl access="permitAll" pattern="/Customer_validate" />
+                                    <interceptUrl access="permitAll" pattern="/Customer_propose" />
+                                    <interceptUrl access="isAuthenticated()" pattern="/**" />
+                                </interceptUrls>
+                            </securityFilter>
+                        </listenerContext>
+                    </contexts>
+                </listenerBean>
+            </listeners>
+        </component>
+        <component class="com.ataccama.dqc.server.services.HealthStateProviders" pathVariableRefreshRate="60" dataSourceRefreshRate="60" />
+        <component class="com.ataccama.dqc.web.console.WebConsoleComponent" />
+        <component class="com.ataccama.dqc.web.health.HealthStateWebConsole" />
+        <component class="com.ataccama.dqc.online.SingleOnlineServicesComponent" serviceConfigFileName="services.online" />
+    </serverComponents>
+</server>

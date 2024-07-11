@@ -1,0 +1,10 @@
+{{ ansible_managed | comment }}
+
+[Service]
+{% if fluentbit_max_open_files is defined %}
+LimitNOFILE = {{ fluentbit_max_open_files }}
+{% endif %}
+{% for item in fluentbit_unit_env %}
+Environment="{{ item }}={{ fluentbit_unit_env[item] }}"
+{% endfor %}
+

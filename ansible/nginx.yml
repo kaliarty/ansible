@@ -1,0 +1,37 @@
+---
+- hosts: proxies
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - os_family
+    - python
+  collections:
+    - community.crypto.openssl_certificate
+    - community.crypto.openssl_csr
+    - community.crypto.openssl_privatekey
+    - community.crypto.acme_certificate
+  # one_proxy_to_dns_sync is our internal role, we don't include it in public packages. Therefore, we can't put it into roles, as that would
+  # include it statically (and fail when it's not available).
+  pre_tasks:
+    - name: Sync the Nginx proxy endpoints
+      include_role:
+        name: one_proxy_to_dns_sync
+      when: cloud_configure_proxy | default( false )
+  roles:
+    - role: nginx
+    - role: nginx_exporter
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: all
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - os_family
+  roles:
+    - role: ca_add_to_truststores
+      when: |
+        nginx_cert_kind is defined
+        and (nginx_cert_kind == 'ownca' or
+        (nginx_cert_kind == 'provided' and
+        nginx_certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0))
+  environment: "{{ environment_vars | default({}) }}"

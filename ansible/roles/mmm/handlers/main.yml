@@ -1,0 +1,9 @@
+---
+# handlers file for mmm
+
+- name: Restart mmm backend service
+  become: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  loop: "{{ mmm_services }}"

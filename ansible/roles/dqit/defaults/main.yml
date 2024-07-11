@@ -1,0 +1,62 @@
+---
+# defaults file for dqit
+
+package_version: "{{ packages.dqit.version }}"
+package_download_type: "{{ packages.dqit.package_download_type | default('maven_artifact') }}"
+package_url: "{{ packages.dqit.package_url | default ('') }}"
+package_location: "{{ packages.dqit.package_location | default ('') }}"
+package_download_dir: "{{ temp_folder }}"
+package_checksum: "{{ packages.dqit.package_checksum | default(omit) }}"
+
+
+dependency_packages:
+  - unzip
+  - tar
+  - python3-lxml
+
+project_path: /opt/dqit/webapps/dqit
+config_path: "{{ project_path }}/WEB-INF/config.xml"
+
+dqit_service_user: dqit
+dqit_service_group: dqit
+
+dqit_license_file: licenses/license.plf
+dqit_install_dir: /opt/ataccama/dqit
+dqit_license_dir: "{{ dqit_install_dir }}/license"
+dqit_log_dir: /var/log/dqit
+dqit_heapdump_enabled: "true"
+
+
+dqit_maven:
+  repo: "{{ artifactory_repo_url | default(omit) }}"
+  group: com.ataccama.dqit
+  artifact: epp-webapp
+  version: "{{ package_version }}"
+  extension: war
+
+dqit_port: "{{ dqit.http_port }}"
+dqit_base_url: "http://{{ ansible_host }}:{{ dqit_port }}/dqit"
+
+database_user: "{{ dqit.database.owner }}"
+database_password: "{{ dqit.database.owner_password }}"
+database_connection_url: "jdbc:postgresql://{{ dqit.database.host }}:{{ dqit.database.port }}/{{ dqit.database.name }}{{ postgres.postgresql_server.parameters | default( '' ) }}"
+
+keycloak_ssl: none
+keycloak_steps_client: "dqit-steps-token-client"
+keycloak_steps_client_secret: "{{ dqit_steps_token_client_secret }}"
+keycloak_webapp_client: "dqit-webapp-token-client"
+keycloak_webapp_client_secret: "{{ dqit_webapp_token_client_secret }}"
+keycloak_admin_client: "dqit-admin-client"
+keycloak_admin_client_secret: "{{ dqit_admin_client_secret }}"
+
+dqit_tomcat_xms: "256m"
+dqit_tomcat_xmx: "512m"
+dqit_tomcat_maxram: "700m"
+
+# monitoring
+dqit_monitoring_port: "12081"
+
+# tomcat
+dqit_ssl_connector_port: 8443
+dqit_shutdown_port: 8005
+dqit_ajp_port: 8009

@@ -1,0 +1,19 @@
+---
+# tasks file for creating system groups
+
+- name: Check connectivity to Keycloak
+  uri:
+    url: "{{ keycloak_url }}"
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Check connectivity to MinIO
+  uri:
+    url: "{{ minio_url }}"
+    status_code: "{{ range(200,499) | list }}"  # Need to handle 40x as well, as we attempt unauthenticated request
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Check connectivity to dpm grpc endpoint
+  wait_for:
+    host: "{{ dpm.host }}"
+    port: "{{ dpm.grpc_port }}"
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"

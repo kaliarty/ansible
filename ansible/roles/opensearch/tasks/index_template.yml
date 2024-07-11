@@ -1,0 +1,18 @@
+---
+# configuration of opensearch index templates
+# see https://opensearch.org/docs/latest/opensearch/index-templates/
+
+- name: "Create OpenSearch Index template | {{ index_template.name }}"
+  uri:
+    url: "http://{{ ansible_fqdn }}:{{ opensearch_api_port }}/_index_template/{{ index_template.name }}"
+    method: PUT
+    body_format: json
+    body: "{{ index_template.template | to_json }}"
+    status_code:
+      - 200
+  register: _result
+  until:
+    - _result is succeeded
+  retries: 3
+  delay: 2
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"

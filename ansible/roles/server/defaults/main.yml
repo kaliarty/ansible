@@ -1,0 +1,63 @@
+---
+# defaults file for server
+
+server_module_name: server
+server_version: "{{ packages.server.version }}"
+server_instance: default
+
+dqit_server_license_file: licenses/license.plf
+orchestration_server_license_file: licenses/license.plf
+rdm_server_license_file: licenses/license.plf
+
+server_package_download_type: "{{ packages.server.package_download_type | default('maven_artifact') }}"
+server_package_location: "{{ packages.server.package_location | default ('') }}"
+server_package_url: "{{ packages.server.package_url | default ('') }}"
+server_package_checksum: "{{ packages.server.package_checksum | default(omit) }}"
+
+server_install_dir: "/opt/ataccama/{{ server_module_name }}"
+log_dir: /var/log/ataccama/server
+server_log_file: "{{ log_dir }}/{{ server_instance }}.log"
+
+server_service_user: "{{ server_instance }}-server"
+server_service_group: "server"
+
+dependency_packages:
+  - unzip
+  - tar
+  - python3-lxml
+
+server_files:
+  - src: "{{ server_license_file }}"
+    dest: "{{ server_install_dir }}/runtime/license_keys/"
+    mode: "0750"
+
+java_binary: /usr/bin/java
+bootstrap_jar_path: "{{ server_install_dir }}/runtime/lib/boot/*"
+bootstrap_classname: com.ataccama.dqc.bootstrap.DqcBootstrap
+onlinectl_classname: com.ataccama.dqc.server.bin.OnlineCtl
+java_heapdumps: "true"
+server_java_temp_folder: "{{ server_instance_dir }}/tmp"
+server_instance_dir: "{{ server_install_dir }}/{{ server_instance }}"
+
+server_config_path: "{{ server_install_dir }}/runtime/server/etc/default.serverConfig"
+
+server_services:
+  - name: "server-{{ server_instance }}"
+    service_env:
+      DQC_HOME: "{{ server_install_dir }}/runtime/"
+      CLASSPATH: "{{ bootstrap_jar_path }}:$INITIAL_CLASSPATH"
+      CATALINA_OPTS: "{{ catalina_opts | default('') }}"
+    java_opts: "-Xms512m -Xmx1664m -XX:MaxRAM=2000m -Djava.net.preferIPv4Stack=true {{ server_monitoring_java_opts | default('') }}"
+    service_exec_start: "{{ java_binary }} $JAVA_OPTS $CATALINA_OPTS {{ bootstrap_classname }} $DQC_HOME {{ onlinectl_classname }} -config {{ server_config_path }} start"
+    service_exec_stop: "{{ java_binary }} $JAVA_OPTS {{ bootstrap_classname }} $DQC_HOME {{ onlinectl_classname }} -config {{ server_config_path }} stop"
+
+config_import_dir: "{{ temp_folder }}"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.product.one.server
+  artifact: server-assembly
+  version: "{{ packages.server.version }}"
+  extension: tar
+
+server_monitoring_port: "12051"

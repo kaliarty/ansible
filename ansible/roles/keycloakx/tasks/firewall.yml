@@ -1,0 +1,9 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ keycloak_http_port }}"
+          source: "{{ groups['monitoring_server'] + groups['frontend'] + groups['proxies'] }}"

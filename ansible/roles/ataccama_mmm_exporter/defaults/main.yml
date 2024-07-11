@@ -1,0 +1,18 @@
+---
+mmm_exporter_user: mmm-exporter
+mmm_exporter_group: "{{ mmm_exporter_user }}"
+mmm_exporter_version: "{{ gen2_postgres_exporter_version }}"
+
+mmm_exporter_port: 9188
+mmm_exporter_listen_address: "0.0.0.0:{{ mmm_exporter_port }}"
+
+mmm_exporter_datasource: "postgresql://{{ postgres.database.owner }}:{{ postgres.database.password | urlencode }}@{{ postgres.host }}:{{ postgresql_port }}/mmm?sslmode=disable"
+mmm_exporter_flags:
+  - '--web.listen-address={{ mmm_exporter_listen_address }}'
+  - '--disable-settings-metrics'
+  - '--disable-default-metrics'
+  - '--extend.query-path={{ mmm_exporter_queries_file }}'
+
+mmm_exporter_queries_file: "/opt/prometheus/exporters/{{ prometheus_exporter_name }}/queries_mmm.yml"
+mmm_exporter_queries: ""
+mmm_exporter_additional_queries: ""

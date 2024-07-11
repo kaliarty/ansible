@@ -1,0 +1,301 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.admin.client-id=mmm-admin-client
+ataccama.authentication.keycloak.token.client-id=mmm-token-client
+ataccama.authentication.keycloak.token.issuer=https://{{ nginx_hosts.one.hostname }}/auth/realms/ataccamaone
+
+security.authentication.keycloak.server.url=https://{{ nginx_hosts.one.hostname }}/auth
+security.sso.baseurl=https://{{ nginx_hosts.one.hostname }}/auth
+
+ataccama.authentication.internal.jwt.generator.streamingTokenExpiration=24h
+
+{% if ataccama_internal_encryption is defined %}
+# Internal encryption configuration
+internal.encryption.keystore={{ mmm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ mmm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ mmm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ mmm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# Demo data configuration
+{% if mmm_basic_data_dir is defined and mmm_basic_data_dir != '' %}
+ataccama.one.mmm.core.load-dir-basic-data={{ mmm_basic_data_dir }}
+{% endif %}
+{% if mmm_data_import_dir is defined and mmm_data_import_dir != '' %}
+ataccama.one.mmm.core.load-dir-demo-data={{ mmm_data_import_dir }}
+{% endif %}
+
+{% if mmm_content_packs is defined and mmm_content_packs | length > 0 %}
+ataccama.one.mmm.core.content.enabled=true
+
+{% for content_pack in mmm_content_packs %}
+{% set content_pack_index = ( loop.index - 1 ) -%}
+ataccama.one.mmm.core.content.packs[{{ content_pack_index }}].address={{ content_pack.address }}
+ataccama.one.mmm.core.content.packs[{{ content_pack_index }}].import-mode=SKIP_DRAFTS
+{% endfor %}
+{% endif %}
+
+# Object storage (MinIO) configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+ataccama.one.object-storage.required-writable-buckets=tmp,shared,components,lookups,drillthrough,fe-support,export,data-export,lineage-catalog-integration
+ataccama.one.object-storage.try-create=true
+ataccama.one.object-storage.fail-fast=false
+plugin.object-storage.ataccama.one.on-error=SET_TO_NULL
+
+{% if mmm_content_pack_s3_repositories is defined and mmm_content_pack_s3_repositories | length > 0 %}
+# MMM content pack s3 repositories
+{% for repository in mmm_content_pack_s3_repositories %}
+{% set storage_index = ( loop.index ) -%}
+{% set content_pack_repository_index = ( loop.index - 1 ) -%}
+ataccama.one.object-storage.storages[{{ storage_index }}].is-default=false
+ataccama.one.object-storage.storages[{{ storage_index }}].storage-id={{ repository.storage_id }}
+ataccama.one.object-storage.storages[{{ storage_index }}].env=test
+ataccama.one.object-storage.storages[{{ storage_index }}].storage-type=S3
+ataccama.one.object-storage.storages[{{ storage_index }}].test-is-alive=false
+ataccama.one.object-storage.storages[{{ storage_index }}].connectionProperties.url={{ repository.url }}
+ataccama.one.object-storage.storages[{{ storage_index }}].connectionProperties.access-key={{ repository.access_key }}
+ataccama.one.object-storage.storages[{{ storage_index }}].connectionProperties.secret-key={{ repository.secret_key }}
+
+plugin.import-export.content-pack.repository[{{ content_pack_repository_index }}].uri-regexp={{ repository.uri_regex }}
+plugin.import-export.content-pack.repository[{{ content_pack_repository_index }}].type=OBJECT_STORAGE
+plugin.import-export.content-pack.repository[{{ content_pack_repository_index }}].object-storage-id={{ repository.storage_id }}
+{% endfor %}
+{% endif %}
+
+{% if mmm_lookups_import_dir is defined and mmm_lookups_import_dir != '' %}
+plugin.object-storage.ataccama.one.load-upload-dir={{ mmm_lookups_import_dir }}
+{% endif %}
+
+# Database configuration
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ mmm.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ postgres.database.owner }}
+spring.datasource.password={{ postgres.database.password }}
+spring.datasource.hikari.maximumPoolSize=30
+spring.datasource.hikari.leak-detection-threshold=3600000
+
+# Relationships configuration
+plugin.relationships-graph.ataccama.one.relationships.external.enabled=true
+{% if postgres.postgresql_server.parameters is defined and postgres.postgresql_server.parameters != '' %}
+plugin.relationships-graph.ataccama.one.relationships.external.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ mmm.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}&currentSchema={{ mmm.lineage_database_schema }}
+{% else %}
+plugin.relationships-graph.ataccama.one.relationships.external.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ mmm.database_name }}?currentSchema={{ mmm.lineage_database_schema }}
+{% endif %}
+plugin.relationships-graph.ataccama.one.relationships.external.user={{ postgres.database.owner }}
+plugin.relationships-graph.ataccama.one.relationships.external.password={{ postgres.database.password }}
+plugin.relationships-graph.ataccama.one.relationships.external.driver=org.postgresql.Driver
+plugin.relationships-graph.ataccama.one.relationships.external.schema={{ mmm.lineage_database_schema }}
+
+{% if event_storage_enabled %}
+# Event storage configuration
+ataccama.one.event.storage.backend.global.jdbcUrl=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ frontend.es_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+ataccama.one.event.storage.backend.global.user={{ postgres.database.owner }}
+ataccama.one.event.storage.backend.global.password={{ postgres.database.password }}
+ataccama.one.event.storage.backend.global.batchSize=5
+ataccama.one.event.storage.backend.anomalydetection.origin=global
+ataccama.one.event.storage.backend.search.origin=global
+ataccama.one.event.storage.backend.termsuggestion.origin=global
+{% endif %}
+
+# User provider configuration
+plugin.user-provider.ataccama.one.synchronization-unique-key=PERSON_UNIQUE_USERNAME
+
+# AI Core connections
+plugin.anomaly-detection.ataccama.one.aicore.anomaly-detection.anomaly-detector.host={{ anomaly_detection.anomaly_detector.host }}
+plugin.anomaly-detection.ataccama.one.aicore.anomaly-detection.anomaly-detector.port={{ anomaly_detection.anomaly_detector.grpc_port }}
+
+# Term Suggestions API
+ataccama.client.connection.term-suggestions.host={{ term_suggestions.api.host }}
+ataccama.client.connection.term-suggestions.grpc.port={{ term_suggestions.api.grpc_port }}
+plugin.term-suggestions.ataccama.one.term-suggestions.enabled={{ term_suggestions_api_enabled | lower}}
+
+# Search configuration
+plugin.catalog-search.ataccama.one.engine.elasticsearch.hosts={{ mmm.search_url }}
+plugin.catalog-search.ataccama.one.engine.elasticsearch.basic-auth.username={{ mmm_search_username }}
+plugin.catalog-search.ataccama.one.engine.elasticsearch.basic-auth.password={{ mmm_search_password }}
+plugin.catalog-search.ataccama.one.engine.elasticsearch.indices.catalog-item={{ mmm.search_index }}
+plugin.catalog-search.ataccama.one.engine.elasticsearch.query-templates.catalog-item={{ mmm.search_query_template }}
+plugin.catalog-search.ataccama.one.engine.elasticsearch.index.settings.static.index.number_of_replicas= 0
+plugin.catalog-search.ataccama.one.mmm.index.drop-first=${ataccama.one.mmm.drop-first:false}
+
+# Schema check plugin configuration
+plugin.schema-checks.ataccama.one.schema-checks.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ mmm.schema_check_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+plugin.schema-checks.ataccama.one.schema-checks.datasource.username={{ postgres.database.owner }}
+plugin.schema-checks.ataccama.one.schema-checks.datasource.password={{ postgres.database.password }}
+
+# DPM configuration
+ataccama.client.connection.dpm.host={{ dpm.host }}
+ataccama.client.connection.dpm.grpc.port={{ dpm.grpc_port }}
+
+# Audit configuration
+ataccama.audit.enabled={{ mmm.audit.enable | lower }}
+{% if mmm.audit.enable -%}
+ataccama.audit.spring.datasource.jdbcUrl=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ audit.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+ataccama.audit.spring.datasource.password={{ postgres.database.password }}
+ataccama.audit.spring.datasource.username={{ postgres.database.owner }}
+{% endif %}
+
+### Custom monitoring metrics enabled
+ataccama.one.base.url={{ mmm_url }}
+ataccama.one.mmm.management.endpoint={{ mmm.management_port }}
+ataccama.one.mmm.health-checks.expose-as-metrics=true
+management.endpoint.health.all-custom.enabled=true
+plugin.email.ataccama.enabled={{ mmm_smtp_enabled | lower }}
+management.endpoint.health.plugin-smtp-server.enabled={{ mmm_smtp_enabled | lower }}
+{% if mmm_be_introspection_enabled is defined and mmm_be_introspection_enabled %}
+ataccama.one.mmm.api.introspection.enabled=true
+{% endif %}
+
+{% if mmm_smtp_enabled %}
+### SMTP
+plugin.email.spring.mail.host={{ mmm_smtp_host }}
+plugin.email.spring.mail.port={{ mmm_smtp_port }}
+plugin.email.spring.mail.username={{ mmm_smtp_user }}
+plugin.email.spring.mail.password={{ mmm_smtp_password }}
+plugin.email.spring.mail.properties.mail.smtp.auth={{ mmm_smtp_auth | lower }}
+plugin.email.spring.mail.properties.mail.smtp.starttls.enable={{ mmm_smtp_starttls | lower }}
+{% endif %}
+
+### Enable plugin that is being used for import of MMM content packs that were created with this plugin enabled
+plugin.jdbcMetastoreProcessing.enabled={{ mmm_jdbc_metastore_processing | lower }}
+
+### Comment connection
+plugin.comments.ataccama.one.comments.service.url=http://{{ comment_host }}:{{ comment_port }}
+### Workflow connection
+plugin.tasks.ataccama.one.workflow-service.base-url=http://{{ workflow_host }}:{{ workflow_port }}
+plugin.tasks.ataccama.one.workflow-service.grpc-host={{ workflow_host }}
+ataccama.one.mmm.new-workflow-implementation.enabled=true
+### Task connection
+plugin.tasks.ataccama.one.task-service.base-url=http://{{ task_host }}:{{ task_port }}
+### DMM connection
+plugin.dmm-stewardship.ataccama.one.dmm-url=http://{{ dmm_host }}:{{ dmm_port }}
+ataccama.client.connection.dmm.host={{ dmm_host }}
+ataccama.client.connection.dmm.http.protocol=http
+ataccama.client.connection.dmm.http.port={{ dmm_port }}
+ataccama.client.connection.dmm.grpc.port={{ dmm_grpc_port }}
+
+## DQF plugin configuration
+plugin.dqf.ataccama.one.dqf.api-key-length=50
+plugin.dqf.ataccama.one.dqf.service-id-length=10
+plugin.dqf.ataccama.one.dqf.serviceUrl=http://{{ dqf_host }}:{{ dqf_http_port }}
+plugin.dqf.ataccama.one.dqf.http-api-public-url=https://{{ nginx_hosts.dqf.hostname }}
+# Auto configure Ataccama HTTP client
+ataccama.client.connection.dqf.http.enabled=true
+
+{% if slack_proxy_url is defined %}
+## Slack plugin configuration
+plugin.slack.ataccama.one.slack.app.proxy-url={{ slack_proxy_url }}
+plugin.slack.ataccama.one.slack.app.proxy-code={{ slack_proxy_code }}
+plugin.slack.ataccama.one.slack.app.client-id={{ slack_client_id }}
+plugin.slack.ataccama.one.slack.app.client-secret={{ slack_client_secret }}
+{% endif %}
+
+# Ataccama modules JWT keys
+### ONE webapp jwt keys
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.module=one-metadata-web-server
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.uri={{ frontend.host }}:{{ frontend.http_port }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.name={{ frontend_jwt_key.name }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.content={{ frontend_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.fingerprint={{ frontend_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### DPM jwt keys
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.module=dpm
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.uri={{ dpm.host }}:{{ dpm.http_port }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.name={{ dpm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.content={{ dpm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.fingerprint={{ dpm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% if 'rdm_server' in groups.keys() and rdm_jwt_key is defined %}
+### RDM jwt keys
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.module=rdm
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.uri={{ rdm.host }}:{{ rdm.http_port }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.name={{ rdm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.content={{ rdm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.fingerprint={{ rdm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+{% if 'mdm_server' in groups.keys() and mdm_server_jwt_key is defined %}
+### MDM jwt keys
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.module=mdm
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.uri={{ mdm.host }}:{{ mdm.http_port }}
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.security.jwt-keys.{{ mdm_server_jwt_key.name }}.name={{ mdm_server_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.security.jwt-keys.{{ mdm_server_jwt_key.name }}.content={{ mdm_server_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.security.jwt-keys.{{ mdm_server_jwt_key.name }}.fingerprint={{ mdm_server_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.security.jwt-keys.{{ mdm_server_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mdm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+
+#Task jwt key
+ataccama.one.platform.deployments.{{ task_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.module=task
+ataccama.one.platform.deployments.{{ task_deployment_name }}.uri={{ task_host }}:{{ task_port }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.content={{ task_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.fingerprint={{ task_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.roles[0]=IMPERSONATION
+
+#Workflow jwt key
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.module=workflow
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.uri={{ workflow_host }}:{{ workflow_port }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.content={{ workflow_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.fingerprint={{ workflow_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[0]=IMPERSONATION
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[1]=MMM_admin
+
+#Comment jwt keys
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.module=comment
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.uri={{ comment_host }}:{{ comment_port }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.content={{ comment_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.fingerprint={{ comment_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### Mde_lineage jwt keys
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.module=mde-lineage
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.uri={{ mde_lineage_host }}:{{ mde_lineage_grpc_port }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.name={{ mde_lineage_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.content={{ mde_lineage_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.fingerprint={{ mde_lineage_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.jwt-keys.{{ mde_lineage_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mde_lineage_deployment_name }}.security.roles[0]=IMPERSONATION
+
+# DQF
+## JWT keys
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.module=dqf
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.uri=https://{{ dqf_host }}:{{ dqf_http_port }}
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.security.jwt-keys.{{ dqf_deployment_name }}.content={{ dqf_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.security.jwt-keys.{{ dqf_deployment_name }}.fingerprint={{ dqf_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.security.jwt-keys.{{ dqf_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dqf_deployment_name }}.security.roles[0]=IMPERSONATION

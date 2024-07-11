@@ -1,0 +1,32 @@
+---
+- name: Generate an OpenSSL private key for {{ certificate.cn }}
+  community.crypto.openssl_privatekey:
+    path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}.key"
+
+- name: Generate an OpenSSL Certificate Signing Request for {{ certificate.cn }}
+  community.crypto.openssl_csr:
+    path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}.csr"
+    privatekey_path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}.key"
+    common_name: "{{ certificate.cn }}"
+    subject_alt_name: "{{ certificate.altnames | default([]) | map('regex_replace', '^', 'DNS:') | list }}"
+
+- name: Generate a Self Signed OpenSSL certificate for {{ certificate.cn }}
+  community.crypto.x509_certificate:
+    path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}-fullchain.crt"
+    privatekey_path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}.key"
+    csr_path: "{{ cert_dir }}/{{ certificate.cn | replace( '*', 'star' ) }}.csr"
+    provider: selfsigned
+  notify: reload nginx
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: TLS certificates
+    summary:
+      name: "{{ certificate.cn | replace( '*', 'star' ) }}-fullchain.crt"
+      details:
+        key: "{{ certificate.cn | replace( '*', 'star' ) }}.key"
+        path: "{{ cert_dir }}"
+        source: self-signed
+  tags: summary

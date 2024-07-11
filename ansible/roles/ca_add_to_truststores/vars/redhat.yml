@@ -1,0 +1,6 @@
+---
+# variables for RHEL & CentOS
+
+ca_certificates_package: ca-certificates
+ca_truststore_path: /etc/pki/ca-trust/source/anchors
+update_ca_truststore_binary: /bin/update-ca-trust

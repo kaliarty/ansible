@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<displaySettings>
+  <dataTypeFormats>
+    <format for="DAY" pattern="yyyy-MM-dd"/>
+    <format for="DATETIME" pattern="yyyy-MM-dd HH:mm:ss"/>
+    <format for="INTEGER" pattern="#,###"/>
+    <format for="LONG" pattern="#,###"/>
+    <format for="LONG_INT" pattern="#,###"/>
+    <format for="FLOAT" pattern="#.###"/>
+  </dataTypeFormats>
+  <verticalCompare enabled="true" recordsThreshold="8"/>
+</displaySettings>

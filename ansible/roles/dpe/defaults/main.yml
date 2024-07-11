@@ -1,0 +1,59 @@
+---
+# defaults file for dpe
+
+dpe_module_name: dpe
+dpe_version: "{{ packages.dpe.version }}"
+dpe_license_file: licenses/license.plf
+dpe_install_dir: "{{ deployment_folder }}/{{ dpe_module_name }}"
+
+dpe_package_download_type: "{{ packages.dpe.package_download_type | default('maven_artifact') }}"
+dpe_package_location: "{{ packages.dpe.package_location | default ('') }}"
+dpe_package_url: "{{ packages.dpe.package_url | default ('') }}"
+dpe_package_checksum: "{{ packages.dpe.package_checksum | default(omit) }}"
+
+dpe_service_user: dpe
+dpe_service_group: dpe
+
+dpe_services:
+  - name: dpe
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ dpe_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ dpe_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ dpe_jwt_key.private }}"
+    java_opts: "{{ dpe_java_opts | default('-Xms1024m -Xmx2560m -XX:MaxRAM=3096m') }}"
+
+dpe_java_heapdumps: "true"
+dpe_java_temp_folder: "{{ dpe_install_dir }}/tmp"
+
+_dpe_drivers_dir: "{{ dpe_install_dir }}/lib/jdbc"
+dpe_drivers: []
+
+dpe_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ dpe_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ dpe_install_dir }}/etc"
+  - src: "{{ dpe_license_file }}"
+    dest: "{{ dpe_install_dir }}/license/license.plf"
+  - src: "{{ dpe_license_file }}"
+    dest: "{{ dpe_install_dir }}/license.plf"
+  - src: "{{ dpe_license_file }}"
+    dest: "/home/{{ dpe_service_user }}"
+    mode: "0700"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.dpe
+  artifact: dpe-assembly
+  version: "{{ packages.dpe.version }}"
+  extension: zip
+  classifier: linux
+
+dpe_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ dpe_install_dir }}/etc/application.properties"
+
+dpe_jdbc_drivers_archive_url: https://ataccama.s3.amazonaws.com/products/releases/jdbc-drivers/0.0.39
+dpe_jdbc_drivers_archive_name: drivers.zip
+dpe_jdbc_drivers_archive_checksum: sha256:ccd4e3755c69d1fd305ea64408c85b8ca4f8077dad3f7f6cf55e007d303fe754

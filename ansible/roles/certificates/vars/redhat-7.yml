@@ -1,0 +1,6 @@
+---
+# variables for RHEL & CentOS
+
+selfsigned_packages:
+  - ca-certificates
+  - python2-cryptography

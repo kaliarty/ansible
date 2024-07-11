@@ -1,0 +1,26 @@
+---
+- name: (Handler) Check NGINX
+  command: nginx -t
+  args:
+    chdir: "{{ ((ansible_facts['system'] | lower is not search('bsd')) | ternary('/etc/nginx', '/usr/local/sbin')) }}"
+  register: config_check
+  ignore_errors: true
+  check_mode: false
+  changed_when: false
+  listen: reload nginx
+
+- name: (Handler) Print NGINX error if syntax check fails
+  debug:
+    var: config_check.stderr_lines
+  failed_when: config_check.rc != 0
+  when:
+    - config_check.stderr_lines is defined
+    - config_check.rc != 0
+  listen: reload nginx
+
+- name: (Handler) Start/reload NGINX
+  systemd:
+    name: nginx
+    state: reloaded
+    enabled: true
+  listen: reload nginx

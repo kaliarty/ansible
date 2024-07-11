@@ -1,0 +1,254 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<metadata>
+    <globalPermissions>
+        <constraint permission="seeOthersIssues">
+            <conditions>
+                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+            </conditions>
+        </constraint>
+        <constraint permission="bulkOperation">
+            <conditions>
+                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+            </conditions>
+        </constraint>
+        <constraint permission="viewReports">
+            <conditions>
+                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+            </conditions>
+        </constraint>
+        <constraint permission="administration">
+            <conditions>
+                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+            </conditions>
+        </constraint>
+    </globalPermissions>
+    <systems>
+        <system name="CIF"/>
+        <system name="Marketing"/>
+    </systems>
+    <navigatorConfiguration>
+        <pageSize>25</pageSize>
+        <columns>
+            <column name="id"/>
+            <column name="severity"/>
+            <column name="system"/>
+            <column name="entity"/>
+            <column name="score"/>
+            <column name="records"/>
+            <column name="label"/>
+            <column name="description"/>
+            <column name="assignee"/>
+            <column name="lastChange"/>
+        </columns>
+        <defaultSortColumn>id</defaultSortColumn>
+        <defaultSortDirection>ASCENDING</defaultSortDirection>
+    </navigatorConfiguration>
+    <customAttributes>
+        <customAttribute label="Customer Status" name="src_status" secure="false">
+            <type class="com.ataccama.epp.core.attributes.List">
+                <options>
+                    <option label="Active" value="0"/>
+                    <option label="Not Active" value="1"/>
+                    <option label="Unknown" value="2"/>
+                </options>
+            </type>
+            <showFilter>true</showFilter>
+        </customAttribute>
+        <customAttribute label="Record ID" name="src_id" secure="false">
+            <type class="com.ataccama.epp.core.attributes.Integer"/>
+            <showFilter>true</showFilter>
+        </customAttribute>
+        <customAttribute label="Last Name" name="std_last_name" secure="false">
+            <type class="com.ataccama.epp.core.attributes.Text"/>
+            <showFilter>true</showFilter>
+        </customAttribute>
+    </customAttributes>
+    <issueTypes>
+        <issueType class="com.ataccama.epp.core.md.issues.CleansingIssueType" id="Customer_clean">
+            <title>Personal information cleansing</title>
+            <workflowId>standard</workflowId>
+            <entity>Customer</entity>
+            <sourceAttributes>
+                <attribute label="Full Name" name="src_name" type="string"/>
+                <attribute label="Gender" name="src_gender" type="string"/>
+                <attribute label="Social Insurance Number" name="src_sin" type="string"/>
+                <attribute label="Birth Date" name="src_birth_date" type="day"/>
+                <attribute label="Married" name="src_married" type="boolean"/>
+                <attribute label="Age" name="src_age" type="integer"/>
+                <attribute label="Registration Date" name="src_registration_date" type="datetime"/>
+            </sourceAttributes>
+            <cleansedAttributes>
+                <attribute label="First Name" name="std_first_name" type="string"/>
+                <attribute label="Last Name" name="std_last_name" type="string"/>
+                <attribute label="Gender" name="std_gender" type="enum">
+                    <enumValues>
+                        <enumValue/>
+                        <enumValue>M</enumValue>
+                        <enumValue>F</enumValue>
+                    </enumValues>
+                </attribute>
+                <attribute label="Social Insurance Number" name="std_sin" type="string"/>
+                <attribute label="Birth Date" name="std_birth_date" type="day"/>
+                <attribute label="Title" name="std_title" type="string"/>
+                <attribute label="Married" name="std_married" type="boolean"/>
+                <attribute label="Age" name="std_age" type="integer"/>
+                <attribute label="Registration Date" name="std_registration_date" type="datetime"/>
+            </cleansedAttributes>
+            <urlAttributes/>
+            <customAttributes>
+                <attribute name="src_status"/>
+                <attribute name="src_id"/>
+                <attribute name="std_last_name"/>
+            </customAttributes>
+            <roles/>
+            <validators>
+                <validator class="com.ataccama.epp.contrib.md.validators.CsvCleansingValidator" url="http://localhost:8888/Customer_validate"/>
+            </validators>
+            <proposalEngine class="com.ataccama.epp.contrib.md.proposals.CsvProposalEngine" url="http://localhost:8888/Customer_propose"/>
+        </issueType>
+        <issueType class="com.ataccama.epp.core.md.issues.CleansingIssueType" id="Contact_clean">
+            <title>Contact information cleansing</title>
+            <workflowId>standard</workflowId>
+            <entity>Contact</entity>
+            <sourceAttributes>
+                <attribute label="Customer Full name" name="src_name" type="string"/>
+                <attribute label="Telephone" name="src_phone" type="string"/>
+            </sourceAttributes>
+            <cleansedAttributes>
+                <attribute label="Telephone" name="std_phone" type="string"/>
+                <attribute label="Title" name="std_title" type="string"/>
+            </cleansedAttributes>
+            <urlAttributes/>
+            <customAttributes/>
+            <roles/>
+            <validators>
+                <validator class="com.ataccama.epp.contrib.md.validators.CsvCleansingValidator" url="http://localhost:8888/Contact_validate"/>
+            </validators>
+        </issueType>
+        <issueType class="com.ataccama.epp.core.md.issues.ManualMergeIssueType" id="Customer_merge">
+            <title>Merging</title>
+            <workflowId>standard</workflowId>
+            <entity>Customer</entity>
+            <maxRecords>20</maxRecords>
+            <attributes>
+                <attribute label="First Name" name="std_first_name" type="string"/>
+                <attribute label="Last Name" name="std_last_name" type="string"/>
+                <attribute label="Title" name="std_title" type="string"/>
+                <attribute label="Gender" name="std_gender" type="string"/>
+                <attribute label="Birth Date" name="std_birth_date" type="day"/>
+                <attribute label="Security Social Number" name="std_sin" type="string"/>
+                <attribute label="Phone" name="std_phone" type="string"/>
+                <attribute label="Marrital Status" name="std_married" type="boolean"/>
+                <attribute label="Age" name="std_age" type="integer"/>
+                <attribute label="Registration Date" name="std_registration_date" type="datetime"/>
+            </attributes>
+            <urlAttributes/>
+            <customAttributes>
+                <attribute name="src_id"/>
+            </customAttributes>
+            <roles/>
+        </issueType>
+        <issueType class="com.ataccama.epp.core.md.issues.MatchingChoiceIssueType" id="Customer_choice">
+            <title>Matching to CIF records</title>
+            <workflowId>standard</workflowId>
+            <entity>Customer</entity>
+            <maxRecords>20</maxRecords>
+            <attributes>
+                <attribute label="First Name" name="std_first_name" type="string"/>
+                <attribute label="Last Name" name="std_last_name" type="string"/>
+                <attribute label="Gender" name="std_gender" type="string"/>
+                <attribute label="Birth Date" name="std_birth_date" type="string"/>
+                <attribute label="Security Social Number" name="std_sin" type="string"/>
+                <attribute label="Phone" name="std_phone" type="string"/>
+            </attributes>
+            <urlAttributes/>
+            <customAttributes>
+                <attribute name="src_id"/>
+                <attribute name="std_last_name"/>
+            </customAttributes>
+            <roles/>
+        </issueType>
+        <issueType class="com.ataccama.epp.core.md.issues.MultiRecordInconsistencyIssueType" id="Customer_inconsistency">
+            <title>Manual telephone selection</title>
+            <workflowId>standard</workflowId>
+            <entity>Customer</entity>
+            <maxRecords>20</maxRecords>
+            <showPreview>true</showPreview>
+            <customConsistencyTracking>true</customConsistencyTracking>
+            <attributes>
+                <attribute comparisonMethod="EXACT" label="First Name" name="std_first_name" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Last Name" name="std_last_name" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Title" name="std_title" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Gender" name="std_gender" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Birth Date" name="std_birth_date" type="day"/>
+                <attribute comparisonMethod="EXACT" label="Security Social Number" name="std_sin" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Phone" name="std_phone" type="string"/>
+                <attribute comparisonMethod="EXACT" label="Marrital Status" name="std_married" type="boolean"/>
+                <attribute comparisonMethod="EXACT" label="Age" name="std_age" type="integer"/>
+                <attribute comparisonMethod="EXACT" label="Registration Date" name="std_registration_date" type="datetime"/>
+            </attributes>
+            <urlAttributes/>
+            <customAttributes>
+                <attribute name="src_id"/>
+            </customAttributes>
+            <roles/>
+        </issueType>
+        <issueType class="com.ataccama.epp.core.md.issues.GeneralIssueType" id="Contact_general">
+            <title>Manual email verification</title>
+            <workflowId>simple</workflowId>
+            <entity>Contact</entity>
+            <reportsMessages>false</reportsMessages>
+            <attributes>
+                <attribute controlType="TEXT_LINE" label="Full name" name="src_name"/>
+                <attribute controlType="TEXT_LINE" label="Entered email" name="src_email"/>
+                <attribute controlType="TEXT_LINE" label="Standardized email" name="std_email"/>
+            </attributes>
+            <urlAttributes/>
+            <customAttributes>
+                <attribute name="src_id"/>
+                <attribute name="std_last_name"/>
+            </customAttributes>
+            <roles/>
+        </issueType>
+    </issueTypes>
+    <messageMappings>
+        <message ignored="false" key="BIRTH_DATE_IN_FUTURE" message="Birth date is in the future." severity="HIGH"/>
+        <message ignored="false" key="BIRTH_DATE_UNPARSABLE" message="Birth date has invalid format." severity="HIGH"/>
+        <message ignored="false" key="BIRTH_DATE_NULL" message="Birth date is missing." severity="HIGH"/>
+        <message ignored="false" key="BIRTH_DATE_DERIVED_FROM_AGE" message="Birth date was derived from age." severity="LOW"/>
+        <message ignored="true" key="NAME_FIRST_LAST_COMMUTABLE" message="The first and last names are commutable." severity="MEDIUM"/>
+        <message ignored="true" key="NAME_MORE_PATTERNS" message="The name is ambiguous." severity="MEDIUM"/>
+        <message ignored="false" key="NAME_NO_PATTERN" message="The name was not recognized." severity="HIGH"/>
+        <message ignored="false" key="NAME_NULL" message="The name is missing." severity="HIGH"/>
+        <message ignored="false" key="NAME_UNKNOWN_WORD" message="The name contains an unknown word." severity="LOW"/>
+        <message ignored="false" key="NAME_INITIAL_FOUND" message="Initial in name found." severity="LOW"/>
+        <message ignored="false" key="NAME_TITLE_REMOVED" message="Name title was removed." severity="LOW"/>
+        <message ignored="true" key="GENDER_FN_NOT_FOUND" message="Gender was not verified by First name (First name not found)." severity="MEDIUM"/>
+        <message ignored="false" key="GENDER_TAKEN_FROM_NAME" message="Gender was derived from first name." severity="LOW"/>
+        <message ignored="false" key="GENDER_STANDARDIZED" message="Format of gender was standardized." severity="LOW"/>
+        <message ignored="false" key="GENDER_MISMATCH_BETWEEN_NAME_AND_INPUT" message="Gender does not match First name." severity="LOW"/>
+        <message ignored="false" key="GENDER_UNKNOWN" message="Gender is unknown (Gender cannot derive from First name)." severity="MEDIUM"/>
+        <message ignored="false" key="GENDER_NULL" message="Gender information is missing." severity="MEDIUM"/>
+        <message ignored="false" key="SIN_INVALID_CHECK" message="Social Insurance Number is invalid." severity="HIGH"/>
+        <message ignored="false" key="SIN_INVALID_LENGTH" message="Social Insurance Number has incorrect lenght." severity="HIGH"/>
+        <message ignored="false" key="SIN_MISSING" message="Social Insurance Number is missing." severity="HIGH"/>
+        <message ignored="false" key="SIN_EXTRACHAR" message="Social Insurance Number contains extra characters." severity="LOW"/>
+        <message ignored="false" key="SIN_EXTENDED_BY_ZEROS" message="Social Insurance Number was extended with zeros." severity="LOW"/>
+        <message ignored="false" key="PHONE_EMPTY" message="Phone number is missing." severity="MEDIUM"/>
+        <message ignored="false" key="PHONE_INVALID_AREA_CODE" message="Phone number has invalid area code." severity="LOW"/>
+        <message ignored="false" key="PHONE_UNPARSABLE" message="Phone number was not recognized." severity="MEDIUM"/>
+        <message ignored="false" key="PHONE_AREA_CODE_MISSING" message="Phone number does not contain area code." severity="LOW"/>
+        <message ignored="false" key="PHONE_TOO_MANY_DIGITS" message="Phone number has too many digits." severity="MEDIUM"/>
+        <message ignored="false" key="PHONE_LOCAL_INCORRECT_DIGITS" message="Phone contains local incorrect digits." severity="MEDIUM"/>
+        <message ignored="false" key="PHONE_EXCHANGE_LOCAL_UNPARSABLE" message="Phone number has invalid local area code." severity="MEDIUM"/>
+        <message ignored="false" key="AGE_NULL" message="Age information is missing." severity="HIGH"/>
+        <message ignored="false" key="AGE_INVALID" message="Age information is invalid." severity="HIGH"/>
+        <message ignored="false" key="AGE_DOES_NOT_MATCH_BIRTH_DATE" message="Age information does not match the given birth date." severity="MEDIUM"/>
+        <message ignored="false" key="AGE_DERIVED_FROM_BIRTH_DATE" message="Age information was derived from birth date." severity="LOW"/>
+        <message ignored="false" key="REGISTRATION_DATE_IN_FUTURE" message="Registration date is in the future." severity="MEDIUM"/>
+        <message ignored="false" key="REGISTRATION_BEFORE_BIRTH_DATE" message="Registration date is before the birth date." severity="MEDIUM"/>
+        <message ignored="false" key="REGISTRATION_DATE_NULL" message="Registration information is missing." severity="HIGH"/>
+        <message ignored="false" key="MARRIED_DERIVED_FROM_NAME" message="Marrital status information was derived from title" severity="LOW"/>
+        <message ignored="false" key="MARRIED_NULL" message="Marrital status information is missing." severity="MEDIUM"/>
+    </messageMappings>
+</metadata>

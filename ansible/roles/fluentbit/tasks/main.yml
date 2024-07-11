@@ -1,0 +1,60 @@
+---
+# tasks file for fluentbit
+
+- name: Import distribution dependent variables
+  include_vars: "{{ ansible_os_family | lower }}.yml"
+  when: ansible_os_family == 'Debian' or ansible_os_family == 'RedHat'
+
+- name: Configure firewall for fluentbit
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install fluentbit
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "install-{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "install-{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "install-{{ ansible_os_family | lower }}.yml"
+    - "install-{{ ansible_distribution | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+  tags:
+    - install
+    - summary
+
+- name: Install fluentbit package
+  package:
+    name: "{{ fluentbit_package }}"
+    state: present
+    update_cache: true
+  notify: Restart Fluentbit service
+  tags:
+    - install
+
+- name: Configure fluentbit
+  include_tasks: config.yml
+  tags:
+    - configure
+
+- name: Configure fluentbit monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: Fluent Bit
+      description: log processor and collector
+      version: "{{ fluentbit_version }}"
+      details:
+        packages: "{{ [fluentbit_package] }}"
+        config_directory: "{{ fluentbit_conf_dir }}"
+        services: "{{ [fluentbit_service] }}"
+  tags: summary

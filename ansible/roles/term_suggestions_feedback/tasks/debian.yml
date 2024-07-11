@@ -1,0 +1,14 @@
+---
+- name: Debian - Install virtualenv dependencies
+  apt:
+    pkg:
+      - libssl1.1
+      - sqlite3
+    update_cache: yes
+    state: present
+
+# NOTE: we must fix Ubuntu focal until team AI provides better builds
+- name: Install libffi6 for Term Suggestions Feedback
+  apt:
+    deb: http://cz.archive.ubuntu.com/ubuntu/pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
+  when: ansible_facts['distribution_release'] == 'focal'

@@ -1,0 +1,87 @@
+---
+# service definition for one module
+
+- name: "Create service user for service {{ one_service.name }} | module: {{ module_name }}"
+  user:
+    name: "{{ one_service.user | default(_service_user) }}"
+    group: "{{ service_group }}"
+    create_home: no
+    shell: /usr/sbin/nologin
+    home: "{{ install_dir }}"
+    system: yes
+  when: one_service.user is defined
+
+- block:
+    - name: "Enable Java heap dumps for {{ one_service.name }}"
+      include_vars: java-heapdump-params.yml
+      vars:
+        service_name: "{{ one_service.name  }}"
+      when: enable_java_heapdumps
+    - name: "Create {{ one_service.name }} heap dump rotation"
+      include_role:
+        name: logrotate
+      vars:
+        service_name: "{{ one_service.name }}"
+        logrotate_filename: "{{ one_service.name }}-heapdump"
+        log_paths:
+          - "{{ java_heapdump_file }}"
+        logrotate_options: |
+          rotate 1
+          daily
+          missingok
+          nocreate
+      when: enable_java_heapdumps
+    - name: "Create {{ one_service.name }} service configuration directory"
+      file:
+        path: "/etc/systemd/system/{{ one_service.name }}.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+    - name: "Deploy {{ one_service.name  }} service configuration"
+      template:
+        src: service-local.conf.j2
+        dest: "/etc/systemd/system/{{ one_service.name }}.service.d/{{ one_service.name }}.conf"
+        owner: root
+        group: root
+        mode: 0600
+      vars:
+        service_name: "{{ one_service.name  }}"
+      notify:
+        - Reload systemd daemon
+      register: srvconf # see note below
+
+- name: "Create system service for service {{ one_service.name }} | module: {{ module_name }}"
+  include_role:
+    name: 0x0i.systemd
+  vars:
+    unit_config:
+      - name: "{{ one_service.name }}"
+        state: "{{ one_service.state | default(_service_state) }}"
+        enabled: "{{ one_service.enabled | default(_service_enabled) }}"
+        Unit:
+          Description: "{{ one_service.description |
+                           default('Service wrapper for Ataccama application ' ~ one_service.name) }}"
+          After: syslog.target
+        Service:
+          User: "{{ one_service.user | default(_service_user) }}"
+          Group: "{{ service_group }}"
+          ExecStartPre: "{{ one_service.service_exec_start_pre | default(_service_exec_start_pre) }}"
+          ExecStart: "{{ one_service.service_exec_start | default(_service_exec_start) }}"
+          ExecStop: "{{ one_service.service_exec_stop | default(_service_exec_stop) }}"
+          WorkingDirectory: "{{ install_dir }}"
+          Restart: always
+          RestartSec: 5
+          SyslogIdentifier: "{{ one_service.name }}"
+        Install:
+          WantedBy: multi-user.target
+
+# WORKAROUND: we can't restart services until their unit file is deployed (by 0x0i.systemd), and we want to start them with
+# config snippet already present (deployed even earlier). Sadly, 0x0i.systemd unconditionally flushes handlers before doing
+# anything, so we can't notify at srvconf task: we have to delay the notification after call to 0x0i.systemd.
+- name: Restart if needed
+  debug:
+    msg: Requesting restart of services
+  changed_when: true
+  notify: Restart module services
+  when: srvconf.changed # noqa no-handler

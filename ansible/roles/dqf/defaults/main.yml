@@ -1,0 +1,55 @@
+---
+# defaults file for dqf
+
+dqf_module_name: dqf
+dqf_version: "{{ packages.dqf.version }}"
+dqf_install_dir: "{{ deployment_folder }}/{{ dqf_module_name }}"
+
+dqf_package_download_type: "{{ packages.dqf.package_download_type | default('maven_artifact') }}"
+dqf_package_location: "{{ packages.dqf.package_location | default ('') }}"
+dqf_package_url: "{{ packages.dqf.package_url | default ('') }}"
+dqf_package_checksum: "{{ packages.dqf.package_checksum | default(omit) }}"
+
+dqf_service_user: dqf
+dqf_service_group: dqf
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.dqf
+  artifact: "dqf-be"
+  version: "{{ packages.dqf.version }}"
+  extension: zip
+
+dqf_database_name: "dqf"
+dqf_http_port: "8028"
+dqf_grpc_port: "8528"
+dqf_management_port: "8026"
+dqf_host: "{{ groups['dqf_server'][0] }}"
+dqf_deployment_name: "dqf"
+
+dqf:
+  host: "{{ dqf_host }}"
+  port: "{{ dqf_http_port }}"
+  grpc_port: "{{ dqf_grpc_port }}"
+  database_name: "{{ dqf_database_name }}"
+
+dqf_services:
+  - name: dqf
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ dqf_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ dqf_jwt_key.private }}"
+    java_opts: "{{ dqf_java_opts | default('-Xms512m -Xmx1152m -XX:MaxRAM=1800m') }}"
+
+dqf_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ dqf_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ dqf_install_dir }}/etc"
+
+dqf_java_heapdumps: "true"
+dqf_java_temp_folder: "{{ dqf_install_dir }}/tmp"
+
+dqf_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ dqf_install_dir }}/etc/application.properties"

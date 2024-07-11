@@ -1,0 +1,5 @@
+---
+# vars file for tomcat heap dumps
+instance_heapdump_dir: "{{ tomcat_directory }}/{{ instance.name }}/{{ heapdump_dir }}"
+instance_heapdump_file: "{{ instance_heapdump_dir }}/{{ instance.name }}.hproof"
+instance_heapdump_params: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ instance_heapdump_file }}"

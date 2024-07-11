@@ -1,0 +1,39 @@
+#!/usr/bin/python3
+
+# Read all fragments in input dir, combine them into single dict and output it in Ansible fact format
+# If there are none, output an empty (but valid) data
+
+
+
+from pathlib import Path
+import json
+
+input_dir = Path("{{ firewall_fact_dir }}")
+input_file_suffix = "{{ firewall_fact_suffix }}"
+
+# source: https://stackoverflow.com/questions/7204805/how-to-merge-dictionaries-of-dictionaries
+# yields a seuence of (key, value) pairs; dict() can handle it
+def merge(dict1, dict2):
+    for k in set(dict1.keys()).union(dict2.keys()):
+        if k in dict1 and k in dict2:
+            if isinstance(dict1[k], dict) and isinstance(dict2[k], dict):
+                # dicts are merged
+                yield (k, dict(merge(dict1[k], dict2[k])))
+            elif isinstance(dict1[k], list) and isinstance(dict2[k], list):
+                # lists are concatenated
+                yield (k, dict1[k] + dict2[k])
+            else:
+                # other types (including type mismatch) are overriden
+                yield (k, dict2[k])
+        elif k in dict1:
+            yield (k, dict1[k])
+        else:
+            yield (k, dict2[k])
+
+
+out = dict()
+for file in sorted(input_dir.glob(f"*{input_file_suffix}")):
+    with file.open() as f:
+        out = dict(merge(out, json.load(f)))
+
+print(json.dumps(out))

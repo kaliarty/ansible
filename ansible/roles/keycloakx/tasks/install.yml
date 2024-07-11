@@ -1,0 +1,68 @@
+---
+- name: Download dependency packages for KeyCloak
+  package:
+    name: "{{ keycloak_dependency_packages }}"
+    state: present
+    update_cache: true
+
+- name: Create Keycloak system group and user
+  include_role:
+    name: system
+    tasks_from: "{{ task }}"
+  loop:
+    - groups.yml
+    - users.yml
+  loop_control:
+    loop_var: task
+  vars:
+    system_groups:
+      - name: "{{ keycloak_system_group }}"
+        state: present
+        system: yes
+    system_users:
+      - username: "{{ keycloak_system_user }}"
+        system: yes
+        group: "{{ keycloak_system_group }}"
+        home: "{{ keycloak_install_dir }}"
+        shell: /usr/sbin/nologin
+        create_home: no
+
+- name: Ensure the system group is assigned as primary group
+  user:
+    name: "{{ keycloak_system_user }}"
+    group: "{{ keycloak_system_group }}"
+
+- name: Download Keycloak ZIP archive
+  get_url:
+    url: "{{ keycloak_download_url }}"
+    dest: "{{ temp_folder }}/keycloak-{{ keycloak_version }}.zip"
+    checksum: "{{ keycloak_checksums[keycloak_version] }}"
+    owner: root
+    group: root
+    mode: 0640
+  when: keycloak_download_zip
+
+- name: Prepare KeyCloak home directory
+  file:
+    path: "{{ keycloak_install_dir }}/keycloak-{{ keycloak_version }}"
+    mode: u+rwx,g+rx,o+rx # NOTE: this is 'o+rx' due to ZIP permissions
+    state: directory
+    owner: root
+    group: "{{ keycloak_system_group }}"
+
+- name: Symlink KeyCloak to current version
+  file:
+    src: "{{ keycloak_install_dir }}/keycloak-{{ keycloak_version }}"
+    dest: "{{ keycloak_dir }}"
+    state: link
+    owner: root
+    group: "{{ keycloak_system_group }}"
+
+- name: Extract KeyCloak ZIP archive
+  unarchive:
+    src: "{{ temp_folder }}/keycloak-{{ keycloak_version }}.zip"
+    dest: "{{ keycloak_install_dir }}"
+    remote_src: true
+    owner: root
+    group: "{{ keycloak_system_group }}"
+    creates: "{{ keycloak_install_dir }}/keycloak-{{ keycloak_version }}/bin"

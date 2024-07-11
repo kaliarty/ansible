@@ -1,0 +1,86 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+## Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=rdm-token-client
+ataccama.authentication.keycloak.admin.client-id=rdm-admin-client
+ataccama.authentication.keycloak.public.client-id=rdm-webapp-public-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+ataccama.authentication.internal.jwt.generator.key={{ rdm_jwt_key.private }}
+
+{% if ataccama_internal_encryption is defined %}
+# Internal encryption configuration
+internal.encryption.keystore={{ rdm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ rdm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ rdm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ rdm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# RDM datasource connection configuration
+ataccama.one.rdm.datasource.rdm-data.url=jdbc:postgresql://{{ rdm.database.host }}:{{ rdm.database.port }}/{{ rdm.database.name }}{{ rdm.postgresql_server.parameters | default( '' ) }}
+ataccama.one.rdm.datasource.rdm-data.jdbcUrl=jdbc:postgresql://{{ rdm.database.host }}:{{ rdm.database.port }}/{{ rdm.database.name }}{{ rdm.postgresql_server.parameters | default( '' ) }}
+ataccama.one.rdm.datasource.rdm-data.username={{ rdm.database.user }}
+ataccama.one.rdm.datasource.rdm-data.password={{ rdm.database.password }}
+ataccama.one.rdm.datasource.rdm-data.driverClassName=org.postgresql.Driver
+ataccama.one.rdm.datasource.rdm-repo.url=jdbc:postgresql://{{ rdm.database.host }}:{{ rdm.database.port }}/{{ rdm.database.name }}{{ rdm.postgresql_server.parameters | default( '' ) }}
+ataccama.one.rdm.datasource.rdm-repo.jdbcUrl=jdbc:postgresql://{{ rdm.database.host }}:{{ rdm.database.port }}/{{ rdm.database.name }}{{ rdm.postgresql_server.parameters | default( '' ) }}
+ataccama.one.rdm.datasource.rdm-repo.username={{ rdm.database.user }}
+ataccama.one.rdm.datasource.rdm-repo.password={{ rdm.database.password }}
+ataccama.one.rdm.datasource.rdm-repo.driverClassName=org.postgresql.Driver
+ataccama.one.rdm.license-folder={{ deployment_folder }}/rdm/license
+ataccama.one.rdm.server.url=http://{{ rdm.server.host }}:{{ rdm.server.port }}
+ataccama.one.rdm.application.url=http://{{ rdm.host }}:{{ rdm.http_port }}
+
+# RDM links config
+{% if frontend_url is defined %}
+ataccama.one.rdm.catalog.link={{ frontend_url }}
+{% endif %}
+ataccama.one.rdm.mdm.link=
+
+{% if mmm_deployment_name is defined %}
+### MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+{% if dpm_deployment_name is defined %}
+### DPM jwt keys
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.module=dpm
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.uri={{ dpm.host }}:{{ dpm.http_port }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.name={{ dpm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.content={{ dpm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.fingerprint={{ dpm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+{% if dpe_deployment_name is defined %}
+### DPE jwt keys
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.module=dpe
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.uri={{ dpe.host }}:{{ dpe.http_port }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.name={{ dpe_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.content={{ dpe_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.fingerprint={{ dpe_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}

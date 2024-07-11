@@ -1,0 +1,53 @@
+---
+# tasks to copy dpe driver
+
+- name: "Driver configuration sanity check | driver: {{ driver.name }}"
+  assert:
+    that:
+      - driver.name is defined and driver.name is string
+      - (driver.remote_url is defined and driver.path is not defined and driver.maven is not defined ) or
+        (driver.maven is defined and driver.path is not defined and driver.remote_url is not defined ) or
+        (driver.path is defined and driver.remote_url is not defined and driver.maven is not defined )
+      - driver.remote_url is not defined or driver.remote_url is string
+      - driver.path is not defined or driver.path is string
+      - driver.maven is not defined or (
+        (driver.maven.repository_url is defined and driver.maven.repository_url is string) and
+        (driver.maven.artifact_id is defined and driver.maven.artifact_id is string) and
+        (driver.maven.group_id is defined and driver.maven.group_id is string) and
+        (driver.maven.version is defined and driver.maven.version is string) )
+
+- name: "Download driver | driver: {{ driver.name }}"
+  block:
+    - name: "Download driver from remote_url | driver: {{ driver.name }}"
+      get_url:
+        url: "{{ driver.remote_url }}"
+        dest: "{{ _dpe_drivers_dir }}"
+        owner: "{{ dpe_service_user }}"
+        group: "{{ dpe_service_group }}"
+        mode: 0644
+      when: driver.remote_url is defined
+
+    - name: "Copy driver from given path | driver: {{ driver.name }}"
+      copy:
+        src: "{{ driver.path }}"
+        dest: "{{ _dpe_drivers_dir }}"
+        owner: "{{ dpe_service_user }}"
+        group: "{{ dpe_service_group }}"
+        remote_src: "{{ driver.remote | default(omit) }}"
+        mode: 0644
+        force: true
+      when: driver.path is defined
+
+    - name: "Copy driver from maven | driver: {{ driver.name }}"
+      maven_artifact:
+        repository_url: "{{ driver.maven.repository_url }}"
+        group_id: "{{ driver.maven.group_id }}"
+        artifact_id: "{{ driver.maven.artifact_id }}"
+        version: "{{ driver.maven.version }}"
+        classifier: "{{ driver.maven.classifier | default(omit) }}"
+        extension: "{{ driver.maven.extension | default(omit) }}"
+        dest: "{{ _dpe_drivers_dir }}"
+        owner: "{{ dpe_service_user }}"
+        group: "{{ dpe_service_group }}"
+        mode: 0644
+      when: driver.maven is defined

@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ rdm_install_dir }}/log/access.json.log
+    Tag     accesslog.rdm
+    Parser  json
+
+[INPUT]
+    Name            systemd
+    Tag             console.rdm
+    Systemd_Filter  _SYSTEMD_UNIT=rdm.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.rdm
+    Key_Name      message
+    Parser        rdm
+    Reserve_Data  On

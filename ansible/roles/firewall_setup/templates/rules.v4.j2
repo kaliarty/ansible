@@ -1,0 +1,77 @@
+## This file is Ansible managed
+## iptables ipv4 configuration
+
+*filter
+# Drop all incoming and allow all outgoing packets by default. Forwarding packets allowed if configured.
+:INPUT DROP [0:0]
+{% if _iptables.forwarding_allowed is defined and _iptables.forwarding_allowed %}
+:FORWARD ACCEPT [0:0]
+{% else %}
+:FORWARD DROP [0:0]
+{% endif %}
+:OUTPUT ACCEPT [0:0]
+
+# Additional filter chains configuration
+{% for chain in _iptables.chains %}
+:c-{{ chain.name }} - [0:0]
+{% endfor %}
+
+# Accept traffic from loopback interface (localhost)
+-A INPUT -i lo -j ACCEPT
+
+# Allow established connections:
+-A INPUT -m conntrack --ctstate ESTABLISHED,RELATED -j ACCEPT
+
+# Allow incoming ssh connections
+-A INPUT -p tcp --dport 22 -m conntrack --ctstate NEW -j ACCEPT
+
+# ICMP configuration
+{% for allowed_from in _iptables.icmp_allowed_from %}
+-A INPUT -p icmp -s {{ allowed_from.ip }} -m comment --comment "allow ICMP from {{ allowed_from.host }}" -j ACCEPT
+{% endfor %}
+{% if _iptables.icmp_allowed %}
+-A INPUT -p icmp -m comment --comment "accept ICMP" -j ACCEPT
+{% endif %}
+
+# Open ports.
+{% for allowed_tcp_port in _iptables.allowed_tcp_ports %}{# NOTE: we have to allow non-loopback connection to the host itself, else connnection checks will break #}
+-A INPUT -p tcp -m tcp --dport {{ allowed_tcp_port.port }} {{ ('-s ' + ((allowed_tcp_port.source + [ansible_host])| unique | join(','))) if allowed_tcp_port.source is defined else '' }} -j ACCEPT {{ ('-m comment --comment "' + allowed_tcp_port.comment + '"') if (allowed_tcp_port.comment is defined and allowed_tcp_port.comment != '') else '' }}
+{% endfor %}
+{% for allowed_port in _iptables.allowed_ports %}
+-A INPUT -p {{ allowed_port.protocol }} -m {{ allowed_port.protocol }} --dport {{ allowed_port.port }} {{ ('-s ' + ((allowed_port.source + [ansible_host] )| unique | join(','))) if allowed_port.source is defined else '' }} -j ACCEPT {{ ('-m comment --comment "' + allowed_port.comment + '"') if allowed_port.comment is defined else '' }}
+{% endfor %}
+
+# Additional custom rules
+{% for rule in _iptables.additional_rules %}
+{{ rule }}
+{% endfor %}
+
+# Configure additional chains if provided
+{% for chain in _iptables.chains %}
+-A INPUT -p {{ chain.protocol }} -m multiport --dports {{ chain.ports | join(",") }} -j c-{{ chain.name}}
+{% if chain.sources is defined %}
+{% for source in chain.sources %}
+-A c-{{ chain.name }} -s {{ source.ip }} -m comment --comment "{{ source.host }}" -j ACCEPT
+{% endfor %}
+-A c-{{ chain.name}} -j DROP
+{% else %}
+-A c-{{ chain.name}} -j ACCEPT
+{% endif %}
+{% endfor %}
+
+{% if _iptables.log_dropped_packets is defined and _iptables.log_dropped_packets %}
+# Log other incoming requests (all of which are dropped).
+-A INPUT -p tcp {{ ('-m limit --limit ' + _iptables.log_dropped_packets_limit) if _iptables.log_dropped_packets_limit is defined else '' }} {{ ('--limit-burst ' + _iptables.log_dropped_packets_limit_burst) if _iptables.log_dropped_packets_limit_burst is defined else '' }} -j LOG {{ ('--log-level ' + iptables.log_dropped_packets_level) if iptables.log_dropped_packets_level is defined else '' }} --log-prefix "iptables-dropped (tcp): "
+-A INPUT -p tcp -j DROP
+-A INPUT -p udp {{ ('-m limit --limit ' + _iptables.log_dropped_packets_limit) if _iptables.log_dropped_packets_limit is defined else '' }} {{ ('--limit-burst ' + _iptables.log_dropped_packets_limit_burst) if _iptables.log_dropped_packets_limit_burst is defined else '' }} -j LOG {{ ('--log-level ' + iptables.log_dropped_packets_level) if iptables.log_dropped_packets_level is defined else '' }} --log-prefix "iptables-dropped (udp): "
+-A INPUT -p udp -j DROP
+-A INPUT -p icmp {{ ('-m limit --limit ' + _iptables.log_dropped_packets_limit) if _iptables.log_dropped_packets_limit is defined else '' }} {{ ('--limit-burst ' + _iptables.log_dropped_packets_limit_burst) if _iptables.log_dropped_packets_limit_burst is defined else '' }} -j LOG {{ ('--log-level ' + iptables.log_dropped_packets_level) if iptables.log_dropped_packets_level is defined else '' }} --log-prefix "iptables-dropped (icmp): "
+-A INPUT -p icmp -j DROP
+-A INPUT {{ ('-m limit --limit ' + iptables.log_dropped_packets_limit) if iptables.log_dropped_packets_limit is defined else '' }} {{ ('--limit-burst ' + _iptables.log_dropped_packets_limit_burst) if _iptables.log_dropped_packets_limit_burst is defined else '' }} -j LOG {{ ('--log-level ' + _iptables.log_dropped_packets_level) if _iptables.log_dropped_packets_level is defined else '' }} --log-prefix "iptables-dropped: "
+{% endif %}
+
+# Drop all other traffic.
+-A INPUT -j DROP
+
+# Commit the changes
+COMMIT

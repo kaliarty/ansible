@@ -1,0 +1,111 @@
+{{ ansible_managed | comment }}
+# Disable config server
+ataccama.config-service.runtime=off
+
+# Logging
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ dmm_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ dmm_database_user }}
+spring.datasource.password={{ dmm_database_password }}
+
+management.endpoints.web.exposure.include=health,info,prometheus,env
+
+ataccama.one.dmm.http.public.endpoints=/actuator/health,/actuator/health/liveness,/actuator/health/readiness,/actuator/info
+
+server.port={{ dmm_port }}
+ataccama.server.grpc.port={{ dmm_grpc_port }}
+ataccama.server.grpc.tls.enabled=true
+management.server.port={{ dmm_management_port }}
+ataccama.server.dmm.jwt.token.secret=
+
+# HTTP-based API Authorization for other services
+ataccama.server.dmm.jwt.audiences=MMM,DPE,DQC,DS,PUBLIC-API
+# define a field in which array of roles are stored
+ataccama.server.dmm.jwt.token.authoritiesField=roles
+
+ataccama.one.authentication.internal.jwt.impersonation-role.default=IMPERSONATION
+
+# Job cache
+ataccama.one.dmm.storage.cache.job.enabled=true
+ataccama.one.dmm.storage.cache.job.maximum-size=1000
+ataccama.one.dmm.storage.cache.job.expire-after=120s
+
+# Entity cache
+ataccama.one.dmm.storage.entity.cache.enabled=true
+ataccama.one.dmm.storage.entity.cache.maximum-size=1000
+ataccama.one.dmm.storage.entity.cache.expire-after=120s
+
+# Health
+management.endpoint.health.enabled=true
+management.endpoint.health.group.liveness.include=diskSpace,ping
+management.endpoint.health.group.readiness.include=db
+management.endpoint.health.probes.enabled=true
+management.endpoint.health.show-details=always
+management.endpoint.health.show-components=always
+
+# Info
+management.endpoint.info.enabled=true
+
+# Prometheus (export metrics)
+management.endpoint.prometheus.enabled=true
+
+# Change propagation
+ataccama.one.dmm.changepropagation.clearing.enabled=true
+ataccama.one.dmm.changepropagation.clearing.intervalInSeconds=120
+ataccama.one.dmm.changepropagation.group.default=DEFAULT
+ataccama.one.dmm.changepropagation.group.defaultExpirationInSeconds=600
+
+# Public api
+ataccama.one.dmm.api.public.rest.enabled=false
+ataccama.one.dmm.api.public.rest.prefix=/api
+ataccama.one.dmm.api.public.rest.apiKeyHeaderName=x-api-key
+ataccama.one.dmm.api.public.rest.default.pageLimit=200
+ataccama.one.dmm.api.public.rest.api-key.default=73475cb40a568e8da8a045ced110137e159f890ac4da883b6b17dc651b3a8049
+ataccama.one.dmm.api.public.rest.anonymous.enabled=true
+#ataccama.one.dmm.api.public.rest.api-key.anonymous=anonymous
+
+# Keycloak
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.token.client-id=dmm-token-client
+ataccama.authentication.keycloak.admin.client-id=dmm-admin-client
+ataccama.authentication.keycloak.token.secret={{ dmm_token_client_secret }}
+ataccama.authentication.keycloak.admin.secret={{ dmm_admin_client_secret }}
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+# MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### DPM jwt keys
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.module=dpm
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.uri={{ dpm.host }}:{{ dpm.http_port }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.name={{ dpm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.content={{ dpm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.fingerprint={{ dpm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### DPE jwt keys
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.module=dpe
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.uri={{ dpe.host }}:{{ dpe.http_port }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.name={{ dpe_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.content={{ dpe_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.fingerprint={{ dpe_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.roles[0]=IMPERSONATION
+
+#Deprecated - To be removed in 14.4
+ataccama.server.dmm.jwt.token.secret=TWJRZVRoV21acTN0Nnc5eiNDJkYpSkBOY1JmVWpYbjJyNXU3eCFBJUQqRy1LYVBkU2dWa1lwM3M2djl5L0I/RQ==

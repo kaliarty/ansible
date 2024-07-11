@@ -1,0 +1,22 @@
+---
+# defaults file for minio
+
+minio_install_dir: /opt/minio
+minio_data_dir: /var/minio/data
+
+
+minio_version: "{{ gen2_minio_version }}"
+minio_binary: "minio.{{ minio_version }}"
+minio_download_url: "https://dl.min.io/server/minio/release/linux-amd64/archive/{{ minio_binary }}"
+
+minio_unitname: minio-storage
+
+minio_system_user: minio
+minio_system_group: minio
+
+minio_exec_start: "{{ minio.exec_start | default( '/usr/local/bin/minio server --address :' + minio.http_port + ' --console-address :' + minio.http_ui_port + ' ' + minio_data_dir ) }}"
+
+minio_unit_env:
+  MINIO_ROOT_USER: "{{ minio.access_key }}"
+  MINIO_ROOT_PASSWORD: "{{ minio.secret_key }}"
+  MINIO_PROMETHEUS_AUTH_TYPE: "public"

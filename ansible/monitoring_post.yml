@@ -1,0 +1,20 @@
+# this play is designed to be executed AFTER all roles
+# that is because many roles repeatably include role 'monitoring_rules'
+# 'monitoring_rules' role was called with parameters bypassing slow installation and setup
+# so we ensure that everything is in sync (eg.: services restarted) by running this near the end of whole deployment.
+---
+- hosts: monitoring_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - os_family
+    - processor_count
+  tags:
+    - prometheus
+    - monitoring
+  roles:
+    - prometheus
+  vars:
+    monitoring_bootstrap: true
+    prometheus_skip_install: true
+  environment: "{{ environment_vars | default({}) }}"

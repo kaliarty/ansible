@@ -1,0 +1,72 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.level.org.hibernate.SQL=INFO
+logging.level.root=INFO
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
+
+{# Production logging settings #}
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+ataccama.server.grpc.port={{ task_grpc_port }}
+ataccama.client.connection.mmm-be.grpc.host={{ mmm.host }}
+ataccama.client.connection.mmm-be.grpc.port={{ mmm_grpc_port }}
+
+ataccama.client.connection.workflows.grpc.host={{ workflow_host }}
+ataccama.client.connection.workflows.grpc.port={{ workflow_grpc_port }}
+
+management.server.port={{ task_management_port }}
+server.port={{ task_port }}
+
+# Authentication configuration
+
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.admin.client-id=task-service-admin-client
+ataccama.authentication.keycloak.token.client-id=task-service-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+ataccama.one.task-service.http.public.endpoints[0]=/actuator/health
+ataccama.one.task-service.http.public.endpoints[1]=/actuator/health/liveness
+ataccama.one.task-service.http.public.endpoints[2]=/actuator/health/readiness
+ataccama.one.task-service.http.public.endpoints[3]=/actuator/info
+
+# Database configuration
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ task.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ postgres.database.owner }}
+spring.datasource.password={{ postgres.database.password }}
+
+spring.main.banner-mode: off
+
+# MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+#Workflow jwt keys
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.module=workflow
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.uri={{ workflow_host }}:{{ workflow_port }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.content={{ workflow_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.fingerprint={{ workflow_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[0]=IMPERSONATION
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[1]=MMM_admin
+
+#Comment jwt keys
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.module=comment
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.uri={{ comment_host }}:{{ comment_port }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.content={{ comment_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.fingerprint={{ comment_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.jwt-keys.{{ comment_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ comment_deployment_name }}.security.roles[0]=IMPERSONATION

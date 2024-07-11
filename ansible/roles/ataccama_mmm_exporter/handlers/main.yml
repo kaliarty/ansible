@@ -1,0 +1,6 @@
+---
+- name: restart mmm-exporter
+  become: true
+  systemd:
+    name: "{{ prometheus_exporter_service_name }}"
+    state: restarted

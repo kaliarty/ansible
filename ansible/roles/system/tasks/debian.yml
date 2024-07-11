@@ -1,0 +1,71 @@
+---
+- name: Debian - Replace system repositories with custom ones
+  block:
+    - name: Create backup directory
+      file:
+        path: /etc/apt/bak
+        state: directory
+        mode: 0750
+
+    - name: Get repositories configs
+      find:
+        paths: /etc/apt/sources.list.d/
+        file_type: file
+        patterns: "*.list"
+        excludes: "{{ system_custom_repos_exclude | default('') }}"
+      register: system_repo_configs
+
+    - name: Backup old repositories
+      copy:
+        src: "{{ backup_repo_item.path }}"
+        dest: "/etc/apt/bak/{{ backup_repo_item.path | regex_replace('.*/') }}"
+        mode: 0644
+        remote_src: yes
+        backup: yes
+      loop: "{{ system_repo_configs.files + [{'path': '/etc/apt/sources.list'}] }}"
+      loop_control:
+        loop_var: backup_repo_item
+        label: "{{ backup_repo_item.path | regex_replace('.*/') }}"
+
+    - name: Remove old repositories
+      file:
+        path: "{{ remove_repo_item.path }}"
+        state: absent
+      loop: "{{ system_repo_configs.files }}"
+      loop_control:
+        loop_var: remove_repo_item
+        label: "{{ remove_repo_item.path | regex_replace('.*/') }}"
+
+    - name: Import apt repo keys
+      apt_key:
+        url: "{{ gpg_keys_item }}"
+      loop: "{{ system_custom_repos_pgp_keys }}"
+      loop_control:
+        loop_var: gpg_keys_item
+      when: system_custom_repos_pgp_keys is defined
+
+    - name: Create custom repositories config
+      copy:
+        content: "{{ system_custom_repos_content }}"
+        dest: "/etc/apt/sources.list"
+        mode: 0644
+
+  when: system_custom_repos_content is defined
+
+- name: Update list of apt packages in repository
+  apt:
+    update_cache: yes
+
+- name: update the ca-certificate package to latest version
+  apt:
+    name: ca-certificates
+    state: latest
+  tags:
+    - skip_ansible_lint
+
+- name: Debian package installation for Azure CLI 2.32
+  apt:
+    name:
+      - python3-dev
+      - build-essential
+    state: present

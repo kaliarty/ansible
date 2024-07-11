@@ -1,0 +1,18 @@
+---
+prometheus_exporter_name: node_exporter
+prometheus_exporter_user: node-exp
+prometheus_exporter_user_manage: true
+prometheus_exporter_group: "{{ prometheus_exporter_user }}"
+prometheus_exporter_group_manage: true
+
+prometheus_exporter_dist: "node_exporter-{{ node_exporter_version }}.linux-amd64"
+prometheus_exporter_download_url: "https://github.com/prometheus/node_exporter/releases/download/v{{ node_exporter_version }}/{{ prometheus_exporter_dist }}.tar.gz"
+prometheus_exporter_bin: "{{ prometheus_exporter_name }}"
+
+prometheus_exporter_config_file: "/etc/default/{{ prometheus_exporter_name }}"
+prometheus_exporter_service_name: "{{ prometheus_exporter_name }}"
+prometheus_exporter_service_execstart: "{{ prometheus_exporters_dir }}/{{ prometheus_exporter_name }}/{{ prometheus_exporter_bin }} $OPTIONS"
+prometheus_exporter_service_description: "Prometheus Node Exporter"
+prometheus_exporter_service_restart_sec: 1
+prometheus_exporter_env_variables:
+  OPTIONS: "{{ node_exporter_options | join(' ') }}"

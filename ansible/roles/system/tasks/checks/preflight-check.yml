@@ -1,0 +1,26 @@
+---
+- name: Verify that system custom repositories variables are defined correctly
+  block:
+    - name: Verify that system_custom_repos_content variable is string
+      assert:
+        that:
+          - system_custom_repos_content is defined and system_custom_repos_content is string
+        msg: "Custom repositories content must be a string"
+
+    - name: Verify that system_custom_repos_exclude variable is string
+      assert:
+        that:
+          - system_custom_repos_exclude is string
+        msg: "Custom repositories exclusion pattern must be a string"
+      when: system_custom_repos_exclude is defined
+
+    - name: Verify that system_custom_repos_pgp_keys variable is iterable
+      assert:
+        that:
+          - system_custom_repos_pgp_keys is iterable
+          - system_custom_repos_pgp_keys is not string
+          - system_custom_repos_pgp_keys is not mapping
+        msg: "Custom repositories gpg keys variable must be a list"
+      when: system_custom_repos_pgp_keys is defined
+
+  when: system_custom_repos_content is defined

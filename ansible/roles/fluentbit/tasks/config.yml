@@ -1,0 +1,51 @@
+---
+# fluentbit config tasks - main config
+
+- name: Ensure Fluentbit config directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ fluentbit_conf_dir }}"
+    - "/lib/systemd/system/{{ fluentbit_service }}.service.d"
+
+- name: Configure | check for td-agent-bit.conf.d files
+  find:
+    path: "{{ fluentbit_conf_dir }}/{{ fluentbit_conf_d_dir }}"
+    patterns: '*.conf'
+  register: _conf_d_files
+
+- name: Configure | check for parsers.d files
+  find:
+    path: "{{ fluentbit_conf_dir }}/{{ fluentbit_parsers_d_dir }}"
+    patterns: '*.conf'
+  register: _parsers_d_files
+  changed_when: _parsers_d_files.matched > 0
+  notify: Include parsers.conf.d dir in parsers.conf file
+
+- name: Configure | Source td-agent-bit main conf
+  template:
+    src: td-agent-bit.conf.j2
+    dest: "{{ fluentbit_conf_dir }}/td-agent-bit.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify: Restart Fluentbit service
+
+- name: Configure | Setup FluentBit service environment variables
+  template:
+    src: override.conf.j2
+    dest: "/lib/systemd/system/{{ fluentbit_service }}.service.d/override.conf"
+    owner: root
+    group: root
+    mode: 0644
+  notify:
+    - Reload systemd daemon
+    - Restart Fluentbit service
+
+- name: Configure | Configure Fluentbit dropin files
+  include: config_d.yml
+  when: (fluentbit_conf_d is defined and fluentbit_conf_d | length > 0 ) or (fluentbit_parsers_d is defined and fluentbit_parsers_d | length > 0)

@@ -1,0 +1,102 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=dpm-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+ataccama.one.webserver.sso.client-id=dpm-webapp-public-client
+ataccama.one.webserver.gql.allowed-roles=admin,DPP_admin
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+internal.encryption.keystore={{ dpm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ dpm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ dpm_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ dpm_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# Database configuration
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ dpm.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ postgres.database.owner }}
+spring.datasource.password={{ postgres.database.password }}
+
+# Object storage configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+ataccama.one.object-storage.required-writable-buckets=executor,drillthrough,profiling,lookups
+ataccama.one.object-storage.try-create=true
+ataccama.one.object-storage.fail-fast=false
+
+# MMM connection configuration
+ataccama.client.connection.mmm.host={{ mmm.host }}
+ataccama.client.connection.mmm.grpc.port={{ mmm.grpc_port }}
+ataccama.client.connection.mmm.http.port={{ mmm.http_port }}
+
+{% if 'mdm_server' in groups.keys() %}
+# MDM plugin configuration
+plugin.mdm-datasource.ataccama.one.server.grpc.port={{ mdm.server.grpc_port }}
+{% endif %}
+
+# Audit configuration
+ataccama.audit.enabled={{ dpm.audit.enable|lower }}
+{% if dpm.audit.enable -%}
+ataccama.audit.spring.datasource.jdbcUrl=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ audit.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+ataccama.audit.spring.datasource.password={{ postgres.database.password }}
+ataccama.audit.spring.datasource.username={{ postgres.database.owner }}
+{% endif %}
+
+### Custom monitoring metrics enabled
+ataccama.one.dpm.health-checks.expose-as-metrics=true
+management.endpoint.health.mmm-be.enabled=true
+
+### DPE jwt keys
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.module=dpe
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.uri={{ dpe.host }}:{{ dpe.http_port }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.name={{ dpe_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.content={{ dpe_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.fingerprint={{ dpe_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.jwt-keys.{{ dpe_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpe_deployment_name }}.security.roles[0]=IMPERSONATION
+### MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% if 'rdm_server' in groups.keys() and rdm_jwt_key is defined %}
+### RDM jwt keys
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.module=rdm
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.uri={{ rdm.host }}:{{ rdm.http_port }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.name={{ rdm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.content={{ rdm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.fingerprint={{ rdm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.{{ rdm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+
+plugin.manta-integration.enabled=false

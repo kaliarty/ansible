@@ -1,0 +1,43 @@
+---
+# defaults file for dmm service
+
+dmm_module_name: dmm
+dmm_version: "{{ packages.dmm.version }}"
+dmm_license_file: licenses/license.plf
+dmm_install_dir: "{{ deployment_folder }}/{{ dmm_module_name }}"
+dmm_database_name: "dmm"
+dmm_database_user: "{{ postgres.database.owner }}"
+dmm_database_password: "{{ postgres.database.password }}"
+
+dmm_package_download_type: "{{ packages.dmm.package_download_type | default('maven_artifact') }}"
+dmm_package_location: "{{ packages.dmm.package_location | default ('') }}"
+dmm_package_url: "{{ packages.dmm.package_url | default ('') }}"
+dmm_package_checksum: "{{ packages.dmm.package_checksum | default(omit) }}"
+
+dmm_service_user: dmm
+dmm_service_group: dmm
+
+dmm_services:
+  - name: dmm
+    service_env:
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ dmm_jwt_key.private }}"
+    java_opts: "{{ dmm_java_opts | default('-Xms512m -Xmx1512m -XX:MaxRAM=1800m') }}"
+
+dmm_java_heapdumps: "true"
+dmm_java_temp_folder: "{{ dmm_install_dir }}/tmp"
+
+dmm_port: 8027
+dmm_grpc_port: 8527
+dmm_management_port: 9027
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.dmm
+  artifact: dmm
+  version: "{{ packages.dmm.version }}"
+  extension: zip
+
+dmm_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ dmm_install_dir }}/etc/application.properties"

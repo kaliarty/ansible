@@ -1,0 +1,11 @@
+---
+- name: Setup firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ grafana_server_port }}"
+          source: "{{ (groups['monitoring_server'] | default([]))
+                    + (groups['one_app'] | default([]))
+                    + (groups['frontend'] | default([])) }}"

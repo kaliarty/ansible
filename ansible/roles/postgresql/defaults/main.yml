@@ -1,0 +1,85 @@
+---
+# defaults file for postgresql
+
+postgresql_user: postgres
+postgresql_group: postgres
+
+postgresql_python_library: python3-psycopg2
+
+postgresql_service_state: started
+postgresql_service_enabled: true
+
+postgresql_log_dir: /var/log/postgresql
+
+# Log rotation configuration for PostgreSQL default for 30 days
+postgresql_log_truncate_on_rotation: on
+postgresql_log_rotation_age: 1440 # rotate every 24h
+postgresql_log_rotation_size: 1000000 # rotate if file exceed 1GB
+
+# Databases to ensure exist
+# this variable is used by databases.yml playbook
+postgresql_databases: []
+# - name: exampledb # required; the rest are optional
+#   lc_collate: # defaults to 'en_US.UTF-8'
+#   lc_ctype: # defaults to 'en_US.UTF-8'
+#   encoding: # defaults to 'UTF-8'
+#   template: # defaults to 'template0'
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   owner: # defaults to postgresql_user
+#   state: # defaults to 'present'
+#   schemas: # list of schemas to be present in the database; defaults to empty
+#   extensions: # array of extension which should be created in the database
+
+# Users to ensure exist
+postgresql_users: []
+# - name: jdoe #required; the rest are optional
+#   password: # defaults to not set
+#   encrypted: # defaults to not set
+#   priv: # defaults to not set
+#   role_attr_flags: # defaults to not set
+#   db: # defaults to not set
+#   login_host: # defaults to 'localhost'
+#   login_password: # defaults to not set
+#   login_user: # defaults to '{{ postgresql_user }}'
+#   login_unix_socket: # defaults to 1st of postgresql_unix_socket_directories
+#   port: # defaults to not set
+#   state: # defaults to 'present'
+
+default_postgresql_conf: []
+default_pg_hba_conf:
+  - { type: local, database: all, user: postgres, auth_method: peer }
+  - { type: local, database: all, user: all, auth_method: peer }
+  - { type: host, database: all, user: all, address: '127.0.0.1/32', auth_method: md5 }
+  - { type: host, database: all, user: all, address: '::1/128', auth_method: md5 }
+
+# Whether to output user data when managing users.
+postgres_users_no_log: false
+
+postgresql_apt_repo: "deb http://apt.postgresql.org/pub/repos/apt/ {{ ansible_distribution_release }}-pgdg main"
+postgresql_apt_repo_key: "https://www.postgresql.org/media/keys/ACCC4CF8.asc"
+
+postgresql_yum_repo_url: "https://download.postgresql.org/pub/repos/yum/reporpms/EL-{{ ansible_distribution_major_version }}-{{ ansible_architecture }}/pgdg-redhat-repo-latest.noarch.rpm"
+postgresql_yum_repo_package: pgdg-redhat-repo
+
+postgresql_conf:
+  listen_addresses: '0.0.0.0'
+  max_connections: 300
+  shared_buffers: '256MB'
+  jit: 'off'
+  max_locks_per_transaction: 256
+  port: "{{ postgresql_port }}"
+  log_directory: "{{ postgresql_log_dir }}"
+  log_truncate_on_rotation: "{{ postgresql_log_truncate_on_rotation | default('on') }}"
+  log_rotation_age: "{{ postgresql_log_rotation_age }}"
+  log_rotation_size: "{{ postgresql_log_rotation_size }}"
+  log_filename: 'postgresql-%d.log'
+
+postgresql_port: 5432
+database_name_keycloak: keycloak
+database_name_task: task
+workflow_database_name: "workflow"
+database_name_dmm: "dmm"

@@ -1,0 +1,6 @@
+# ntp configuration playbook
+---
+- hosts: all
+  roles:
+    - role: ntp
+  environment: "{{ environment_vars | default({}) }}"

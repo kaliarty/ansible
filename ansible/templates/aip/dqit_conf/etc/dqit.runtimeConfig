@@ -1,0 +1,38 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<runtimeconfig>
+    <contributedConfigs>
+        <config class="com.ataccama.dqc.processor.support.UrlResourceContributor">
+            <urls>
+                <url name="DQIT" url="http://{{ dqit.host }}:{{ dqit.http_port }}/dqit">
+                    <authConfig password="{{ dqit.admin.password }}" class="com.ataccama.dqc.processor.bin.config.auth.BasicAuthConfig" user="{{ dqit.admin.user }}" />
+                </url>
+            </urls>
+        </config>
+        <config class="com.ataccama.server.keycloak.KeycloakDeploymentContributor">
+            <keycloakConfigs>
+                <keycloakConfig name="keycloak-local">
+                    <url>https://{{ nginx_hosts.one.hostname }}/auth</url>
+                    <realm>ataccamaone</realm>
+                    <attributes>
+                        <attribute name="ssl-required" value="external" />
+                        <attribute name="principal-attribute" value="preferred_username" />
+                    </attributes>
+                    <clients>
+                        <client id="dqit-webapp-token-client">
+                            <secret>{{ dqit_webapp_token_client_secret }}</secret>
+                            <attributes>
+                                <attribute name="use-resource-role-mappings" value="false" />
+                                <attribute name="public-client" value="false" />
+                                <attribute name="bearer-only" value="false" />
+                                <attribute name="autodetect-bearer-only" value="false" />
+                                <attribute name="always-refresh-token" value="false" />
+                                <attribute name="enable-basic-auth" value="false" />
+                            </attributes>
+                        </client>
+                    </clients>
+                </keycloakConfig>
+            </keycloakConfigs>
+        </config>
+    </contributedConfigs>
+    <dataSources />
+</runtimeconfig>

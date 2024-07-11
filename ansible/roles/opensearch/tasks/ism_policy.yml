@@ -1,0 +1,20 @@
+---
+# configuration of opensearch ISM policies
+# see https://opensearch.org/docs/latest/im-plugin/ism/index/
+
+- name: "Create OpenSearch ISM policy | {{ policy.policy.policy_id }}"
+  uri:
+    url: "http://{{ ansible_fqdn }}:{{ opensearch_api_port }}/_plugins/_ism/policies/{{ policy.policy.policy_id }}"
+    method: PUT
+    body_format: json
+    body: "{{ policy | to_json }}"
+    status_code:
+      - 200
+      - 201
+      - 409  # return code by the API when the ISM policy is updated
+  register: _result
+  until:
+    - _result is succeeded
+  retries: 3
+  delay: 2
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"

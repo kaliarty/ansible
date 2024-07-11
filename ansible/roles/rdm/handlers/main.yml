@@ -1,0 +1,11 @@
+---
+# handlers file for rdm
+
+- name: Restart rdm service
+  become: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  loop: "{{ module_services }}"
+  listen: Add keycloak secret to application.properties
+  no_log: true

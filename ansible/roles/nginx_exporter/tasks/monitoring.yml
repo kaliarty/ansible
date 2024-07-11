@@ -1,0 +1,11 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset_name: nginx-stub-status
+    monitoring_ruleset:
+      metrics_path: /metrics # path is hardcoded in the exporter
+      port: "{{ nginx_exporter_port }}"

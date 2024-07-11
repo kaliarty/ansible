@@ -1,0 +1,17 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      job_name: ataccama-mmm-exporter
+      metrics_path: /metrics
+      scheme: http
+      port: "{{ mmm_exporter_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem
+            app_kubernetes_io_component: postgres-exporter-mmm-db

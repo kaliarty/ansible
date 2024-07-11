@@ -1,0 +1,11 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ term_suggestions.recommender.http_port }}"
+          source: "{{ groups['monitoring_server'] }}"
+        - port: "{{ term_suggestions.recommender.grpc_port }}"
+          source: "{{ groups['ai_server'] }}"

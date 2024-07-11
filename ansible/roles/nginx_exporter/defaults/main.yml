@@ -1,0 +1,8 @@
+---
+nginx_exporter_version: "{{ gen2_nginx_exporter_version }}"
+nginx_exporter_port: 9113
+nginx_exporter_listen_address: ":{{ nginx_exporter_port }}"
+nginx_scrape_uri: http://127.0.0.1:8001/nginx_status
+nginx_exporter_options:
+  - '-web.listen-address {{ nginx_exporter_listen_address }}'
+  - '-nginx.scrape-uri {{ nginx_scrape_uri }}'

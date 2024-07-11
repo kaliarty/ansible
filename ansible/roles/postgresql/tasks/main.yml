@@ -1,0 +1,91 @@
+---
+# tasks file for postgresql
+
+- name: Import distribution dependent variables | override defaults for newer Postgres versions
+  include_vars: "{{ ansible_os_family | lower }}.yml"
+  when: postgres_version is defined
+
+- name: Import distribution dependent tasks | setup repositories for newer Postgres versions
+  include_tasks: "setup-{{ ansible_os_family | lower }}.yml"
+  when: postgres_version is defined
+
+- name: Configure firewall for PostgreSQL
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install PostgreSQL
+  include_role:
+    name: geerlingguy.postgresql
+  vars:
+    postgresql_global_config_options: "{{ postgresql_conf | combine(default_postgresql_conf) | dict2items(key_name='option', value_name='value') }}"
+    postgresql_hba_entries: "{{ pg_hba_conf + default_pg_hba_conf }}"
+
+- name: Install net-tools
+  package:
+    name: net-tools
+    state: present
+
+- name: Gather facts on listening ports
+  community.general.listen_ports_facts:
+  when: ansible_os_family == 'Debian' and postgresql_port != '5432'
+
+- name: find pgsql port
+  set_fact:
+    pgsql_port: "{{ ansible_facts.tcp_listen | selectattr ('port', 'eq', 5432) | selectattr ('address', 'eq', '127.0.0.1')  | list }}"
+  when: ansible_os_family == 'Debian' and postgresql_port != '5432'
+
+- name: restart PostgreSQL service
+  become: true
+  service:
+    name: "{{ postgresql_service }}"
+    state: restarted
+  when: ansible_os_family == 'Debian' and postgresql_port != '5432' and pgsql_port | length > 0
+
+- include_tasks: schemas.yml
+- include_tasks: monitoring.yml
+- include_tasks: logging.yml
+  tags:
+    - logging
+
+- name: Gather facts on listening ports
+  community.general.listen_ports_facts:
+
+- name: set pgsql port and interface
+  set_fact:
+    pgsql_local: "{{ ansible_facts.tcp_listen | selectattr ('port', 'eq', 5432) | selectattr ('address', 'eq', '127.0.0.1') | list }}"
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "vars"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: restart PostgreSQL service
+  become: true
+  service:
+    name: "{{ postgresql_service }}"
+    state: restarted
+  when: pgsql_local | length > 0
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform dependencies
+    summary:
+      name: PostgreSQL
+      description: "RDBMS server"
+      version: "{{ postgres_version | default('system default') }}" 
+      details:
+        directories: "{{ [ postgresql_log_dir, ('/var/lib/pgsql' if ansible_os_family == 'RedHat' else '/var/lib/postgresql') ] }}"
+        os_user: "{{ postgresql_user }}"
+        os_group: "{{ postgresql_group }}"
+        services:
+          - postgresql 
+  tags: summary

@@ -1,0 +1,19 @@
+---
+
+- name: Configure firewall for node-exporter
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install node-exporter
+  include_role:
+    name: prometheus_exporter
+  vars:
+    prometheus_exporter_service_name: node_exporter
+
+- name: Configure node-exporter monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring

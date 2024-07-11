@@ -1,0 +1,115 @@
+---
+# tasks to copy non-default configuration files
+
+- name: "Server | {{ server_instance }} - create config directory"
+  file:
+    state: directory
+    dest: "{{ config_dir }}"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+
+- name: "Server | {{ server_instance }} - download config files"
+  get_url:
+    url: "{{ config_files_zip }}"
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content.zip"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0) and (config_files_zip is regex('^(https?|ftp)'))
+
+- name: "Server | {{ server_instance }} - upload config files"
+  copy:
+    src: "{{ config_files_zip }}"
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content.zip"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0) and not (config_files_zip is regex ('^(https?|ftp)'))
+
+- name: "Server | {{ server_instance }} - create tmp config directory"
+  file:
+    state: directory
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0)
+
+- name: "Server | {{ server_instance }} - unzip config folder"
+  unarchive:
+    src: "{{ config_import_dir }}/{{ server_instance }}_content.zip"
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+    remote_src: true
+    creates: "{{ config_import_dir }}/{{ server_instance }}_content/ {{ config_files_path }}"
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0)
+  notify: Restart Ataccama server service
+
+- name: "Server | {{ server_instance }} - create tmp config files directory"
+  file:
+    state: directory
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content_files"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0)
+
+- name: "Server | {{ server_instance }} - unarchive config files"
+  unarchive:
+    src: "{{ config_import_dir }}/{{ server_instance }}_content/{{ config_files_path }}"
+    dest: "{{ config_import_dir }}/{{ server_instance }}_content_files"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+    remote_src: true
+    creates: "{{ config_import_dir }}/{{ server_instance }}_content_files/{{ config_files_dir }}"
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0)
+  notify: Restart Ataccama server service
+
+- name: Create log directory if doesn't exist
+  file:
+    path: "{{ log_dir }}"
+    state: directory
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+
+- name: "Server | {{ server_instance }} - copy config files on remote"
+  copy:
+    src: "{{ config_import_dir }}/{{ server_instance }}_content_files/{{ config_files_dir }}"
+    dest: "{{ config_dir }}"
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+    remote_src: true
+  when: config_files_zip is defined and (config_files_zip is string and config_files_zip | length > 0)
+  notify: Restart Ataccama server service
+
+- name: "Server | {{ server_instance }} - copy config directory structure"
+  file:
+    path: '{{ config_dir }}/{{ item.path }}'
+    state: directory
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  with_filetree: '{{ config_files }}'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'directory'
+  notify: Restart Ataccama server service
+
+- name: "Server | {{ server_instance }} - copy config files from local"
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ config_dir }}/{{ item.path }}'
+    owner: "{{ server_service_user }}"
+    group: "{{ server_service_group }}"
+    mode: 0750
+  with_filetree: '{{ config_files }}'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'file'
+  notify: Restart Ataccama server service

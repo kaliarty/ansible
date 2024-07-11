@@ -1,0 +1,14 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      honor_timestamps: true
+      scrape_interval: 10s
+      scrape_timeout: 10s
+      metrics_path: /metrics
+      scheme: http
+      port: 9256

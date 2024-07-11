@@ -1,0 +1,7 @@
+---
+# handlers file for opensearch
+
+- name: Restart OpenSearch
+  service:
+    name: opensearch
+    state: restarted

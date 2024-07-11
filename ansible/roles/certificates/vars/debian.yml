@@ -1,0 +1,5 @@
+---
+# vars file for certificates
+
+selfsigned_packages:
+  - ca-certificates

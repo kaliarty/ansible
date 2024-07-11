@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ dpm_install_dir }}/log/access.json.log
+    Tag     accesslog.dpm
+    Parser  json
+[INPUT]
+    Name            systemd
+    Tag             console.dpm
+    Systemd_Filter  _SYSTEMD_UNIT=dpm-server.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.dpm
+    Key_Name      message
+    Parser        dpm
+    Reserve_Data  On

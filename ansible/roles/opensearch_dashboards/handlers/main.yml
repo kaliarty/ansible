@@ -1,0 +1,7 @@
+---
+# handlers file for opensearch_dashboards
+
+- name: Restart OpenSearch Dashboards
+  service:
+    name: opensearch-dashboards
+    state: restarted

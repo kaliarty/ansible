@@ -1,0 +1,92 @@
+---
+# configuration tasks file for mdm_server
+
+- name: MDM server config - create project directory
+  file:
+    state: directory
+    dest: "{{ mdm_server_project_dir }}-{{ mdm_server_version }}"
+    owner: "{{ mdm_server_service_user }}"
+    group: "{{ mdm_server_service_group }}"
+    mode: 0755
+
+- name: MDM server config - link project directory
+  file:
+    src: "{{ mdm_server_project_dir }}-{{ mdm_server_version }}"
+    dest: "{{ mdm_server_project_dir }}"
+    state: link
+
+- name: MDM server config - provision example project
+  block:
+  - name: MDM server config - download example project from remote URL
+    get_url:
+      url: "{{ mdm_server_project.remote_url }}"
+      dest: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}.zip"
+      owner: "{{ mdm_server_service_user }}"
+      group: "{{ mdm_server_service_group }}"
+      mode: 0755
+    when: mdm_server_project.remote_url is defined
+
+  - name: MDM server config - upload example project from local file
+    copy:
+      src: "{{ mdm_server_project.local_file }}"
+      dest: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}.zip"
+      owner: "{{ mdm_server_service_user }}"
+      group: "{{ mdm_server_service_group }}"
+      mode: 0755
+    when: mdm_server_project.local_file is defined
+
+  - name: MDM server config - create example project unarchive directory
+    file:
+      dest: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}"
+      owner: "{{ mdm_server_service_user }}"
+      group: "{{ mdm_server_service_group }}"
+      state: directory
+      mode: 0755
+
+  - name: MDM server config - extract example project from zip archive
+    unarchive:
+      src: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}.zip"
+      dest: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}"
+      owner: "{{ mdm_server_service_user }}"
+      group: "{{ mdm_server_service_group }}"
+      mode: 0755
+      remote_src: true
+      creates: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}/{{ mdm_server_project.project_path }}"
+
+  - name: MDM server config - unzip config files from example project
+    unarchive:
+      src: "{{ mdm_server_project_tmp_dir }}/mdm_content-{{ mdm_server_version }}/{{ mdm_server_project.project_path }}"
+      dest: "{{ mdm_server_project_dir }}"
+      owner: "{{ mdm_server_service_user }}"
+      group: "{{ mdm_server_service_group }}"
+      mode: 0755
+      remote_src: true
+      creates: "{{ mdm_server_project_dir }}/Files"
+    notify: Restart MDM server
+  when: mdm_server_project is defined and (mdm_server_project.remote_url is defined or mdm_server_project.local_file is defined)
+
+- name: MDM server config - copy config directory structure
+  file:
+    path: '{{ mdm_server_project_dir }}/{{ item.path }}'
+    state: directory
+    owner: "{{ mdm_server_service_user }}"
+    group: "{{ mdm_server_service_group }}"
+    mode: 0755
+  with_filetree: '{{ mdm_server_project_templates }}'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'directory'
+  notify: Restart MDM server
+
+- name: MDM server config - copy config files from local
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ mdm_server_project_dir }}/{{ item.path }}'
+    owner: "{{ mdm_server_service_user }}"
+    group: "{{ mdm_server_service_group }}"
+    mode: 0755
+  with_filetree: '{{ mdm_server_project_templates }}'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'file'
+  notify: Restart MDM server

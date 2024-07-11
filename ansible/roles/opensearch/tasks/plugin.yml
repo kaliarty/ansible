@@ -1,0 +1,45 @@
+---
+# installation of opensearch plugin
+
+- name: Get all the installed OpenSearch plugins
+  command: "{{ opensearch_plugin_bin_path }} list"
+  register: installed_plugins
+  changed_when: false
+
+- name: "Remove OpenSearch plugin | {{ plugin.name }}"
+  command: "{{ opensearch_plugin_bin_path }} remove {{ plugin.name }} -p"
+  notify: Restart OpenSearch
+  when:
+    - plugin.state is defined and plugin.state == 'absent'
+    - ( plugin.name in installed_plugins.stdout ) | bool
+
+# download and install plugin from source when using proxy. see https://opensearch.org/docs/latest/install-and-configure/plugins/#install-a-plugin-using-maven-coordinates
+- name: "Download OpenSearch plugin from source | {{ plugin.url }}"
+  block:
+    - name: Download OpenSearch plugin from source
+      get_url:
+        url: "{{ plugin.url }}"
+        dest: "{{ temp_folder }}/{{ plugin.name }}"
+      register: plugin_local_file
+  when:
+    - (environment_vars.http_proxy is defined or environment_vars.https_proxy is defined) and plugin.url is defined
+
+- name: "Install OpenSearch plugin | {{ plugin.name }}"
+  block:
+    - name: "Install OpenSearch plugin | {{ plugin.name }}"
+      command: "{{ opensearch_plugin_bin_path }} install {{ ('file://' ~ plugin_local_file.dest) if plugin_local_file is defined and plugin_local_file.dest is defined else plugin.url | default(plugin.name) }} -b"
+      register: plugin_install_result
+      args:
+        creates: "{{ opensearch_plugin_dir }}/{{ plugin.name }}"
+      notify: Restart OpenSearch
+
+    - name: "Change OpenSearch plugin ownership | {{ plugin.name }}"
+      file:
+        path: "{{ opensearch_plugin_dir }}/{{ plugin.name }}"
+        state: directory
+        owner: "{{ opensearch_system_user }}"
+        group: "{{ opensearch_system_user }}"
+        recurse: yes
+  when:
+    - plugin.state is not defined or plugin.state == 'present'
+    - ( plugin.name not in installed_plugins.stdout ) | bool

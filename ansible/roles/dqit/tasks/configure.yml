@@ -1,0 +1,26 @@
+---
+# tasks file for dqit
+
+- name: "DQIT configuration - assert config directory structure"
+  file:
+    path: '{{ dqit_install_dir }}/{{ item.path }}'
+    state: directory
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  with_filetree: '{{ role_path }}/templates/config'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'directory'
+
+- name: "DQIT configuration - copy config files"
+  template:
+    src: '{{ item.src }}'
+    dest: '{{ dqit_install_dir }}/{{ item.path }}'
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  with_filetree: '{{ role_path }}/templates/config'
+  loop_control:
+    label: "{{ item.path }}"
+  when: item.state == 'file'

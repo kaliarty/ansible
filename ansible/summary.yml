@@ -1,0 +1,136 @@
+---
+- hosts: all
+  #any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - min
+  roles:
+    - summary_output
+  tags: summary
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: localhost
+  become: false
+  tasks:
+    # use the python interpreter used to run Ansible (it is guaranteed to be compatible and have dependencies installed)
+    - name: Process summaries
+      command: "'{{ ansible_playbook_python }}' '{{ playbook_dir }}/../tools/summary.py' '-r'"
+      args:
+        chdir: "{{ playbook_dir }}/../"
+      register: result
+      changed_when: "'changed' in result.stdout"
+    - name: Notify operator
+      debug:
+        msg: "Summary of the Ansible run can be found in summary_full.html and summary_short.html files."
+      changed_when: "'changed' in result.stdout"
+  tags: summary
+  vars:
+    ansible_remote_tmp: null
+  environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+
+# For vm_hostname the "if groups[''][0] is defined " required for not failing on the variable when it is not defined
+# For vm_role we doing check for case when merging server (small/medium) architecture, to not create duplicates
+- hosts: localhost
+  become: false
+  vars:
+    vms:
+      # If we have defined one_database on the hosts.yml, and not merged it with the dependencies server (rare case, but just in a case worth verifying)
+      vm_one_db:
+        vm_role: "{{ 'ONE DB server' if (groups['one_database'][0] is defined) and (groups['one_database'][0] != groups['dependencies'][0]) }}"
+        vm_hostname: "{{ groups['one_database'][0] if groups['one_database'][0] is defined }}"
+      # When we have ONE + RDM, we may merge these servers into a single, so we check if it is the same as ONE or different
+      vm_rdm_db:
+        vm_role: "{{ 'RDM DB server' if (groups['rdm_database'][0] is defined) and (groups['one_database'][0] is defined) and (groups['rdm_database'][0] != groups['one_database'][0]) }}"
+        vm_hostname: "{{ groups['rdm_database'][0] if groups['rdm_database'][0] is defined }}"
+      # For the RDM ONLY deployments, we should check if it is RDM only, and not ONE + RDM
+      vm_rdm_only_db:
+        vm_role: "{{ 'RDM DB server' if (groups['rdm_database'][0] is defined) and (groups['one_database'][0] is not defined) }}"
+        vm_hostname: "{{ groups['rdm_database'][0] if groups['rdm_database'][0] is defined }}"
+      # When we have ONE + MDM, we may merge these servers into a single, so we check if it is the same as ONE or different
+      vm_mdm_db:
+        vm_role: "{{ 'MDM DB server' if (groups['mdm_database'][0] is defined) and (groups['one_database'][0] is defined) and (groups['mdm_database'][0] != groups['one_database'][0]) }}"
+        vm_hostname: "{{ groups['mdm_database'][0] if groups['mdm_database'][0] is defined }}"
+      # For the MDM ONLY deployments, we should check if it is MDM only, and not ONE + MDM
+      vm_mdm_only_db:
+        vm_role: "{{ 'MDM DB server' if (groups['mdm_database'][0] is defined) and (groups['one_database'][0] is not defined) }}"
+        vm_hostname: "{{ groups['mdm_database'][0] if groups['mdm_database'][0] is defined }}"
+      # If Monitoring server is defined
+      vm_mon:
+        vm_role: "{{ 'Monitoring server' if groups['monitoring_server'][0] is defined }}"
+        vm_hostname: "{{ groups['monitoring_server'][0] if groups['monitoring_server'][0] is defined }}"
+      # If Dependencies server is defined
+      vm_dep:
+        vm_role: "{{ 'Dependencies server' if groups['dependencies'][0] is defined }}"
+        vm_hostname: "{{ groups['dependencies'][0] if groups['dependencies'][0] is defined }}"
+      # If ONE App server is defined
+      vm_one_app:
+        vm_role: "{{ 'ONE App server' if groups['one_app'] is defined and groups['one_app'][0] is defined }}"
+        vm_hostname: "{{ groups['one_app'][0] if groups['one_app'] is defined and groups['one_app'][0] is defined }}"
+      # Checking if the web server is not the same as the ONE APP server, means we not merging them
+      vm_fe:
+        vm_role: "{{ 'Front-End server' if (groups['frontend'][0] is defined) and (groups['one_app'] is not defined or groups['frontend'][0] != groups['one_app'][0]) }}"
+        vm_hostname: "{{ groups['frontend'][0] if groups['frontend'][0] is defined }}"
+      # Checking if the ai_server is not the same as ONE APP server, means we not merging them
+      vm_ai:
+        vm_role: "{{ 'AI Core server' if (groups['ai_server'][0] is defined) and (groups['one_app'] is not defined or groups['ai_server'][0] != groups['one_app'][0]) }}"
+        vm_hostname: "{{ groups['ai_server'][0] if groups['ai_server'][0] is defined }}"
+      # Checking if the processing is not the same as ONE APP server, means we not merging them
+      vm_proc:
+        vm_role: "{{ 'Processing server' if (groups['processing'][0] is defined) and (groups['one_app'] is not defined or groups['processing'][0] != groups['one_app'][0]) }}"
+        vm_hostname: "{{ groups['processing'][0] if groups['processing'][0] is defined }}"
+      # If RDM server is defined and not the same as ONE APP
+      vm_rdm:
+        vm_role: "{{ 'RDM server' if (groups['rdm_server'][0] is defined) and (groups['one_app'] is not defined or groups['rdm_server'][0] != groups['one_app'][0]) }}"
+        vm_hostname: "{{ groups['rdm_server'][0] if groups['rdm_server'][0] is defined }}"
+      # RDM ONLY
+      vm_rdm_only:
+        vm_role: "{{ 'RDM server' if (groups['rdm_server'][0] is defined) and (groups['one_app'] is not defined or groups['one_app'][0] is not defined) }}"
+        vm_hostname: "{{ groups['rdm_server'][0] if groups['rdm_server'][0] is defined }}"
+      # If MDM server is defined and not the same as ONE APP
+      vm_mdm_be:
+        vm_role: "{{ 'MDM server' if (groups['mdm_server'][0] is defined) and (groups['one_app'] is defined and groups['one_app'][0] is defined) and (groups['rdm_server'] is defined and groups['rdm_server'][0] is defined) and groups['rdm_server'][0] != groups['one_app'][0] }}"
+        vm_hostname: "{{ groups['mdm_server'][0] if groups['mdm_server'][0] is defined }}"
+      # MDM ONLY
+      vm_mdm_be_only:
+        vm_role: "{{ 'MDM server' if (groups['mdm_server'][0] is defined) and (groups['one_app'] is not defined or groups['one_app'][0] is not defined) }}"
+        vm_hostname: "{{ groups['mdm_server'][0] if groups['mdm_server'][0] is defined }}"
+      # Verify if the MDM Web server is defined, and is not the same as the MDM backend
+      vm_mdm_fe:
+        vm_role: "{{ 'MDM Webapp server' if (groups['mdm_frontend'][0] is defined) and (groups['one_app'] is defined and groups['one_app'][0] is defined) and (groups['mdm_frontend'][0] != groups['mdm_server'][0]) and (groups['rdm_server'][0] != groups['one_app'][0]) }}"
+        vm_hostname: "{{ groups['mdm_frontend'][0] if groups['mdm_frontend'][0] is defined }}"
+      # Verify if the MDM Web server is defined, and is not the same as the MDM backend
+      vm_mdm_fe_only:
+        vm_role: "{{ 'MDM Webapp server' if (groups['mdm_frontend'][0] is defined) and (groups['mdm_frontend'][0] != groups['mdm_server'][0]) and (groups['one_app'][0] is not defined) }}"
+        vm_hostname: "{{ groups['mdm_frontend'][0] if groups['mdm_frontend'][0] is defined }}"
+      # If Orchestration server is defined and not the same as ONE or Processing
+      vm_orch:
+        vm_role: "{{ 'Orchestration server' if (groups['orchestration_server'][0] is defined) and (groups['one_app'] is not defined or groups['orchestration_server'][0] != groups['one_app'][0]) and (groups['orchestration_server'][0] != groups['processing'][0]) }}"
+        vm_hostname: "{{ groups['orchestration_server'][0] if groups['orchestration_server'][0] is defined }}"
+  tasks:
+    - name: Debug var
+      debug:
+        var: nginx_hosts
+    - name: Generate handover documentation
+      template:
+        src: handover.in.j2
+        dest: "{{ playbook_dir }}/../handover.html"
+        mode: 0644
+      vars:
+        _dep_machine: "{{ groups['dependencies'][0] }}"
+        _log_machine: "{{ groups['monitoring_server'][0] }}"
+        _fe_machine: "{{ groups['frontend'][0] }}"
+        keycloak_version: "{{ hostvars[_dep_machine]['ansible_facts']['ansible_local']['summary']['Platform dependencies']
+          | selectattr('name', 'equalto', 'Keycloak') | map(attribute='version') | join(',') }}"
+        opensearch_version_gen2: "{{ hostvars[_dep_machine]['ansible_facts']['ansible_local']['summary']['Observability stack']
+          | selectattr('name', 'equalto', 'OpenSearch') | map(attribute='version') | join(',') }}"
+        opensearch_version_logging: "{{ hostvars[_log_machine]['ansible_facts']['ansible_local']['summary']['Observability stack']
+          | selectattr('name', 'equalto', 'OpenSearch') | map(attribute='version') | join(',') }}"
+        opensearch_dashboards_version: "{{ hostvars[_fe_machine]['ansible_facts']['ansible_local']['summary']['Observability stack']
+          | selectattr('name', 'equalto', 'OpenSearch Dashboards') | map(attribute='version') | join(',') }}"
+        grafana_version: "{{ hostvars[_fe_machine]['ansible_facts']['ansible_local']['summary']['Observability stack']
+          | selectattr('name', 'equalto', 'Grafana') | map(attribute='version') | join(',') }}"
+
+  tags:
+    - summary
+    - handover
+  environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"

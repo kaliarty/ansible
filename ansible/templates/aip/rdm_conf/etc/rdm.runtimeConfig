@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<runtimeconfig>
+    <contributedConfigs>
+        <config class="com.ataccama.dqc.processor.support.UrlResourceContributor">
+            <urls>
+                <url name="rdmapp" url="http://localhost:8060" user="admin" password="admin" />
+                <url name="rdmpublish" url="http://localhost:8061" user="admin" password="admin" />
+                <url name="server" url="http://localhost:8061" user="admin" password="admin" />
+            </urls>
+        </config>
+        <config class="com.ataccama.server.keycloak.KeycloakDeploymentContributor">
+            <keycloakConfigs>
+                <keycloakConfig name="keycloak-local">
+                    <url>https://{{ nginx_hosts.one.hostname }}/auth</url>
+                    <realm>ataccamaone</realm>
+                    <attributes>
+                        <attribute name="ssl-required" value="external" />
+                    </attributes>
+                    <clients>
+                        <client id="rdm-admin-client">
+                            <secret>{{ rdm_admin_client_secret }}</secret>
+                        </client>
+                        <client id="rdm-token-client">
+                            <secret>{{ rdm_token_client_secret }}</secret>
+                            <attributes>
+                                <attribute name="always-refresh-token" value="false" />
+                                <attribute name="public-client" value="false" />
+                                <attribute name="use-resource-role-mappings" value="false" />
+                                <attribute name="bearer-only" value="false" />
+                                <attribute name="autodetect-bearer-only" value="false" />
+                                <attribute name="enable-basic-auth" value="true" />
+                                <attribute name="principal-attribute" value="preferred_username" />
+                            </attributes>
+                        </client>
+                    </clients>
+                </keycloakConfig>
+            </keycloakConfigs>
+        </config>
+        <config class="com.ataccama.server.platform.PlatformDeploymentContributor">
+          <platformDeployments>
+            <platformDeployment name="rdm">
+              <properties>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.rdm.name" value="{{ rdm_jwt_key.name }}"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.rdm.fingerprint" value="{{ rdm_jwt_key.fp }}"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.module" value="rdm"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.rdm.content" value="{{ rdm_jwt_key.content | b64encode }}"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.jwt-keys.rdm.isRevoked" value="false"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.roles" value="IMPERSONATION"/>
+                <property name="ataccama.one.platform.deployments.{{ rdm_deployment_name }}.security.url-patterns" value="/rdm/**, /server-management/**, /rdmOnPublishHandler"/>
+              </properties>
+            </platformDeployment>
+          </platformDeployments>
+        </config>
+    </contributedConfigs>
+    <dataSources>
+        <dataSource driverclass="org.postgresql.Driver" name="rdm_db" url="jdbc:postgresql://{{ rdm.database.host }}:{{ rdm.database.port }}/{{ rdm.database.name }}{{ rdm.postgresql_server.parameters | default( '' ) }}" user="{{ rdm.database.user }}" password="{{ rdm.database.password }}" />
+    </dataSources>
+</runtimeconfig>

@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<workflows>
+    <statuses>
+        <status id="1" label="For resolution"/>
+        <status id="2" label="For supervisor"/>
+        <status id="3" label="For approval"/>
+        <status id="4" label="Approved"/>
+        <status id="5" label="Closed"/>
+    </statuses>
+    <workflows>
+        <workflow id="standard">
+            <securityConstraints>
+                <constraint permission="view">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+                <constraint permission="edit">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+                <constraint permission="assign">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+            </securityConstraints>
+            <steps>
+                <step id="1" label="For resolution" statusId="1">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user,cif_user,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="edit">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user,cif_user,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="assign">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+                <step id="2" label="For supervisor" statusId="2">
+                    <securityConstraints/>
+                </step>
+                <step id="3" label="For approval" statusId="3">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="edit">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="assign">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+                <step id="4" label="Approved" statusId="4">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="edit">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+                <step id="5" label="Closed" statusId="5">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user,cif_user,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="assign">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+            </steps>
+            <transitions>
+                <transition id="Resolve" label="Resolve" originId="1" targetId="3">
+                    <conditions/>
+                    <validators>
+                        <val class="com.ataccama.epp.contrib.wf.validators.ConditionalValidator" message="Issue is not fixed.">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.wf.conditions.IssueFixed"/>
+                            </conditions>
+                        </val>
+                    </validators>
+                    <postActions/>
+                </transition>
+                <transition id="Send to supervisor" label="Send to supervisor" originId="1" targetId="2">
+                    <conditions/>
+                    <validators>
+                        <val class="com.ataccama.epp.contrib.wf.validators.ConditionalValidator" message="Comment must be specified.">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.wf.conditions.CommentIsPresent"/>
+                            </conditions>
+                        </val>
+                    </validators>
+                    <postActions/>
+                </transition>
+                <transition id="Resolve" label="Resolve" originId="2" targetId="3">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="2" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="3" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Approve" label="Approve" originId="3" targetId="4">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Send to supervisor" label="Send to supervisor" originId="3" targetId="2">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Close" label="Close" originId="4" targetId="5">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="4" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="5" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+            </transitions>
+        </workflow>
+        <workflow id="simple">
+            <securityConstraints>
+                <constraint permission="view">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+                <constraint permission="edit">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+                <constraint permission="assign">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor,admin"/>
+                    </conditions>
+                </constraint>
+            </securityConstraints>
+            <steps>
+                <step id="1" label="For resolution" statusId="1">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="worker,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="edit">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="assign">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+                <step id="2" label="For supervisor" statusId="2">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+                <step id="5" label="Closed" statusId="5">
+                    <securityConstraints>
+                        <constraint permission="view">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="user,supervisor"/>
+                            </conditions>
+                        </constraint>
+                        <constraint permission="assign">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </constraint>
+                    </securityConstraints>
+                </step>
+            </steps>
+            <transitions>
+                <transition id="Send to supervisor" label="Send to supervisor" originId="1" targetId="2">
+                    <conditions/>
+                    <validators>
+                        <val class="com.ataccama.epp.contrib.wf.validators.ConditionalValidator" message="Comment must be specified.">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.wf.conditions.CommentIsPresent"/>
+                            </conditions>
+                        </val>
+                    </validators>
+                    <postActions/>
+                </transition>
+                <transition id="Close" label="Close" originId="1" targetId="5">
+                    <conditions/>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="2" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.workflow.conditions.OrCondition">
+                            <conditions>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="admin"/>
+                                <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                            </conditions>
+                        </condition>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Close" label="Close" originId="2" targetId="5">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+                <transition id="Reopen" label="Reopen" originId="5" targetId="1">
+                    <conditions>
+                        <condition class="com.ataccama.epp.contrib.security.UserIsInRole" roles="supervisor"/>
+                    </conditions>
+                    <validators/>
+                    <postActions/>
+                </transition>
+            </transitions>
+        </workflow>
+    </workflows>
+</workflows>

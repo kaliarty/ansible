@@ -1,0 +1,130 @@
+---
+# tasks file for dqit
+
+- name: Download dependency packages
+  package:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: true
+
+- name: Create DQIT system group and user
+  include_role:
+    name: system
+    tasks_from: "{{ task }}"
+  loop:
+    - groups.yml
+    - users.yml
+  loop_control:
+    loop_var: task
+  vars:
+    system_groups:
+      - name: "{{ dqit_service_group }}"
+        state: present
+        system: yes
+    system_users:
+      - username: "{{ dqit_service_user }}"
+        system: yes
+        group: "{{ dqit_service_group }}"
+        home: "{{ dqit_install_dir }}"
+        shell: /usr/sbin/nologin
+        create_home: no
+
+- name: Create directory for dqit access log
+  file:
+    path: "{{ dqit_log_dir }}"
+    state: directory
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  when: dqit_log_dir is defined
+
+- name: Create dqit application directories
+  file:
+    state: directory
+    dest: "{{ item }}"
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  with_items:
+    - "{{ dqit_install_dir }}-{{ package_version }}"
+
+- name: Download dqit webapp archive from Maven
+  maven_artifact:
+    repository_url: "{{ dqit_maven.repo }}"
+    group_id: "{{ dqit_maven.group }}"
+    artifact_id: "{{ dqit_maven.artifact }}"
+    version: "{{ dqit_maven.version }}"
+    extension: "{{ dqit_maven.extension }}"
+    dest: "{{ package_download_dir }}/{{ dqit_maven.artifact }}-{{ dqit_maven.version }}.{{ dqit_maven.extension }}"
+    state: present
+  when: package_download_type == 'maven_artifact'
+
+- name: Download dqit webbapp archive - remote download
+  get_url:
+    url: "{{ package_url }}"
+    dest: "{{ package_download_dir }}/{{ dqit_maven.artifact }}-{{ package_version }}.{{ dqit_maven.extension }}"
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    checksum: "{{ package_checksum }}"
+    mode: 0755
+    force: true
+  when: package_download_type == 'remote_url'
+
+- name: "Copy package from file on local filesystem | module: {{ module_name }}"
+  copy:
+    src: "{{ package_location }}"
+    dest: "{{ package_download_dir }}/{{ dqit_maven.artifact }}-{{ package_version }}.{{ dqit_maven.extension }}"
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  when: package_download_type == 'local'
+
+- name: Check dqit is extracted
+  stat:
+    path: "{{ dqit_install_dir }}-{{ package_version }}/WEB-INF"
+  register: web_inf
+
+- name: Extract dqit webapp from war file # noqa: command-instead-of-module
+  command: >
+    unzip {{ package_download_dir }}/{{ dqit_maven.artifact }}-{{ package_version }}.{{ dqit_maven.extension }}
+    -d {{ dqit_install_dir }}-{{ package_version }}
+  when: not web_inf.stat.exists
+
+- name: Set correct permissions for extracted files
+  file:
+    path: "{{ dqit_install_dir }}-{{ package_version }}"
+    state: directory
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+    recurse: yes
+
+- name: Symlink dqit webapp to actual version
+  file:
+    state: link
+    src: "{{ dqit_install_dir }}-{{ package_version }}"
+    dest: "{{ dqit_install_dir }}"
+
+- name: DQIT - create license directory
+  file:
+    path: "{{ dqit_license_dir }}"
+    state: directory
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_group }}"
+    mode: 0755
+  register: dqit_create_licdir # WORKAROUND: systemd role flushes handlers early
+  tags:
+    - license
+    - restart
+
+- name: DQIT - Copy Ataccama license to dqit license directory
+  copy:
+    src: "{{ dqit_license_file }}"
+    dest: "{{ dqit_license_dir }}/license.plf"
+    owner: "{{ dqit_service_user }}"
+    group: "{{ dqit_service_user }}"
+    mode: 0644
+  register: dqit_copy_licfile # WORKAROUND: systemd role flushes handlers early
+  tags:
+    - license
+    - restart

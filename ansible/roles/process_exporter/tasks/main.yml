@@ -1,0 +1,39 @@
+---
+- name: Create process-exporter config directory
+  become: true
+  file:
+    path: "{{ process_exporter_config_dir }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: Create/Update configuration file
+  become: true
+  copy:
+    dest: "{{ process_exporter_processes_config_file }}"
+    content: |
+      process_names:
+      {{ process_exporter_process_names }}
+    backup: false
+    owner: root
+    mode: 0644
+  notify: restart process-exporter
+
+- name: Configure firewall for process-exporter
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install process-exporter
+  include_role:
+    name: prometheus_exporter
+  vars:
+    prometheus_exporter_service_name: process_exporter
+
+- name: Configure monitoring for process-exporter
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring

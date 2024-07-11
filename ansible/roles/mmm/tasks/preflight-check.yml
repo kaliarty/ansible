@@ -1,0 +1,36 @@
+---
+# preflight variables check tasks for mmm content packs
+
+- name: Check that MMM content packs is a list
+  assert:
+    that:
+      - mmm_content_packs is iterable
+    msg: "mmm_content_packs needs to be a list"
+  when: mmm_content_packs is defined
+
+- name: Check MMM content packs are configured correctly
+  assert:
+    that:
+      - item.address is defined and item.address is string
+    msg: "mmm_content_packs is missing required entries in some of the items"
+  with_items: "{{ mmm_content_packs }}"
+  when: mmm_content_packs is defined and mmm_content_packs | length > 0
+
+- name: Check that MMM content pack S3 repositories is a list
+  assert:
+    that:
+      - mmm_content_pack_s3_repositories is iterable
+    msg: "mmm_content_pack_s3_repositories needs to be a list"
+  when: mmm_content_pack_s3_repositories is defined
+
+- name: Check MMM content pack S3 repositories are configured correctly
+  assert:
+    that:
+      - item.url is defined and item.url is string
+      - item.uri_regex is defined and item.uri_regex is string
+      - item.storage_id is defined and item.storage_id is string
+      - item.secret_key is defined and item.secret_key is string
+      - item.access_key is defined and item.access_key is string
+    msg: "mmm_content_pack_s3_repositories is missing required entries in some of the items"
+  with_items: "{{ mmm_content_pack_s3_repositories }}"
+  when: mmm_content_pack_s3_repositories is defined and mmm_content_pack_s3_repositories | length > 0

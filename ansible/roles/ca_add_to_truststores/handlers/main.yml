@@ -1,0 +1,76 @@
+---
+- name: (Handler) Update system CA truststore
+  command: "{{ update_ca_truststore_binary }}"
+  listen: update system truststore
+
+- name: (Handler) Check if CA already exists in java keystore
+  run_once: true
+  command: "keytool -list -cacerts -alias one-ca -storepass changeit"
+  register: ca_exists_in_keystore
+  changed_when: |
+    'Certificate fingerprint' in ca_exists_in_keystore.stderr
+    or 'Certificate fingerprint' in ca_exists_in_keystore.stdout
+  failed_when:
+    - "ca_exists_in_keystore.rc != 0"
+    - "'does not exist' not in ca_exists_in_keystore.stdout"
+    - "'does not exist' not in ca_exists_in_keystore.stderr"
+  delegate_to: "{{ item }}"
+  loop: "{{
+      (groups['ai_server'] | default([])
+      + groups['dependencies'] | default([])
+      + groups['frontend'] | default([])
+      + groups['mdm_server'] | default([])
+      + groups['monitoring_server'] | default([])
+      + groups['one_app'] | default([])
+      + groups['processing'] | default([])
+      + groups['rdm_server'] | default([])
+      + groups['dqit_server'] | default([])
+      + groups['orchestration_server'] | default([]))
+      | unique
+    }}"
+  listen: update java keystore
+
+- name: (Handler) Delete existing CA from java keystore
+  run_once: true
+  command: "keytool -delete -cacerts -alias one-ca -storepass changeit -noprompt"
+  register: delete_existing_ca
+  changed_when:
+    - delete_existing_ca.stderr | length == 0
+    - delete_existing_ca.stdout | length == 0
+  failed_when:
+    - "delete_existing_ca.rc != 0"
+    - "'does not exist' not in delete_existing_ca.stdout"
+    - "'does not exist' not in delete_existing_ca.stderr"
+  delegate_to: "{{ item.item }}"
+  when: item.changed
+  loop: "{{ ca_exists_in_keystore.results }}"
+  loop_control:
+    label: "{{ item.item }}"
+  listen: update java keystore
+
+- name: (Handler) Import CA to java keystore
+  run_once: true
+  command: "keytool -import -cacerts -alias one-ca -file {{ ca_truststore_path }}/one-ca.crt -storepass changeit -noprompt"
+  register: _result
+  changed_when: |
+    'Certificate was added to keystore' in _result.stderr
+    or 'Certificate was added to keystore' in _result.stdout
+  failed_when:
+    - "_result.rc != 0"
+    - "'already exists' not in _result.stdout"
+    - "'already exists' not in _result.stderr"
+  delegate_to: "{{ item }}"
+  loop: "{{
+      (groups['ai_server'] | default([])
+      + groups['dependencies'] | default([])
+      + groups['frontend'] | default([])
+      + groups['mdm_server'] | default([])
+      + groups['monitoring_server'] | default([])
+      + groups['one_app'] | default([])
+      + groups['processing'] | default([])
+      + groups['rdm_server'] | default([])
+      + groups['dqit_server'] | default([])
+      + groups['orchestration_server'] | default([]))
+      | unique
+    }}"
+  listen: update java keystore

@@ -1,0 +1,109 @@
+{{ ansible_managed | comment }}
+### Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+### Configuration service configuration
+ataccama.config-service.runtime=off
+
+### Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.admin.client-id=mdm-admin-client
+ataccama.authentication.keycloak.token.client-id=mdm-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+server.forward-headers-strategy=NATIVE
+
+{% if ataccama_internal_encryption is defined %}
+### Encryption configuration
+internal.encryption.keystore={{ mdm_server_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ mdm_server_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ mdm_server_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ mdm_server_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+### MDM solution configuration
+ataccama.one.mdm.mda.config-file=mda-config.xml
+ataccama.one.mdm.nme.config-file=nme-config.xml
+ataccama.one.mdm.notifications.enabled=true
+ataccama.one.mdm.ai-matching.enabled=false
+
+{% if mmm is defined %}
+### MMM configuration
+ataccama.one.mdm.mmm.enabled=true
+ataccama.one.mdm.mmm.server-url=http://{{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.mdm.mmm.webapp-url={{ frontend_url.rstrip('/') ~ '/' }}
+ataccama.one.mdm.mmm.cleaning-period=24
+{% endif %}
+
+### MDM server ports
+ataccama.server.http.default.port={{ mdm.server.http_port }}
+ataccama.server.grpc.port={{ mdm.server.grpc_port }}
+
+ataccama.server.http.default.path.exclude=/actuator/**
+ataccama.server.http.actuator.port={{ mdm_server_actuators_port }}
+ataccama.server.http.actuator.path.include=/actuator/**
+
+# because the bearer token stored in cookies occupies more space in the cookie http header
+server.max-http-header-size=32KB
+#ataccama.one.mdm.mda.grpc.batch-size=1000
+one.security.header.content-security-policy.script-src='self' 'unsafe-eval' 'unsafe-inline'
+
+{% if rdm_fe_url is defined %}
+### RDM configuration
+ataccama.one.mdm.rdm.webapp-url={{ rdm_fe_url }}
+{% endif %}
+
+### User settings configuration
+ataccama.one.mdm.user-settings.type=JDBC
+ataccama.one.mdm.user-settings.datasource=mdc_db
+ataccama.one.mdm.user-settings.table-prefix=us_
+
+### Endpoints for monitoring
+management.endpoints.enabled-by-default=false
+management.endpoint.info.enabled=true
+management.endpoint.health.enabled=true
+management.endpoint.prometheus.enabled=true
+management.endpoints.web.exposure.include=health,info,prometheus
+management.endpoint.health.show-details=always
+management.endpoint.health.show-components=always
+management.endpoint.health.status.order=down,out-of-service,reloading,unknown,up
+management.info.git.mode=full
+management.endpoint.health.probes.enabled=true
+management.endpoint.health.group.liveness.include=diskSpace,ping
+management.endpoint.health.group.readiness.include=db
+ataccama.authentication.http.public-endpoints.actuator.endpoint-filter=/actuator/health,/actuator/health/liveness,/actuator/health/readiness,/actuator/health/startup
+ataccama.authentication.http.acl.endpoints.actuator.endpoint-filter=/actuator/info,/actuator/health
+
+ataccama.authentication.http.acl.endpoints.actuator.allowed-roles=ONE_PLATFORM_MONITORING,admin
+
+{% if dpm_deployment_name is defined %}
+### DPM jwt keys
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.module=dpm
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.uri={{ dpm.host }}:{{ dpm.http_port }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.name={{ dpm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.content={{ dpm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.fingerprint={{ dpm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.jwt-keys.{{ dpm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ dpm_deployment_name }}.security.roles[0]=IMPERSONATION
+{% endif %}
+
+
+{% for datasource in mdm.database.databases %}
+ataccama.one.mdm.datasource.{{ datasource.name }}.url=jdbc:postgresql://{{ mdm.database.host }}:{{ mdm.database.port }}/{{ datasource.name }}
+ataccama.one.mdm.datasource.{{ datasource.name }}.waiting.timeout=5m
+ataccama.one.mdm.datasource.{{ datasource.name }}.waiting.interval=5s
+ataccama.one.mdm.datasource.{{ datasource.name }}.hikari.initializationFailTimeout=-1
+ataccama.one.mdm.datasource.{{ datasource.name }}.hikari.connectionTimeout=5000
+ataccama.one.mdm.datasource.{{ datasource.name }}.username={{ mdm.database.user }}
+ataccama.one.mdm.datasource.{{ datasource.name }}.password={{ mdm.database.password }}
+
+{% endfor %}
+

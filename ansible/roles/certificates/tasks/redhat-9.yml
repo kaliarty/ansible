@@ -1,0 +1,8 @@
+---
+- name: RedHat 9 - Install ca-certificates and python3-cryptography
+  yum:
+    name:
+      - ca-certificates
+      - python3-cryptography
+    update_cache: yes
+    state: present

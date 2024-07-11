@@ -1,0 +1,31 @@
+---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Install ca-certificates package
+  package:
+    name: "{{ ca_certificates_package }}"
+    state: present
+
+- name: Get CA certificate content
+  slurp:
+    src: "{{ ca_cert_dir }}/ca.pem"
+  register: ca_certificate_content
+  delegate_to: "{{ groups['proxies'] | first }}"
+  run_once: yes
+
+- name: Copy CA certificate content to all the hosts
+  copy:
+    content: "{{ ca_certificate_content['content'] | b64decode }}"
+    dest: "{{ ca_truststore_path }}/one-ca.crt"
+    mode: '0644'
+  notify:
+    - update system truststore
+    - update java keystore

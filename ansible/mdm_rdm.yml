@@ -1,0 +1,166 @@
+---
+- import_playbook: system.yml
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: ntp.yml
+  when: ( ntp_enabled | default('true') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: custom-firewall.yml
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: monitoring.yml
+  when: monitoring_manage | bool
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: logging.yml
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: one_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  roles:
+    - role: postgresql
+      vars:
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ postgres.database.owner }}"
+            password: "{{ postgres.database.password }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          - name: "{{ keycloak_database_name }}"
+            owner: "{{ postgres.database.owner }}"
+        instance_name: onedb
+      when: not ( cloud_managed_db | default('false') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  roles:
+    - role: postgresql
+      vars:
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ mdm.database.user }}"
+            password: "{{ mdm.database.password }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          # MDM databases
+          - name: mdc_db
+            owner: "{{ mdm.database.user }}"
+          - name: esb_db
+            owner: "{{ mdm.database.user }}"
+          - name: it_db
+            owner: "{{ mdm.database.user }}"
+          - name: mda_cache
+            owner: "{{ mdm.database.user }}"
+          - name: external
+            owner: "{{ mdm.database.user }}"
+          - name: log_db
+            owner: "{{ mdm.database.user }}"
+          - name: eh_db
+            owner: "{{ mdm.database.user }}"
+        instance_name: mdmdb
+      when: not ( cloud_managed_db | default('false') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: rdm_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  roles:
+    - role: postgresql
+      vars:
+        # defined in _packages.yml
+        postgres_version: "{{ gen2_postgres_version }}"
+        postgresql_users:
+          - name: "{{ rdm.database.user }}"
+            password: "{{ rdm.database.password }}"
+            role_attr_flags: CREATEDB,CREATEROLE,SUPERUSER,INHERIT,LOGIN
+        postgresql_databases:
+          # RDM database
+          - name: "{{ rdm.database.name }}"
+            owner: "{{ rdm.database.user }}"
+        instance_name: rdmdb
+      when: not ( cloud_managed_db | default('false') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: one_database, mdm_database, rdm_database
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution_major_version
+    - os_family
+  roles:
+    - role: postgresql_exporter
+      when: not ( cloud_managed_db | default('false') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+
+- import_playbook: databases_cloud.yml
+  when: ( cloud_managed_db | default('false') | bool )
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: nginx.yml
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: dependencies
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  roles:
+    - role: keycloakx
+      vars:
+        keycloak_config:
+          proxy: edge
+          hostname: "{{ nginx_hosts.one.hostname }}"
+          cache-stack: tcp
+          db-url-host: "{{ postgres.host }}"
+          db-username: "{{ postgres.database.owner }}"
+          db-password: "{{ postgres.database.password }}"
+          db-url-port: "{{ postgres.port }}"
+          db-url-database: "{{ keycloak_database_name }}"
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: mdm_server
+  tags: mdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_frontend
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - name: mdm
+  tags: mdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: rdm_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: server
+      server_instance: rdm
+      config_dir: /etc/rdm_conf
+      config_files: templates/aip/rdm_conf
+      server_config_path: /etc/rdm_conf/etc/rdm.serverConfig
+      config_files_zip: "{{ rdm_server_config_files_zip | default('') }}"
+      config_files_path: "templates/model_projects/ReferenceDataManager.mdc"
+      config_files_dir: "Files/"
+      server_license_file: "{{ rdm_server_license_file }}"
+      server_monitoring_port: "{{ rdm_server_monitoring_port }}"
+    - role: rdm
+  tags: rdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- import_playbook: summary.yml
+  environment: "{{ environment_vars | default({}) }}"
+- import_playbook: monitoring_post.yml
+  when: monitoring_manage | bool
+  environment: "{{ environment_vars | default({}) }}"

@@ -1,0 +1,4 @@
+---
+# vars file for opensearch_dashboards
+
+opensearch_dashboards_security_enabled: false

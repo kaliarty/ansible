@@ -1,0 +1,28 @@
+#!/usr/bin/python3
+
+# Read all fragments in input dir, combine them into single dict and output it in Ansible fact format
+# If there are none, output an empty (but valid) data
+# Every fragment is a dict: {"group": group, "data": data} where group is a (hashable) group name (may be None) and data is an arbitrary dict.
+# We group all data with equal group name into a list and output those dicts.
+
+from pathlib import Path
+import json
+
+input_dir = Path("{{ summary_fact_dir }}")
+input_file_suffix = "{{ summary_fact_suffix }}"
+
+def group(accumulator, fragment):
+    key = fragment["group"]
+    if key not in accumulator.keys():
+        accumulator[key] = [fragment["data"]]
+    else:
+        accumulator[key].append(fragment["data"])
+    return accumulator
+
+out = dict()
+for file in input_dir.glob(f"*{input_file_suffix}"):
+    with file.open() as f:
+        out = group(out, json.load(f))
+
+sorted_out = {key: value for key, value in sorted(out.items(), key=(lambda item: item[0]))}
+print(json.dumps(sorted_out))

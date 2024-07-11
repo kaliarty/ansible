@@ -1,0 +1,10 @@
+---
+
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: nginx.conf
+        template: nginx.fluentbit.conf.j2

@@ -1,0 +1,29 @@
+---
+# azure managed postgresql
+- hosts: bastion
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  collections:
+    - community.postgresql
+  roles:
+
+    - role: postgresql_cloud
+      vars:
+        postgresql_server: "{{ postgres.postgresql_server }}"
+
+    - role: postgresql_cloud
+      vars:
+        postgresql_server: "{{ rdm.postgresql_server }}"
+      when: "'rdm_server' in groups.keys()"
+
+    - role: postgresql_cloud
+      vars:
+        postgresql_server: "{{ mdm.postgresql_server }}"
+      when: "'mdm_server' in groups.keys()"
+
+    - role: postgresql_cloud
+      vars:
+        postgresql_server: "{{ dqit.postgresql_server }}"
+      when: "'dqit_server' in groups.keys()"
+  environment: "{{ environment_vars | default({}) }}"

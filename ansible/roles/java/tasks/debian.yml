@@ -1,0 +1,33 @@
+---
+# tasks for installation on ubuntu / debian based systems
+
+- name: Ubuntu - Install apt-transport-https to support https APT downloads
+  package:
+    name: apt-transport-https
+    state: present
+  when: java_distribution != 'openjdk'
+
+- name: Ubuntu - Add AdoptiumOpenJDK repository key
+  apt_key:
+    url: '{{ adoptiumopenjdk_apt_repo_key }}'
+    id: '{{ adoptiumopenjdk_apt_repo_key_id }}'
+    state: present
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: Ubuntu - Add AdoptiumOpenJDK repository
+  apt_repository:
+    repo: '{{ adoptiumopenjdk_apt_repo }}'
+    state: present
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: Ubuntu - Ensure Java is installed
+  apt:
+    name: "{{ java_packages }}"
+    state: present
+    update_cache: yes
+
+- name: Ubuntu - Install dependencies
+  apt:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: yes

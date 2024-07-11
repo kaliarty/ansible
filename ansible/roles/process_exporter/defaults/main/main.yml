@@ -1,0 +1,10 @@
+---
+process_exporter_port: 9256
+process_exporter_listen_address: "0.0.0.0:{{ process_exporter_port }}"
+
+process_exporter_config_dir: /etc/process_exporter
+process_exporter_processes_config_file: "{{ process_exporter_config_dir }}/config.yml"
+
+process_exporter_options:
+  - '--web.listen-address={{ process_exporter_listen_address }}'
+  - '--config.path={{ process_exporter_processes_config_file }}'

@@ -1,0 +1,25 @@
+---
+nginx_mmm_grpc_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/mmm-grpc.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.mmm_grpc.hostname | default(omit) }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.mmm_grpc.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.mmm_grpc.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.mmm_grpc.hostname | default(omit) }}.access.log"
+              format: main
+        locations:
+          - location: /
+            grpc:
+              pass: grpc://mmm_grpc
+    upstreams:
+      - name: mmm_grpc
+        servers:
+          - address: "{{ mmm.host }}:{{ mmm.grpc_port }}"
+            weight: 1

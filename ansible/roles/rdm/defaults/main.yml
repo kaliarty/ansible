@@ -1,0 +1,47 @@
+---
+# defaults file for rdm
+
+rdm_module_name: rdm
+rdm_version: "{{ packages.rdm.version }}"
+rdm_license_file: licenses/license.plf
+rdm_install_dir: "{{ deployment_folder }}/{{ rdm_module_name }}"
+
+rdm_package_download_type: "{{ packages.rdm.package_download_type | default('maven_artifact') }}"
+rdm_package_location: "{{ packages.rdm.package_location | default ('') }}"
+rdm_package_url: "{{ packages.rdm.package_url | default ('') }}"
+rdm_package_checksum: "{{ packages.rdm.package_checksum | default(omit) }}"
+
+rdm_service_user: rdm
+rdm_service_group: rdm
+
+rdm_files:
+  - src: "{{ rdm_license_file }}"
+    dest: "{{ rdm_install_dir }}/license/"
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ rdm_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ rdm_install_dir }}/etc"
+
+rdm_services:
+  - name: rdm-webapp
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ rdm_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ rdm_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ rdm_jwt_key.private }}"
+    java_opts: "{{ rdm_java_opts | default('-Xms256m -Xmx288m -XX:MaxRAM=425m') }}"
+
+rdm_java_heapdumps: "true"
+rdm_java_temp_folder: "{{ rdm_install_dir }}/tmp"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.product.one.rdm
+  artifact: rdm-assembly
+  version: "{{ packages.rdm.version }}"
+  extension: zip
+  classifier: linux
+
+rdm_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ rdm_install_dir }}/etc/application.properties"

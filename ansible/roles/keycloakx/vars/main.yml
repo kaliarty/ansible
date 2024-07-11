@@ -1,0 +1,8 @@
+---
+keycloak_service_name: keycloak-server
+keycloak_dependency_packages:
+  - unzip
+  - tar
+  - python3-lxml
+  - acl
+  - jq

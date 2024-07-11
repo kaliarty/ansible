@@ -1,0 +1,4 @@
+---
+# vars file for dqit
+java_heapdump_file: "{{ java_heapdump_dir }}/{{ service_name }}.hproof"
+java_heapdump_params: "-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath={{ java_heapdump_file }}"

@@ -1,0 +1,221 @@
+---
+# tasks file for role nginx
+
+- name: Print hosts list
+  ansible.builtin.debug:
+    msg: "{{ nginx_hosts }}"
+    verbosity: 1
+
+- name: Check nginx hosts defined correctly
+  assert:
+    that:
+      - nginx_hosts | type_debug == 'dict'
+    msg: "nginx hosts must be a dictionary"
+  when: nginx_hosts is defined and nginx_hosts | length > 0
+
+- name: Check only for predefined nginx hosts
+  assert:
+    that:
+      - item.key in _nginx_allowed_proxy_hosts
+      - item.value.hostname is defined
+    msg: "nginx hosts must be one of {{ _nginx_allowed_proxy_hosts }}"
+  with_dict: "{{ nginx_hosts }}"
+  loop_control:
+    label: "{{ item.key }}"
+
+- name: Set certificate from hosts if not defined
+  block:
+    - name: Set CN, altnames and certificate kind
+      set_fact:
+        certificate_cn: "{{ (nginx_hosts | dict2items )[0].value.hostname }}"
+        certificate_altnames: "{{ nginx_hosts.values() | list | map(attribute='hostname') | list }}"
+        certificate_kind: "{{ nginx_cert_kind }}"
+
+    - name: Set certificates variable
+      set_fact:
+        nginx_certificates: "{{ [{'cn': certificate_cn, 'altnames': certificate_altnames, 'kind': certificate_kind}] }}"
+  when: (nginx_certificates is not defined or nginx_certificates | length == 0) and nginx_hosts | length > 0
+  tags: summary
+
+- name: Print certificates list
+  ansible.builtin.debug:
+    msg: "{{ nginx_certificates }}"
+    verbosity: 1
+
+- name: Create certificates for nginx
+  include_role:
+    name: certificates
+    apply:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+  vars:
+    cert_dir: "{{ nginx_cert_dir }}"
+    ca_cert_dir: "{{ nginx_ca_cert_dir }}"
+    certificates: "{{ nginx_certificates }}"
+    # WORKAROUND for Centos 7: Centos 7's default Python is python2, but we install and test (in roles/system) dependencies only for python3, and roles/certificates
+    #   use crypto libraries that are not installed by default.
+    ansible_python_interpreter: /usr/bin/python3
+  tags: summary
+
+- name: Set nginx_config_http_template
+  set_fact:
+    nginx_config_http_template: "{{ nginx_config_http | default(_nginx_config_http_template | select() | list) }}"
+  tags: summary
+
+- name: Print nginx_config_http_template
+  ansible.builtin.debug:
+    msg: "{{ nginx_config_http_template }}"
+    verbosity: 1
+
+- name: Check nginx http config configured correctly
+  assert:
+    that:
+      - nginx_config_http_template | type_debug == 'list'
+    msg: "nginx http template must be a list"
+  when: nginx_config_http_template is defined
+
+- name: Set Nginx version Ubuntu
+  set_fact:
+    nginx_version: "{{ gen2_nginx_version_ubuntu }}"
+  when: ansible_os_family == 'Debian'
+  tags: summary
+
+- name: Set Nginx version RHEL 7
+  set_fact:
+    nginx_version: "{{ gen2_nginx_version_rhel7 }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version == "7"
+  tags: summary
+
+- name: Set Nginx version RHEL 8
+  set_fact:
+    nginx_version: "{{ gen2_nginx_version_rhel8 }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version == "8"
+  tags: summary
+
+- name: Set Nginx version RHEL 9
+  set_fact:
+    nginx_version: "{{ gen2_nginx_version_rhel9 }}"
+  when:
+    - ansible_os_family == "RedHat"
+    - ansible_distribution_major_version == "9"
+  tags: summary
+
+- name: Manage nginx
+  include_role:
+    name: nginxinc.nginx
+
+- name: Install python-passlib
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Create nginx basic auth files
+  no_log: "{{ item.auth_basic_password is defined }}"
+  community.general.htpasswd:
+    path: "{{ item.auth_basic_user_file | default(nginx_basic_auth.default_htpasswd_file) }}"
+    name: "{{ item.auth_basic_name | default(nginx_basic_auth.default_user) }}"
+    password: "{{ item.auth_basic_password | default(nginx_basic_auth.default_password) }}"
+    owner: nginx
+    mode: 0640
+  when: item.auth_basic_enabled | bool
+  loop:
+    - "{{ alertmanager }}"
+    - "{{ opensearch_dashboards }}"
+    - "{{ monitoring_server }}"
+
+- name: Set nginx_html_files_list variable
+  set_fact:
+    nginx_html_files_list: "{{ lookup('filetree', 'files/html') }}"
+
+- name: Create directories for additional html files
+  file:
+    path: "{{ nginx_config_html_path }}/{{ item.path }}"
+    state: directory
+    mode: "{{ item.mode }}"
+    owner: nginx
+    group: nginx
+  when: item.state == 'directory'
+  loop: "{{ nginx_html_files_list + [{'path': '', 'mode': '0750', 'state': 'directory'}] }}" # include the common superdir
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Copy additional html files
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ nginx_config_html_path }}/{{ item.path }}"
+    mode: "{{ item.mode }}"
+  when: item.state == 'file'
+  loop: "{{ nginx_html_files_list }}"
+  loop_control:
+    label: "{{ item.path }}"
+
+- name: Generate Diffie-Hellman parameters
+  community.crypto.openssl_dhparam:
+    path: /etc/nginx/dhparam.pem
+    size: "{{ diffie_hellman_key_size | default(4096) }}"
+
+- name: Copy nginx ssl config
+  copy:
+    src: nginx_ssl.conf
+    dest: "{{ nginx_ssl_dir }}"
+    mode: 0644
+
+- name: Manage nginx config
+  include_role:
+    name: nginxinc.nginx_config
+    apply:
+      vars:
+        ansible_python_interpreter: /usr/bin/python3
+
+- name: Configure firewall for nginx
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Configure NGINX logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Check if nginx is running
+  service:
+    name: nginx
+    state: started
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform dependencies
+    summary:
+      name: Nginx
+      description: "Web server / frontend proxy"
+      version: "{{ nginx_version }}"
+      details:
+        directories: "{{ [ nginx_config_html_path, nginx_cert_dir ] }}"
+        os_user: nginx
+        os_group: nginx
+        services:
+          - nginx
+  tags: summary
+
+# NOTE: we expect no more than one upstream and server in every declared config
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Endpoints
+    summary_name: "{{ ('nginx_endpoints:' ~ item.config.upstreams[0].name) }}"
+    summary: "{{ item | config_to_summary }}"
+  tags: summary
+  loop: "{{ nginx_config_http_template | selectattr('config.upstreams', 'defined') | list }}" # filter out the default host

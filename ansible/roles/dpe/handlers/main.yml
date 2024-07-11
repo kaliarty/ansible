@@ -1,0 +1,9 @@
+---
+# handlers file for dpe
+
+- name: Restart dpe services
+  no_log: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  loop: "{{ dpe_services }}"

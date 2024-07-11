@@ -1,0 +1,51 @@
+---
+# tasks file for one_module
+
+- name: "Check that role is configured correctly"
+  include: preflight-check.yml
+
+- name: "Install the module {{ module_name }}"
+  include: install.yml
+
+- name: "Install instantiated service for module {{ module_name }}"
+  include: service-instantiated.yml
+  when: module_instantiated_service | default({}) | length > 0
+
+- name: "Install services for module {{ module_name }}"
+  include: service.yml
+  loop: "{{ module_services }}"
+  loop_control:
+    label: "{{ one_service.name }}"
+    loop_var: one_service
+  when: module_services | length > 0
+  no_log: true
+
+- name: "Configure the module {{ module_name }}"
+  include: configure.yml
+
+- name: "Stop module services"
+  service:
+    name: "{{ item.name }}"
+    state: stopped
+  loop: "{{ module_services }}"
+  loop_control:
+    label: "{{ item.name }}"
+  tags:
+    - never
+    - stop
+  no_log: true
+
+- name: "Start module services"
+  service:
+    name: "{{ item.name }}"
+    state: started
+  loop: "{{ module_services }}"
+  loop_control:
+    label: "{{ item.name }}"
+  tags:
+    - never
+    - start
+  no_log: true
+
+- name: Flush handlers
+  meta: flush_handlers

@@ -1,0 +1,3 @@
+---
+# variables for RHEL 8
+java_cacerts_path: /etc/pki/ca-trust/extracted/java/cacerts

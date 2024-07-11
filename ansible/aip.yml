@@ -1,0 +1,83 @@
+---
+- hosts: orchestration_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: server
+      server_instance: orchestration
+      config_dir: /etc/orch_conf
+      config_files: templates/aip/orch_conf
+      server_config_path: /etc/orch_conf/etc/orchestration.serverConfig
+      server_license_file: "{{ orchestration_server_license_file }}"
+      server_monitoring_port: "{{ orchestration_server_monitoring_port }}"
+      firewall_rules:
+        iptables:
+          allowed_tcp_ports:
+            - port: "{{ orchestration_server.http_port }}"
+              source: "{{ groups['frontend'] + groups['monitoring_server'] }}"
+            - port: "{{ orchestration_server.server_http_port }}"
+              source: "{{ groups['orchestration_server'] }}" # internal only
+  tags: orchestration
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: mdm_server
+  tags: mdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: mdm_frontend
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - name: mdm
+  tags: mdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: rdm_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: server
+      server_instance: rdm
+      config_dir: /etc/rdm_conf
+      config_files: templates/aip/rdm_conf
+      server_config_path: /etc/rdm_conf/etc/rdm.serverConfig
+      config_files_zip: "{{ rdm_server_config_files_zip | default('') }}"
+      config_files_path: "templates/model_projects/ReferenceDataManager.mdc"
+      config_files_dir: "Files/"
+      server_license_file: "{{ rdm_server_license_file }}"
+      server_monitoring_port: "{{ rdm_server_monitoring_port }}"
+    - role: rdm
+  tags: rdm
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: dqit_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - dns
+  roles:
+    - role: server
+      server_instance: dqit
+      config_dir: /etc/dqit_conf
+      config_files: "{{ 'templates/aip/dqit_conf' if dqit_server_config_files_zip is defined else 'templates/aip/dqit_conf_blank' }}"
+      server_config_path: /etc/dqit_conf/etc/dqit.serverConfig
+      config_files_zip: "{{ dqit_server_config_files_zip | default('') }}"
+      config_files_path: "templates/model_projects/DQIT.mdc"
+      config_files_dir: "Files/"
+      server_license_file: "{{ dqit_server_license_file }}"
+      server_monitoring_port: "{{ dqit_server_monitoring_port }}"
+    - role: dqit
+  tags: dqit
+  environment: "{{ environment_vars | default({}) }}"

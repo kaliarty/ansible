@@ -1,0 +1,87 @@
+---
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "vars"
+      skip: true
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Install necessary packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Configure firewall for Term Suggestions API
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install Term Suggestions API
+  include_role:
+    name: "one_module"
+  vars:
+    module_name: "{{ term_suggestions_api_module_name }}"
+    module_version: "{{ term_suggestions_api_version }}"
+    install_dir: "{{ term_suggestions_api_install_dir }}"
+    service_user: "{{ term_suggestions_api_system_user }}"
+    service_group: "{{ term_suggestions_api_system_group }}"
+    module_services: "{{ term_suggestions_api_services }}"
+    package_download_type: "{{ term_suggestions_api_package_download_type }}"
+    package_location: "{{ term_suggestions_api_package_location }}"
+    package_url: "{{ term_suggestions_api_package_url }}"
+    package_checksum: "{{ term_suggestions_api_package_checksum }}"
+    module_config: "{{ term_suggestions_api_config }}"
+    deploy_files: "{{ term_suggestions_api_files }}"
+    enable_java_heapdumps: false
+
+- name: Configure Term Suggestions API logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for Term Suggestions API to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ ansible_host }}:{{ item }}/actuator/health/readiness"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  with_items:
+    - "{{ term_suggestions.api.http_port }}"
+  when: check_availability | default(false) | bool
+
+- name: Configure monitoring for Term Suggestions API
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: "Term Suggestions - API"
+      description: Ataccama platform module implementing Term Suggestions API functionality
+      version: "{{ term_suggestions_api_version }}"
+      details:
+        directories: "{{ [ term_suggestions_api_install_dir ] }}"
+        os_user: "{{ term_suggestions_api_system_user }}"
+        os_group: "{{ term_suggestions_api_system_group }}"
+        services: "{{ term_suggestions_api_services | map(attribute='name') | list }}"
+  tags: summary

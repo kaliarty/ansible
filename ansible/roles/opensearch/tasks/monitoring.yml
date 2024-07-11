@@ -1,0 +1,15 @@
+---
+# monitoring tasks for opensearch
+
+- name: Install monitoring plugin for OpenSearch
+  include_tasks: plugin.yml
+  vars:
+    plugin: "{{ opensearch_monitoring_plugin }}"
+
+- name: Configure OpenSearch monitoring
+  include_role:
+    name: monitoring_rules
+  vars:
+    monitoring_ruleset:
+      metrics_path: "/_prometheus/metrics"
+      port: "{{ opensearch_api_port }}"

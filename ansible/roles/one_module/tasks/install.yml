@@ -1,0 +1,150 @@
+---
+# Installation tasks for one_module
+
+- name: "Create system group and user for module {{ module_name }}"
+  include_role:
+    name: system
+    tasks_from: "{{ task }}"
+  loop:
+    - groups.yml
+    - users.yml
+  loop_control:
+    loop_var: task
+  vars:
+    system_groups:
+      - name: "{{ service_group }}"
+        system: yes
+    system_users:
+      - username: "{{ service_user }}"
+        system: yes
+        group: "{{ service_group }}"
+        home: "{{ install_dir }}"
+        shell: /usr/sbin/nologin
+        create_home: no
+
+- name: "Create application parent directory with root ownership | module: {{ module_name }}"
+  file:
+    state: directory
+    dest: "{{ install_dir_parent }}"
+    owner: root
+    group: root
+  vars:
+    install_dir_parent: "{{ install_dir | regex_findall('^.*\/.*?') | first }}"
+
+- name: "Create application directory | module: {{ module_name }}"
+  file:
+    state: directory
+    dest: "{{ install_dir }}-{{ module_version }}"
+    mode: 0755
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+
+- name: "Download application package from Maven repository | module: {{ module_name }}"
+  maven_artifact:
+    repository_url: "{{ maven.repo }}"
+    group_id: "{{ maven.group }}"
+    artifact_id: "{{ maven.artifact }}"
+    version: "{{ maven.version }}"
+    extension: "{{ maven.extension | default(omit) }}"
+    classifier: "{{ maven.classifier | default(omit) }}"
+    dest: "{{ package_download_directory }}/{{ module_name }}-{{ module_version }}.zip"
+    state: present
+    timeout: 30
+  when: package_download_type == 'maven_artifact'
+
+- name: "Download application package from remote location | module: {{ module_name }}"
+  get_url:
+    url: "{{ package_url }}"
+    dest: "{{ package_download_directory }}/{{ module_name }}-{{ module_version }}.zip"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    checksum: "{{ package_checksum }}"
+    mode: 0644
+  when: package_download_type == 'remote_url'
+
+- name: "Copy package from file on local filesystem | module: {{ module_name }}"
+  copy:
+    src: "{{ package_location }}"
+    dest: "{{ package_download_directory }}/{{ module_name }}-{{ module_version }}.zip"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0644
+  when: package_download_type == 'local'
+
+- name: "Extract application package | module: {{ module_name }}"
+  unarchive:
+    src: "{{ package_download_directory }}/{{ module_name }}-{{ module_version }}.zip"
+    dest: "{{ install_dir }}-{{ module_version }}"
+    creates: "{{ install_dir }}-{{ module_version }}/bin"
+    remote_src: true
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+  when: package_download_type in ['maven_artifact', 'remote_url', 'local']
+
+- name: "Fix config files permissions | module: {{ module_name }}"
+  file:
+    path: "{{ install_dir }}-{{ module_version }}/etc"
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0700
+    state: directory
+    recurse: yes
+  when: package_download_type in ['maven_artifact', 'remote_url', 'local']
+
+- name: "Symlink module directory to actual version | module: {{ module_name }}"
+  file:
+    state: link
+    src: "{{ install_dir }}-{{ module_version }}"
+    dest: "{{ install_dir }}"
+
+- name: "Create heapdump directory | module: {{ module_name }}"
+  file:
+    path: "{{ java_heapdump_dir }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0755
+  when: enable_java_heapdumps
+
+- name: "Create java tmp directory | module: {{ module_name }}"
+  file:
+    path: "{{ java_temp_folder }}"
+    state: directory
+    owner: "{{ service_user }}"
+    group: "{{ service_group }}"
+    mode: 0755
+  when: java_temp_folder != ""
+
+# differ ONE applications having standard directory structure from rest
+- name: "Get type of ONE application"
+  stat:
+    path: "{{ install_dir }}/bin/start.sh"
+  register: type
+# ensure permissions on startup script
+- name: "Set permissions on application startup script"
+  file:
+    path: "{{ install_dir }}/bin/start.sh"
+    mode: 0754
+    owner: "root"
+    group: "{{ service_group }}"
+  when: type.stat.isreg is defined and type.stat.isreg
+
+- name: "Exec post install tasks"
+  ansible.builtin.shell: "{{ item.task }}"
+  args: "{{ item.task_args | default({}) | combine(post_install_tasks_default_args) }}"
+  loop: "{{ post_install_tasks | default(_post_install_tasks) }}"
+  loop_control:
+    label: "{{ item.task }}"
+
+- name: "Install additional templates | module: {{ module_name }}"
+  template:
+    src: "{{ template.src }}"
+    dest: "{{ template.dest }}"
+    owner: "{{ template.owner | default(service_user) }}"
+    group: "{{ template.group | default(service_group) }}"
+    mode: "{{ template.mode | default(_default_copy_mode) }}"
+  loop: "{{ deploy_templates }}"
+  loop_control:
+    label: "src: {{ template.src }} -> dest: {{ template.dest }}"
+    loop_var: template
+  when: deploy_templates is defined

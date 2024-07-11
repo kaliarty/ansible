@@ -1,0 +1,12 @@
+---
+
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: minio.conf
+        template: minio.fluentbit.conf.j2
+      - name: console-filter.conf
+        template: fluentbit/filters/console-filter.conf.j2

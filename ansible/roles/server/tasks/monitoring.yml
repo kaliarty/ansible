@@ -1,0 +1,30 @@
+---
+# tasks to setup server monitoring
+
+- name: Install jmx-exporter
+  include_role:
+    name: jmx_exporter
+
+- name: Set monitoring JAVA_OPTS
+  set_fact:
+    server_monitoring_java_opts: "-javaagent:{{ jmx_exporter_jar_path }}={{ server_monitoring_port }}:{{ jmx_exporter_config_path }}"
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset_name: "{{ server_instance }}-server"
+    monitoring_ruleset:
+      job_name: "{{ server_instance }}-server"
+      metrics_path: /actuator/prometheus
+      basic_auth:
+        username: "{{ keycloak_monitoring_user.username }}"
+        password: "{{ keycloak_monitoring_user.password }}"
+      scheme: http
+      port: "{{ server_monitoring_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem
+            app_kubernetes_io_component: "{{ server_instance }}-server"

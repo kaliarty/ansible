@@ -1,0 +1,79 @@
+---
+nginx_default_http:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/http_default.conf
+  config:
+    core:
+      default_type: application/octet-stream
+      keepalive_timeout:
+        timeout: 65
+      server_tokens: false
+      server_names_hash_bucket_size: 128
+    log:
+      format:
+        - name: main
+          format: |
+            '$remote_addr - $remote_user [$time_local] "$request" '
+            '$status $body_bytes_sent "$http_referer" '
+            '"$http_user_agent" "$http_x_forwarded_for"'
+    proxy:
+      cache_path:
+        - path: /tmp/cache
+          keys_zone:
+            name: one
+            size: 10m
+    limit_req:
+      zones:
+        - key: "$binary_remote_addr"
+          name: mylimit
+          size: 10m
+          rate: 10r/s
+    servers:
+      - core:
+          listen:
+            - address: 0.0.0.0
+              port: 80
+          server_name: localhost
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        rewrite:
+          return:
+            code: 301
+            url: https://$host$request_uri
+      - core:
+          listen:
+            - address: 0.0.0.0
+              port: 443
+              ssl: true
+              http2: true
+              default_server: true
+          server_name: '""'
+          error_page:
+            - code:
+                - 404
+              uri: /404.html
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.alertmanager.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.alertmanager.crt_key | default(omit) }}"
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations:
+          - location: /
+            rewrite:
+              return:
+                code: 404
+          - location: "~ '/ataccama_assets/(.*)'"
+            auth_basic:
+              realm: false
+            core:
+              alias: "{{ nginx_config_html_path }}/ataccama_assets/$1"
+          - location: "~ '/ataccama_styles.css'"
+            auth_basic:
+              realm: false
+            core:
+              alias: "{{ nginx_config_html_path }}/ataccama_styles.css"
+          - location: "= /404.html"
+            auth_basic:
+              realm: false
+            core:
+              root: "/usr/share/nginx/html_ataccama"

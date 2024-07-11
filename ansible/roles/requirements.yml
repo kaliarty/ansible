@@ -1,0 +1,30 @@
+---
+# ansible-galaxy install -r requirements.yml
+roles:
+  - name: nginxinc.nginx
+    version: 0.24.0
+  - name: nginxinc.nginx_config
+    version: 0.6.0
+  - name: geerlingguy.postgresql
+    version: 3.4.3
+  - name: cloudalchemy.prometheus
+    version: 4.0.0
+    # Galaxy says cloudalchemy.prometheus is available in v3.0.0 and v4.0.0 but download fails with
+    # "the specified version (4.0.0) of cloudalchemy.prometheus was not found in the list of available versions"
+    # Upstream bug: https://github.com/cloudalchemy/ansible-prometheus/issues/387
+    # lets just bypass galaxy and download it from GitHub
+    scm: git
+    src: https://github.com/cloudalchemy/ansible-prometheus.git
+  - name: cloudalchemy.alertmanager
+    version: 0.19.1
+  - name: cloudalchemy.blackbox-exporter
+    version: 1.0.0
+  - name: cloudalchemy.grafana
+    scm: git
+    src: https://github.com/cloudalchemy/ansible-grafana.git
+  - name: geerlingguy.ntp
+    version: 2.3.1
+  - name: 0x0i.systemd
+    version: v0.3.5
+  - name: linux-system-roles.crypto_policies
+    version: 1.2.10

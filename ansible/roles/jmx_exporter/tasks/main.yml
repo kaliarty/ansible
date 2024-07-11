@@ -1,0 +1,34 @@
+---
+# tasks file for jmx_exporter
+
+- name: Set jmx_exporter_jar_path and jmx_exporter_config_path
+  set_fact:
+    jmx_exporter_jar_path: "{{ jmx_exporter_install_dir }}/{{ jmx_exporter_jar }}"
+    jmx_exporter_config_path: "{{ jmx_exporter_config_dir }}/{{ jmx_exporter_config_template | basename | regex_replace('\\.j2$', '') }}"
+
+- name: Create JMX install and config directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ jmx_exporter_install_dir }}"
+    - "{{ jmx_exporter_config_dir }}"
+
+- name: Download JMX monitoring tool
+  get_url:
+    url: "{{ jmx_exporter_download_url }}"
+    owner: root
+    group: root
+    mode: 0444
+    dest: "{{ jmx_exporter_jar_path }}"
+
+- name: Copy JMX configuration
+  template:
+    src: "{{ jmx_exporter_config_template }}"
+    dest: "{{ jmx_exporter_config_path }}"
+    owner: root
+    group: root
+    mode: 0444

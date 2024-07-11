@@ -1,0 +1,26 @@
+---
+# defaults file for java
+java_packages: []
+default_java: ""
+
+dependency_packages:
+  - python3-lxml
+  - unzip
+  - tar
+
+# Possible values: openjdk, adoptiumopenjdk
+java_distribution: adoptiumopenjdk
+java_distribution_version: 17
+
+adoptiumopenjdk_apt_repo: "deb https://packages.adoptium.net/artifactory/deb focal main"
+adoptiumopenjdk_apt_repo_key: "https://packages.adoptium.net/artifactory/api/gpg/key/public"
+adoptiumopenjdk_apt_repo_key_id: "3B04D753C9050D9A5D343F39843C48A565F8F04B"
+
+adoptiumopenjdk_rpm_rhel7_repo: "https://packages.adoptium.net/artifactory/rpm/rhel/7/x86_64/"
+adoptiumopenjdk_rpm_rhel7_repo_key: "https://packages.adoptium.net/artifactory/api/gpg/key/public"
+
+adoptiumopenjdk_rpm_rhel8_repo: "https://packages.adoptium.net/artifactory/rpm/rhel/8/x86_64/"
+adoptiumopenjdk_rpm_rhel8_repo_key: "https://packages.adoptium.net/artifactory/api/gpg/key/public"
+
+adoptiumopenjdk_rpm_rhel9_repo: "https://packages.adoptium.net/artifactory/rpm/rhel/9/x86_64/"
+adoptiumopenjdk_rpm_rhel9_repo_key: "https://packages.adoptium.net/artifactory/api/gpg/key/public"

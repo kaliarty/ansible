@@ -1,0 +1,68 @@
+---
+# tasks file for audit
+
+- name: Configure firewall for audit module
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install audit
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ audit_module_name }}"
+    module_version: "{{ audit_version }}"
+    install_dir: "{{ audit_install_dir }}"
+    service_user: "{{ audit_system_user }}"
+    enable_java_heapdumps: "{{ audit_java_heapdumps }}"
+    service_group: "{{ audit_system_group }}"
+    module_services: "{{ audit_services }}"
+    package_download_type: "{{ audit_package_download_type }}"
+    package_location: "{{ audit_package_location }}"
+    package_url: "{{ audit_package_url }}"
+    package_checksum: "{{ audit_package_checksum }}"
+    module_config: "{{ audit_config }}"
+    deploy_files: "{{ audit_files }}"
+    java_temp_folder: "{{ audit_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure audit logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for audit service to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ audit.host }}:{{ audit.http_port }}/actuator/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  when: check_availability | default(false) | bool
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Configure monitoring for audit module
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: Audit
+      description: Ataccama platform module implementing auditing
+      version: "{{ audit_version }}"
+      details:
+        directories: "{{ [ audit_install_dir ] }}"
+        os_user: "{{ audit_system_user }}"
+        os_group: "{{ audit_system_group }}"
+        services: "{{ audit_services | map(attribute='name') | list }}"
+  tags: summary

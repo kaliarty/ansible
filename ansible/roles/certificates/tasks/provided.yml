@@ -1,0 +1,36 @@
+---
+
+- name: Copy a provided private key for ingress host
+  copy:
+    src: "{{ certificate.cert_key }}"
+    dest: "{{ cert_dir }}/{{ certificate.cert_key | basename }}"
+    remote_src: "{{ certificate.remote | default ('no') }}"
+  notify: reload nginx
+
+- name: Copy a provided certificate for ingress host
+  copy:
+    src: "{{ certificate.cert }}"
+    dest: "{{ cert_dir }}/{{ certificate.cert | basename }}"
+    remote_src: "{{ certificate.remote | default ('no') }}"
+  notify: reload nginx
+
+- name: Copy a provided ca for ingress host
+  copy:
+    src: "{{ certificate.ca }}"
+    dest: "{{ ca_cert_dir }}/ca.pem"
+    remote_src: "{{ certificate.remote | default ('no') }}"
+  when: certificate.ca is defined
+  notify: reload nginx
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: TLS certificates
+    summary:
+      name: "{{ certificate.cert | basename }}"
+      details:
+        key: "{{ certificate.cert_key | basename }}"
+        path: "{{ cert_dir }}"
+        source: provided
+  tags: summary

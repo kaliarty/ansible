@@ -1,0 +1,65 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<server>
+    <port>{{ orchestration_server.server_http_port }}</port>
+    <runtimeConfiguration>orchestration.runtimeConfig</runtimeConfiguration>
+    <serverComponents>
+        <component class="com.ataccama.dqc.web.logging.LoggingComponent" configFile="logging.xml" />
+        <component class="com.ataccama.dqc.web.HttpDispatcher">
+            <listeners>
+                <listenerBean name="default" port="{{ orchestration_server.http_port }}" threads="3" ssl="none">
+                    <contexts>
+                        <listenerContext path="/" htmlErrorPages="false">
+                            <filterChains>
+                                <filterChain path="/*" filters="securityFilter">
+                                    <conditions />
+                                </filterChain>
+                            </filterChains>
+                            <securityFilter loginUrl="/console-login" class="com.ataccama.server.http.security.keycloak.KeycloakSecurity">
+                                <identityProviders>
+                                    <identityProvider configName="keycloak-local" clientId="runtime-server-token-client" pattern="/**" />
+                                </identityProviders>
+                                <interceptUrls>
+                                    <interceptUrl access="permitAll" pattern="/soapServices/**" />
+                                    <interceptUrl access="isAuthenticated()" pattern="/**" />
+                                </interceptUrls>
+                            </securityFilter>
+                        </listenerContext>
+                    </contexts>
+                </listenerBean>
+            </listeners>
+        </component>
+        <component class="com.ataccama.dqc.server.services.HealthStateProviders" pathVariableRefreshRate="60" dataSourceRefreshRate="60" />
+        <component class="com.ataccama.dqc.web.console.WebConsoleComponent" />
+        <component class="com.ataccama.dqc.web.health.HealthStateWebConsole" />
+        <component class="com.ataccama.dqc.online.OnlineServicesComponent">
+            <serviceLookupFolders>
+                <configFolder>../services</configFolder>
+            </serviceLookupFolders>
+        </component>
+        <component class="com.ataccama.adt.web.WorkflowServerComponent">
+            <sources>
+                <source>
+                    <path>../workflows</path>
+                    <id>WF1</id>
+                </source>
+            </sources>
+            <resourcesFolder>../storage/resources/workflow</resourcesFolder>
+            <stateStorageProvider class="com.ataccama.adt.runtime.state.storage.FileStateStorageProvider" />
+        </component>
+        <component class="com.ataccama.adt.scheduler.server.SchedulerServerComponent">
+            <sources>
+                <source>
+                    <path>../schedulers</path>
+                    <id>S1</id>
+                </source>
+            </sources>
+            <resourcesFolder>../storage/resources/scheduler</resourcesFolder>
+            <resultPersister class="com.ataccama.adt.scheduler.persister.FileStateResultPersister" />
+        </component>
+        <component disabled="true" class="com.ataccama.dqc.streaming.KafkaProviderComponent">
+            <kafkaResources>
+                <string>KafkaServer</string>
+            </kafkaResources>
+        </component>
+    </serverComponents>
+</server>

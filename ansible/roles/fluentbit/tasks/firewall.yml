@@ -1,0 +1,13 @@
+---
+
+- name: Configure firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    firewall_ruleset_name: fluent_bit
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ fluentbit_http_port }}"
+          source: "{{ groups['monitoring_server'] }}"
+  tags:
+    - firewall

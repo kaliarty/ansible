@@ -1,0 +1,22 @@
+---
+- name: Create a new Azure database '{{ psql_db_item.name }}'
+  community.postgresql.postgresql_db:
+    login_host: "{{ login_host }}"
+    login_user: "{{ psql_user_item_login }}"
+    login_password: "{{ psql_user_item.password }}"
+    port: "{{ postgresql_port }}"
+    ssl_mode: "{{ psql_cloud_ssl_mode }}"
+    name: "{{ psql_db_item.name }}"
+    owner: "{{ psql_user_item.name }}"
+  register: result
+
+- name: Create an extensions in Azure database '{{ psql_db_item.name }}'
+  community.postgresql.postgresql_ext:
+    login_host: "{{ login_host }}"
+    login_user: "{{ login_user }}"
+    login_password: "{{ postgresql_server.admin_password }}"
+    port: "{{ postgresql_port }}"
+    ssl_mode: "{{ psql_cloud_ssl_mode }}"
+    name: "{{ item }}"
+    db: "{{ psql_db_item.name }}"
+  loop: "{{ psql_db_item.extensions | default([]) }}"

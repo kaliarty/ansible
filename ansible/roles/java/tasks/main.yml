@@ -1,0 +1,61 @@
+---
+### tasks file for java role
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "vars"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+  tags:
+    - summary
+
+- name: Define java_packages
+  set_fact:
+    java_packages: "{{ vars['_java_packages_' + java_distribution] | list | render(vars) }}"
+  when: java_packages is not defined or java_packages | length == 0
+  tags:
+    - summary
+
+- name: Define default_java
+  set_fact:
+    default_java: "{{ vars['_default_java_' + java_distribution] | render(vars) }}"
+  when: default_java is not defined or default_java | length == 0
+  tags:
+    - summary
+
+- name: Install packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+  tags:
+    - summary
+
+- name: "Set {{ default_java }} as default java"
+  community.general.alternatives:
+    name: java
+    link: /usr/bin/java
+    path: "/usr/lib/jvm/{{ default_java }}/bin/java"
+
+- name: "Set {{ default_java }} as default javac"
+  community.general.alternatives:
+    name: javac
+    link: /usr/bin/javac
+    path: "/usr/lib/jvm/{{ default_java }}/bin/javac"
+
+- name: "Set {{ default_java }} as default keytool"
+  community.general.alternatives:
+    name: keytool
+    link: /usr/bin/keytool
+    path: "/usr/lib/jvm/{{ default_java }}/bin/keytool"

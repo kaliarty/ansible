@@ -1,0 +1,19 @@
+---
+# tasks file for dqit
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports: "{{
+        [{
+          'port': dqit_port,
+          'source': groups['frontend']
+        }]
+        + [{
+          'port': dqit_monitoring_port,
+          'source': groups['monitoring_server']
+        }]
+        | default([{}])
+        }}"

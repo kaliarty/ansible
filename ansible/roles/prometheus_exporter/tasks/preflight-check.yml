@@ -1,0 +1,11 @@
+---
+- name: Assert all required variables are defined
+  assert:
+    that:
+      - prometheus_exporter_name is defined and prometheus_exporter_name is string
+      - prometheus_exporter_download_url is defined and prometheus_exporter_download_url is string
+      - prometheus_exporter_dist is defined and prometheus_exporter_dist is string
+      - prometheus_exporter_bin is defined and prometheus_exporter_bin is string
+      - prometheus_exporter_service_name is defined and prometheus_exporter_service_name is string
+      - prometheus_exporter_service_execstart is defined and prometheus_exporter_service_execstart is string
+    msg: "Check if you defined all needed variables."

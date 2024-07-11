@@ -1,0 +1,60 @@
+---
+# defaults file for opensearch
+
+opensearch_version: 2.11.0
+opensearch_binary_url: "https://artifacts.opensearch.org/releases/bundle/opensearch/{{ opensearch_version }}/opensearch-{{ opensearch_version }}-linux-x64.tar.gz"
+opensearch_checksums:
+  '2.3.0': sha256:696500b3126d2f2ad7216456cff1c58e8ea89402d76e0544a2e547549cf910ca
+  '2.4.0': sha256:82bee5f68ea3d74a7d835d35f1479509b8497d01c1ae758a4737f5ea799e38e8
+  '2.4.1': sha256:f2b71818ad84cdab1b736211efbdd79d33835a92d46f66a237fa1182d012410d
+  '2.9.0': sha256:03d623c2d99a7100c2f0faddc8ffda8ba27eae8aa63ff6f3f7dad2337be8b68c
+  '2.10.0': sha256:a092f17571e7f9f129d804d67721516df33f41e6c05a24fb7288312302eb81fb
+  '2.11.0': sha256:8fd6cdd3d1385629033eabe14542df3a301399ee4a8151ab76fd2b20f75de12c
+
+opensearch_download_dir: /var/tmp
+opensearch_install_dir: /usr/share/opensearch
+opensearch_config_dir: "{{ opensearch_install_dir }}/config"
+opensearch_plugin_dir: "{{ opensearch_install_dir }}/plugins"
+opensearch_plugin_bin_path: "{{ opensearch_install_dir }}/bin/opensearch-plugin"
+opensearch_log_dir: /var/log/opensearch
+opensearch_pid_file: /var/run/opensearch/opensearch.pid
+opensearch_data_dirs:
+  - /var/lib/opensearch
+
+opensearch_system_user: opensearch
+
+# opensearch system setting defaults
+opensearch_vm_max_map_count: 262144
+opensearch_fs_file_max: 65536
+opensearch_proc_max: 4096
+
+# opensearch configuration
+opensearch_cluster_name: default
+opensearch_cluster_type: single-node
+opensearch_api_port: 9200
+opensearch_transport_port: 9300
+
+opensearch_config: {}
+
+opensearch_xms: 2g
+opensearch_xmx: 2g
+
+# opensearch security settings
+opensearch_security_enabled: false
+
+opensearch_sec_plugin_conf_path: "{{ opensearch_install_dir }}/plugins/opensearch-security/securityconfig"
+opensearch_sec_plugin_tools_path: "{{ opensearch_install_dir }}/plugins/opensearch-security/tools"
+
+# opensearch plugins
+opensearch_plugins: []
+
+opensearch_monitoring_plugin:
+  name: prometheus-exporter
+  url: "https://github.com/aiven/prometheus-exporter-plugin-for-opensearch/releases/download/{{ opensearch_version }}.0/prometheus-exporter-{{ opensearch_version }}.0.zip"
+  state: present
+
+# opensearch Index State Management (ISM) policies
+opensearch_ism_policies: []
+
+# opensearch Index templates
+opensearch_index_templates: []

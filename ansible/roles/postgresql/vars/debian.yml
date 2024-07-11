@@ -1,0 +1,13 @@
+---
+# variables for Ubuntu and other Debian based systems
+
+postgresql_data_dir: "/var/lib/postgresql/{{ postgres_version }}/main"
+postgresql_bin_path: "/usr/lib/postgresql/{{ postgres_version }}/bin"
+postgresql_config_path: "/etc/postgresql/{{ postgres_version }}/main"
+postgresql_daemon: postgresql
+postgresql_service: "postgresql@{{ gen2_postgres_version }}-main"
+postgresql_packages:
+  - "postgresql-{{ postgres_version }}"
+  - "postgresql-{{ postgres_version }}"
+  - "postgresql-client-{{ postgres_version }}"
+  - libpq-dev

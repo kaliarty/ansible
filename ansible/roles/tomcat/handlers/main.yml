@@ -1,0 +1,10 @@
+---
+# handlers file for tomcat
+
+- name: restart tomcat instance
+  no_log: true
+  service:
+    name: "{{ instance_name }}"
+    state: restarted
+  when:
+    - not ansible_check_mode | bool

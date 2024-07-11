@@ -1,0 +1,6 @@
+---
+# variables for Ubuntu and other Debian based systems
+
+ca_certificates_package: ca-certificates
+ca_truststore_path: /usr/local/share/ca-certificates
+update_ca_truststore_binary: /usr/sbin/update-ca-certificates

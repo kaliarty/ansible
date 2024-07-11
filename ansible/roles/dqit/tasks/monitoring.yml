@@ -1,0 +1,26 @@
+---
+# monitoring tasks for DQIT
+
+- name: Install jmx-exporter
+  include_role:
+    name: jmx_exporter
+  when: dqit_monitoring_port is defined and dqit_monitoring_port is string and (dqit_monitoring_port | length > 0)
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      job_name: dqit
+      metrics_path: /actuator/prometheus
+      basic_auth:
+        username: "{{ keycloak_monitoring_user.username }}"
+        password: "{{ keycloak_monitoring_user.password }}"
+      scheme: http
+      port: "{{ dqit_monitoring_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem
+            app_kubernetes_io_component: dqit

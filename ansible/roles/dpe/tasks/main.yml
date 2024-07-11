@@ -1,0 +1,97 @@
+---
+# tasks file for dpe
+
+- name: Configure firewall for DPE
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install DPE
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ dpe_module_name }}"
+    module_version: "{{ dpe_version }}"
+    enable_java_heapdumps: "{{ dpe_java_heapdumps }}"
+    install_dir: "{{ dpe_install_dir }}"
+    service_user: "{{ dpe_service_user }}"
+    service_group: "{{ dpe_service_group }}"
+    module_services: "{{ dpe_services }}"
+    package_download_type: "{{ dpe_package_download_type }}"
+    package_location: "{{ dpe_package_location }}"
+    package_url: "{{ dpe_package_url }}"
+    package_checksum: "{{ dpe_package_checksum }}"
+    module_config: "{{ dpe_config }}"
+    deploy_files: "{{ dpe_files }}"
+    java_temp_folder: "{{ dpe_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Copy DPE filesystem
+  unarchive:
+    src: filesystem.zip
+    dest: "{{ dpe.filesystem_dir }}"
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_group }}"
+    mode: 0644
+  notify: Restart dpe services
+
+# NOTE: this is safe because .zip files can't contain hardlinks or SUID binaries
+- name: Fix DPE fileystem privileges
+  file:
+    state: directory
+    path: "{{ dpe.filesystem_dir }}/filesystem"
+    mode: u=rwX,g=rX,o-rwx
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_group }}"
+    recurse: true
+
+- name: Download and install JDBC drivers
+  include: jdbc-drivers.yml
+
+- name: Copy external DPE drivers
+  include: dpe-driver.yml
+  loop: "{{ dpe_drivers }}"
+  loop_control:
+    loop_var: driver
+  when: dpe_drivers is defined and dpe_drivers | length > 0
+
+- name: Configure DPE logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for dpe to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ ansible_host }}:{{ dpe.http_port }}/actuator/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  when: check_availability | default(false) | bool
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Configure monitoring for DPE
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: DPE
+      description: "Ataccama platform module: data processing engine"
+      version: "{{ dpe_version }}"
+      details:
+        directories: "{{ [ dpe_install_dir ] }}"
+        os_user: "{{ dpe_service_user }}"
+        os_group: "{{ dpe_service_group }}"
+        services: "{{ dpe_services | map(attribute='name') | list }}"
+  tags: summary

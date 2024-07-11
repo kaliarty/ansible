@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+[MULTILINE_PARSER]
+    name          java-server-multiline
+    type          regex
+    flush_timeout 1000
+    rule      "start_state"   "/(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})(.*)/"   "cont"
+    rule      "cont"          "/^((?!\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}).)*$/" "cont"
+[PARSER]
+    Name         java-server
+    Format       regex
+    Regex        ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})\s+\[(?<severity>[A-Z]+)\]\s+(?<logger>\S+)\s+messageId=(?<messageId>.*)\s+message=\s*(?<message>(.|\n)*)
+    Time_Key     time
+    Time_Format  %Y-%m-%d %H:%M:%S

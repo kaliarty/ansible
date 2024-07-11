@@ -1,0 +1,23 @@
+---
+# defaults file for system
+
+system_users: []
+
+system_groups: []
+
+# default users home directory
+users_home: /home
+# default user's primary group
+users_group:
+# default user's secondary groups
+users_groups: []
+# default user's home directory mode
+users_home_mode: '0755'
+# default user's ssh key type
+users_ssh_key_type: rsa
+# default user's ssh key bits
+users_ssh_key_bits: 2048
+# default user's ssh dir mode
+users_ssh_dir_mode: '0700'
+# default user's setting for authorized keys exclusive
+users_ssh_authorized_keys_exclusive: 'no'

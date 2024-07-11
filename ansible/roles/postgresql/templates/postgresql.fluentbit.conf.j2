@@ -1,0 +1,22 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name              tail
+    Path              {{ postgresql_log_dir }}/postgresql-{{ postgres_version }}-main.log
+    Tag               console.*
+    Multiline         on
+    Parser_Firstline  postgresql-multiline
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name    record_modifier
+    Match   console.*
+    Record  hostname ${HOSTNAME}
+    Record  app postgres

@@ -1,0 +1,10 @@
+---
+# defaults file for jmx_exporter
+
+jmx_exporter_version: 0.16.1
+jmx_exporter_download_url: "https://repo1.maven.org/maven2/io/prometheus/jmx/jmx_prometheus_javaagent/{{ jmx_exporter_version }}/jmx_prometheus_javaagent-{{ jmx_exporter_version }}.jar"
+
+jmx_exporter_install_dir: /opt/prometheus/exporters/jmx_exporter
+jmx_exporter_config_dir: /opt/prometheus/exporters/jmx_exporter/conf
+jmx_exporter_config_template: jmx-prometheus-config.yml.j2
+jmx_exporter_jar: jmx_prometheus_javaagent.jar

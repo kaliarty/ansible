@@ -1,0 +1,8 @@
+---
+# prometheus self-scrape configuration; used to ensure we always have a valid config
+
+prometheus_scrape_configs_static:
+  - job_name: "prometheus"
+    metrics_path: "/metrics"
+    static_configs:
+      - targets: [ 'localhost:9090' ]

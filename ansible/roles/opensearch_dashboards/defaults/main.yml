@@ -1,0 +1,44 @@
+---
+# defaults file for opensearch_dashboards
+
+opensearch_dashboards_version: 2.11.0
+opensearch_dashboards_binary_url: "https://artifacts.opensearch.org/releases/bundle/opensearch-dashboards/{{ opensearch_dashboards_version }}/opensearch-dashboards-{{ opensearch_dashboards_version }}-linux-x64.tar.gz"
+opensearch_dashboards_checksums:
+  '2.3.0': sha256:2cb533d1ebf6bed2ee3b06f6458318b2fd8f36317ef35e10f092b4a9cb8a14ae
+  '2.4.0': sha256:d4e73f4e4cb37b8c6cc3a6798622dc0d3967f65ab14852e7adf18f49be988e90
+  '2.4.1': sha256:373d078f4cf32c80af76106215276199cdb584259cd94f3fb1a4829257a8b1d5
+  '2.9.0': sha256:f8328b9c1156d254faa561c03cbc51159f5e335812c7b27a98bbe0556b9f030c
+  '2.10.0': sha256:df1463540f3831de79ceb03cf2d4c691ac4f63b244943fb84ca67636877bb6d1
+  '2.11.0': sha256:7ba6b4a84fe274d7f435e75f5ae81b87ba9d0453730e59d29f0fc687f0c47863
+
+opensearch_dashboards_download_dir: /var/tmp
+opensearch_dashboards_install_dir: /usr/share/opensearch-dashboards
+opensearch_dashboards_config_dir: "{{ opensearch_dashboards_install_dir }}/config"
+opensearch_dashboards_plugin_dir: "{{ opensearch_dashboards_install_dir }}/plugins"
+opensearch_dashboards_plugin_bin_path: "{{ opensearch_dashboards_install_dir }}/bin/opensearch-dashboards-plugin"
+opensearch_dashboards_data_dir: /var/lib/opensearch-dashboards
+
+opensearch_dashboards_system_user: opensearch-dashboards
+
+# opensearch dashboards system setting defaults
+opensearch_dashboards_fs_file_max: 65536
+opensearch_dashboards_proc_max: 4096
+
+# opensearch dashboards configuration
+opensearch_dashboards_server_port: 5601
+opensearch_dashboards_config: {}
+opensearch_hosts: []
+
+# opensearch dashboards security settings
+opensearch_dashboards_security_enabled: false
+
+opensearch_dashboards_sec_plugin_conf_path: "{{ opensearch_install_dir }}/plugins/opensearch-security/securityconfig"
+opensearch_dashboards_sec_plugin_tools_path: "{{ opensearch_install_dir }}/plugins/opensearch-security/tools"
+
+# opensearch dashboards plugins
+opensearch_dashboards_plugins: []
+
+# opensearch pre-loaded data configuration
+# opensearch_dashboards_default_index_pattern: '*.*'
+opensearch_dashboards_saved_objects_import:
+  - default-index-pattern.ndjson

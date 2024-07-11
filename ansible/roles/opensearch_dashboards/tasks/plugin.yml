@@ -1,0 +1,35 @@
+---
+# installation of opensearch_dashboards plugin
+
+- name: Get all the installed OpenSearch Dashboards plugins
+  command: "{{ opensearch_dashboards_plugin_bin_path }} list --allow-root"
+  register: installed_plugins
+  changed_when: false
+
+- name: "Remove OpenSearch Dashboards plugin | {{ plugin.name }}"
+  command: "{{ opensearch_dashboards_plugin_bin_path }} remove {{ plugin.name }} --allow-root"
+  notify: Restart OpenSearch Dashboards
+  when:
+    - plugin.state is defined and plugin.state == 'absent'
+    - ( plugin.name in installed_plugins.stdout ) | bool
+
+- name: "Install OpenSearch Dashboards plugin | {{ plugin.name }}"
+  block:
+    - name: "Install OpenSearch plugin | {{ plugin.name }}"
+      command: "{{ opensearch_dashboards_plugin_bin_path }} install {{ plugin.url | default(plugin.name) }} --allow-root"
+      register: plugin_install_result
+      args:
+        creates: "{{ opensearch_dashboards_plugin_dir }}/{{ plugin.name }}"
+      notify: Restart OpenSearch Dashboards
+
+    - name: "Change OpenSearch Dashboards plugin ownership | {{ plugin.name }}"
+      file:
+        path: "{{ opensearch_dashboards_plugin_dir }}/{{ plugin.name }}"
+        state: directory
+        owner: "{{ opensearch_dashboards_system_user }}"
+        group: "{{ opensearch_dashboards_system_user }}"
+        recurse: yes
+      when: plugin_install_result.changed
+  when:
+    - plugin.state is not defined or plugin.state == 'present'
+    - ( plugin.name not in installed_plugins.stdout ) | bool

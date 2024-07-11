@@ -1,0 +1,551 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Ansible installation tips & tricks - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ansible-installation-tips-tricks" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ansible installation tips & tricks
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory.html" class="md-nav__link">
+        Ansible inventory
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_ansible.html" class="md-nav__link">
+        Running Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Ansible installation tips & tricks
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="tat.html" class="md-nav__link md-nav__link--active">
+        Ansible installation tips & tricks
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#get-details-from-ssl-certificate-file" class="md-nav__link">
+    Get details from SSL certificate file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-application-logs" class="md-nav__link">
+    Check application logs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-logs" class="md-nav__link">
+    Ansible Logs
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hybrid.html" class="md-nav__link">
+        Hybrid DPE installation using Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory_examples.html" class="md-nav__link">
+        Inventory examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#get-details-from-ssl-certificate-file" class="md-nav__link">
+    Get details from SSL certificate file
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#check-application-logs" class="md-nav__link">
+    Check application logs
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-logs" class="md-nav__link">
+    Ansible Logs
+  </a>
+  
+    <nav class="md-nav" aria-label="Ansible Logs">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="ansible-installation-tips-tricks">Ansible installation tips &amp; tricks</h1>
+<h2 id="get-details-from-ssl-certificate-file">Get details from SSL certificate file</h2>
+<p>Using <em>openssl</em>  binary we can check certificate and also key.</p>
+<p>Check content of certificate (please note: the list of DNS hostnames can be different to official documentation, it's just an example):</p>
+<pre><code class="language-shell">$ openssl x509 -in /etc/ssl/one20/one.domain.tld -noout -text
+
+Certificate:
+    Data:
+        Version: 3 (0x2)
+        Serial Number:
+            03:52:e7:bd:81:26:42:c4:59:6e:37:24:61:90:3e:0d:0c:1f
+        Signature Algorithm: sha256WithRSAEncryption
+        Issuer: C = US, O = Let's Encrypt, CN = R3
+        Validity
+            Not Before: May 25 06:33:10 2021 GMT
+            Not After : Aug 23 06:33:10 2021 GMT
+        Subject: CN = one.domain.tld
+...
+...
+...
+X509v3 Subject Alternative Name:
+                DNS:console.domain.tld, DNS:cs.domain.tld, DNS:dpm.domain.tld, DNS:dqit-console.domain.tld, DNS:dqit.domain.tld, DNS:kibana.domain.tld, DNS:...
+...
+...
+</code></pre>
+<p>Check certificate with private key (please, note using <em>sudo</em> in case of key):</p>
+<pre><code class="language-shell">$ openssl x509 -modulus -noout -in one.domain.tld-fullchain.crt |openssl md5
+(stdout)= 9d9dbe3481db96465d9d798285e29d07
+
+$ sudo openssl rsa -modulus -noout -in one.domain.tld.key |openssl md5
+(stdout)= 9d9dbe3481db96465d9d798285e29d07
+</code></pre>
+<p>Output should be the same.</p>
+<hr />
+<h2 id="check-application-logs">Check application logs</h2>
+<p>Following command should be run on VM where is desired component installed.</p>
+<p>This can be run on app node, where MMM BE is installed:</p>
+<pre><code class="language-shell">journalctl -u mmm-backend.service
+</code></pre>
+<p>Will show you last messages from MMM BE.</p>
+<p>and follow the log (live log stream):</p>
+<pre><code class="language-shell">journalctl -f -u mmm-backend.service
+</code></pre>
+<p>Command above can be used for every service which is running on particular node/mv.</p>
+<h2 id="ansible-logs">Ansible Logs</h2>
+<p>Ansible can write logs of every run. Read about <a href="installing_ansible.html#ansible-config">ansible configuration</a> about how to enable this.
+If you use config from <a href="installing_ansible.html#ansible-config">the config section</a>, the log file will be located in <code>~/.ansible/ansible.log</code>.
+Ansible writes all the logs into this one file. If you would like to find the log of a specific run, you can find it using timestamps in the log file.
+If you would like to change the path to log file, you can do it using <code>log_path</code> setting in your Ansible configuration file.</p>
+<h3 id="references">References</h3>
+<p><a href="https://docs.ansible.com/ansible/latest/reference_appendices/logging.html">Official Ansible logging documentation</a></p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="running_ansible.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Running Ansible" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Running Ansible
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="secrets.html" class="md-footer__link md-footer__link--next" aria-label="Next: Encrypting secrets" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Encrypting secrets
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

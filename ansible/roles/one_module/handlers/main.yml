@@ -1,0 +1,18 @@
+---
+# handlers file for one_module
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Restart module services
+  no_log: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  when: (item.state | default(_service_state)) != 'stopped'
+  loop: "{{ module_services }}"
+  loop_control:
+    label: "{{ item.name }}"
+  tags:
+    - restart

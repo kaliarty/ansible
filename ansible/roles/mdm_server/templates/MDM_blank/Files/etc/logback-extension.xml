@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<included>
+  <!-- <property name="root.level" value="INFO" /> -->
+  <!-- <property name="stdout.level" value="DEBUG" /> -->
+  <!-- <property name="ataccama.level" value="DEBUG" /> -->
+  <!-- <property name="ataccama.stdout.level" value="DEBUG" /> -->
+  <!-- <property name="ataccama.additivity" value="false" /> -->
+
+  <appender name="server-log" class="ch.qos.logback.core.FileAppender">
+    <file>{{ mdm_server_project_dir }}/Files/storage/server.log</file>
+    <append>true</append>
+    <encoder>
+      <pattern>%d{yyy.MM.dd HH:mm:ss} %-7([%level])   %logger %msg%n</pattern>
+    </encoder>
+  </appender>
+
+  <!--
+  <appender name="SECURITY_LOG" class="ch.qos.logback.core.FileAppender">
+      <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+          <level>DEBUG</level>
+      </filter>
+      <file>logs/security.log</file>
+      <append>true</append>
+      <encoder>
+          <pattern>%d{yyy.MM.dd HH:mm:ss} %-7([%level])   %logger %msg%n</pattern>
+      </encoder>
+  </appender>
+   -->
+
+  <root level="info">
+    <appender-ref ref="server-log" />
+  </root>
+
+  <logger name="org.apache.activemq" level="warn" additivity="false">
+    <appender-ref ref="server-log" />
+    <!--		<appender-ref ref="STDOUT" /> -->
+  </logger>
+
+  <!--  debug spring/keycloak security -->
+  <!--
+  <logger name="org.keycloak" level="DEBUG">
+      <appender-ref ref="SECURITY_LOG" />
+  </logger>
+  <logger name="org.springframework.security" level="DEBUG">
+      <appender-ref ref="SECURITY_LOG" />
+      </logger>
+   -->
+</included>

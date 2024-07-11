@@ -1,0 +1,61 @@
+---
+process_exporter_process_names: |
+  {% raw %}
+  - name: "{{.Comm}}"
+    cmdline:
+       - 'namedprocess_namegroup.+'
+
+  - name: "{{.Matches.AiCore}} {{.Matches.AiMod}}"
+    cmdline:
+       - 'Ataccama\ One\ \d+\.\d+\ -\ (?P<AiCore>AI\ Core)\ -\ (?P<AiMod>.+):.+$'
+
+  - name: "{{.Matches.AiCore}} {{.Matches.AiMod}}"
+    cmdline:
+       - 'Ataccama\ One\ \d+\.\d+\ -\ (?P<AiCore>AI\ Core)\ -\ (?P<AiMod>.+):.+$'
+
+  - name: "One20 {{.Matches.OneMod}}"
+    comm:
+      - 'java'
+    cmdline:
+      - '.+com\.ataccama\.one\.(?P<OneMod>\w+)\..+'
+
+  - name: "One20 {{.Matches.OneMod}}"
+    comm:
+      - 'java'
+    cmdline:
+      - '.+com\.ataccama\.(?P<OneMod>.+)\.application.+'
+
+  - name: "One20 {{.Matches.OneMod}}"
+    comm:
+      - 'java'
+    cmdline:
+      - '.+com\.ataccama\.(?P<OneMod>.+)\.(MdaWeb|Rdm)Application'
+
+  - name: "One20 dqit server"
+    comm:
+      - 'java'
+    cmdline:
+      - 'dqit_conf\/etc\/dqit.serverConfig'
+
+  - name: "One20 dqit"
+    comm:
+      - 'java'
+    cmdline:
+      - 'org.apache.catalina.startup.Bootstrap'
+      - '\/dqit\/bin\/tomcat-juli.jar'
+      - 'catalina.base=\/.*\/dqit'
+
+  - name: "Minio server"
+    comm:
+      - 'minio'
+    cmdline:
+      - '\/usr\/local\/bin\/minio\ server'
+
+  - name: "Keycloak"
+    comm:
+      - 'java'
+    cmdline:
+      - 'keycloak'
+      - 'standalone'
+
+  {% endraw %}

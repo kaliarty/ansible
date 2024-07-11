@@ -1,0 +1,52 @@
+---
+# tasks to create own-ca signed certificates
+
+- name: Install necessary packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Create private key for CA certificate
+  community.crypto.openssl_privatekey:
+    path: "{{ ca_cert_dir }}/ca.key"
+    passphrase: "{{ ownca_privatekey_passphrase }}"
+    cipher: auto
+    mode: '0600'
+
+- name: Create certificate signing request (CSR) for CA certificate
+  community.crypto.openssl_csr_pipe:
+    privatekey_path: "{{ ca_cert_dir }}/ca.key"
+    privatekey_passphrase: "{{ ownca_privatekey_passphrase }}"
+    common_name: "{{ ownca_common_name }}"
+    email_address: "{{ ownca_email_address }}"
+    use_common_name_for_san: false
+    basic_constraints:
+      - 'CA:TRUE'
+    basic_constraints_critical: yes
+    key_usage:
+      - keyCertSign
+    key_usage_critical: true
+  register: ownca_csr
+
+- name: Create self-signed CA certificate from CSR
+  community.crypto.x509_certificate:
+    path: "{{ ca_cert_dir }}/ca.pem"
+    csr_content: "{{ ownca_csr.csr }}"
+    privatekey_path: "{{ ca_cert_dir }}/ca.key"
+    privatekey_passphrase: "{{ ownca_privatekey_passphrase }}"
+    provider: selfsigned
+    selfsigned_not_after: "{{ ownca_ca_not_after }}"
+  register: ownca_cert
+  notify: reload nginx
+
+- name: Generate ownca-signed key pairs
+  include: ownca-signed-pair.yml
+  when: ownca_cert.changed
+  loop: "{{ ownca_signed_certs }}"
+  loop_control:
+    loop_var: certificate

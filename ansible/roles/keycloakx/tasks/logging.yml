@@ -1,0 +1,12 @@
+---
+- name: Configure FluentBit for KeycloakX
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: keycloak.conf
+        template: keycloak.fluentbit.conf.j2
+    fluentbit_parsers_d:
+      - name: keycloak-parser.conf
+        template: keycloak-parser.fluentbit.conf.j2

@@ -1,0 +1,297 @@
+---
+# Unless specified otherwise, all paths refer to files on Ansible controller and can be either absolute, or relative to ansible/files.
+
+# Ataccama ONE license files.
+
+anomaly_detection_anomaly_detector_license_file:
+term_suggestions_api_license_file:
+term_suggestions_feedback_license_file:
+term_suggestions_neighbors_license_file:
+term_suggestions_recommender_license_file:
+audit_license_file:
+dpe_license_file:
+dpm_license_file:
+frontend_license_file:
+mmm_license_file:
+orchestration_server_license_file:
+mdm_license_file:
+mdm_server_license_file:
+rdm_license_file:
+rdm_server_license_file:
+dqit_license_file:
+dqit_server_license_file:
+
+# Set below variables if you want to use AWS or Azure PGSQL in OneGen2.0
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true.
+cloud_provider: 'azure'  # this is used to indicate which cloud provider dataabase we are using during installation, Use aws or azure.
+postgresql_domain: <pgsql_database_domain_name>  # this value is used to indicate private domain to which PGSQL database belong to Azure.
+db_user_one: <database_username> # database user for one
+db_user_dqit: <database_username> # database user for dqit
+db_user_rdm: <database_username> # database user for rdm
+db_user_mdm: <database_username> # database user for mdm
+
+postgresql_admin_user: <postgres_admin_username> # this is admin user of PGSQL database instance
+one_db_host: <azure pgsql database host for one>  # database instance  for  one
+rdm_db_host: <azure pgsql database host for rdm >  # database instance  for rdm
+mdm_db_host: <azure pgsql database host for mdm>  # database instance  for mdm
+dqit_db_host: <azure pgsql database host for dqit> # database instance  for dqit
+
+# To define custom database port for PGSQL
+postgresql_port: "5432"
+# Nginx
+# You probably want to fill in only nginx_domain and name files with your certificates accordingly.
+# For details, see the documentation - inventory - Nginx certificates
+# Don't change the 'enabled' values. Don't remove parts related to components that won't be installed.
+nginx_domain:
+nginx_cert_kind: provided
+nginx_certificates:
+  - cn: "{{ nginx_domain  }}"
+    kind: provided
+    cert: "certificates/{{ nginx_domain }}.crt"
+    cert_key: "certificates/{{ nginx_domain }}.key"
+nginx_hosts:
+  one:
+    enabled: true
+    hostname: "one.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  console:
+    enabled: "{{ 'mdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "console.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dpm:
+    enabled: true
+    hostname: "dpm.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dpm_grpc:
+    enabled: true
+    hostname: "dpm-grpc.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dqit:
+    enabled: "{{ 'dqit_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "dqit.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dqit_console:
+    enabled: "{{ 'dqit_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "dqit-console.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  mda:
+    enabled: "{{ 'frontend' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "mda.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  minio:
+    enabled: true
+    hostname: "minio.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  minio_ui:
+    enabled: true
+    hostname: "minio-ui.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  mmm_grpc:
+    enabled: true
+    hostname: "mmm-grpc.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  rdm:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  rdm_console:
+    enabled: "{{ 'rdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "rdm-console.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  opensearch_dashboards:
+    enabled: true
+    hostname: "kibana.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  monitoring:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "monitoring.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  alertmanager:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "alertmanager.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  orchestration:
+    enabled: "{{ 'orchestration_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "orch-console.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  grafana:
+    enabled: "{{ 'monitoring_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}"
+    hostname: "grafana.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  audit:
+    enabled: true
+    hostname: "audit.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  mde_lineage:
+    enabled: true
+    hostname: "mde.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dqf:
+    enabled: true
+    hostname: "dqf.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+  dqf_grpc:
+    enabled: true
+    hostname: "dqf-grpc.{{ nginx_domain }}"
+    crt: "{{ nginx_domain }}.crt"
+    crt_key: "{{ nginx_domain }}.key"
+
+# Alerting & monitoring Slack integration
+# If you want to integrate monitoring with your Slack instance, uncomment and configure it here
+#prometheus_slack_channel: '#your-slack-channel-for-notifications'
+#alertmanager_slack_webhook_url: your-slack-webhook-url
+
+# Availability check toggle: keep enabled except when working around network issues etc.
+# true makes Ansible to check if installed applications respond to (basic) queries.
+# false disables availability checking for all applications except Keycloak (which is mandatory)
+check_availability: true
+
+firewall_manage: false
+# custom rules that will be added to firewall config; this will be used as a value for 'iptables' key.
+# Meant for use-cases like "customer uses its own monitoring agent that must be network-accessible".
+# If only some hosts need its own rules, consider overriding it for specific groups or hosts only.
+custom_firewall_rules: []
+
+# Package version and download method overrides
+# If downloading some or all packages directly from target hosts is not possible, you can download them to controller,
+# uncomment following part and provide paths manually.
+#
+# It is also possible to download packages from specific Maven inventory or from arbitrary URLs.
+# For details, see documentation - inventory - package versions.
+#
+# NOTE: it is currently impossible to override download method or path only for some packages. If you need to download only some packages,
+# copy the rest of the configuration from _packages.yml. It is also necessary to update package versions (if different from _packages.yml).
+# We are sorry.
+
+#packages:
+#  anomaly_detection_anomaly_detector:
+#    version: 13.6.0.220207-111-4efc4316
+#    package_location:
+#    package_download_type: local
+#  term_suggestions_feedback:
+#    version: 13.6.0.220301-275-c86f0580
+#    package_location:
+#    package_download_type: local
+#  term_suggestions_neighbors:
+#    version: 13.6.0.220301-275-c86f0580
+#    package_location:
+#    package_download_type: local
+#  term_suggestions_recommender:
+#    version: 13.6.0.220301-275-c86f0580
+#    package_location:
+#    package_download_type: local
+#  dpe:
+#    version: 13.6.0.220301-1552-2061ce07
+#    package_location:
+#    package_download_type: local
+#  dpm:
+#    version: 13.6.0.220303-1872-31462e7d
+#    package_location:
+#    package_download_type: local
+#  mmm_be:
+#    version: 13.6.0.220303-4746-356e4d89
+#    package_location:
+#    package_download_type: local
+#  mmm_fe:
+#    version: 13.6.0.220301-6444-a9ea1cfb
+#    package_location:
+#    package_download_type: local
+#  rdm:
+#    version: 13.6.0.220303-2037-82abc74f
+#    package_location:
+#    package_download_type: local
+#  mdm:
+#    version: 13.6.0.220303-2037-82abc74f
+#    package_location:
+#    package_download_type: local
+#  server:
+#    version: 13.6.0.220216-836-b50680d9
+#    package_location:
+#    package_download_type: local
+#  dqit:
+#    version: 13.6.0.220208-94-b457d02a
+#    package_location:
+#    package_download_type: local
+#  audit:
+#    version: 13.6.0.220208-253-4c589d37
+#    package_location:
+#    package_download_type: local
+
+# Custom rules that will be added to firewall config
+# Meant for use-cases like "customer uses its own monitoring agent that must be network-accessible"
+# If only some hosts need its own rules, consider overriding it for specific groups or hosts only
+# It is possible to configure more complex rules than just opening ports; details in roles/firewall_rules/README.md
+#
+# custom_firewall_rules:
+#   allowed_tcp_ports:
+#     - port: 11111
+
+# Custom Java parameters
+#
+#audit_server_java_opts: -Xms256m -Xmx384m -XX:MaxRAM=500m
+#dpe_java_opts: -Xms1024m -Xmx2560m -XX:MaxRAM=3096m
+#mmm_fe_java_opts: -Xms128m -Xmx256m -XX:MaxRAM=300m
+#mdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+#mdm_server_java_opts: -Xms1024m -Xmx3072m -XX:MaxRAM=3200m
+#mmm_be_java_opts: -Xms512m -Xmx1512m -XX:MaxRAM=1800m
+#rdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+
+# Uncomment this to pass environment variables to Ansible tasks (e. g. to configure a proxy)
+#environment_vars:
+#  http_proxy: http://1.2.3.4:3128
+#  https_proxy: http://1.2.3.4:3128
+
+## MMM demo data and lookups configuration (until 13.7.0)
+# mmm_data_import_url: "{{ amazon_demodata_root }}/13.3.0/default_data_13.3.0.zip"
+# mmm_lookups_import_url: "{{ amazon_demodata_root }}/13.3.0/minio_13.3.0.zip"
+
+## MMM content_packs configuration (starting from 13.8.0)
+
+# mmm_content_packs is a list of content packs loaded into MMM during startup. Source form a local file, http, or s3 is supported.
+# mmm_content_packs:
+#  - address: s3://ata-gen2-content-archives/release/mmm/13.8.0/basic-data.zip
+#
+#  - address: http://localhost:8025/basic-data.zip     # http(s) example
+#  - address: file:/var/mmm/custom-basic-data.zip      # file example, file must be provisioned to the mmm server manually
+
+# mmm_content_pack_s3_repositories is a list with all S3 object storages from which the content can be loaded.
+# uri_regex must match the address in the content pack.
+# when using demo data content pack, connection string for one-data source must set manually to http://{{ dmm_host }}:{{ dmm_port }} after installation.
+# mmm_jdbc_metastore_processing: true
+# mmm_content_pack_s3_repositories:
+#  - url: https://s3.eu-central-1.amazonaws.com
+#    uri_regex: s3://ata-gen2-content-archives/.*
+#    storage_id: content-repository
+#    access_key:
+#    secret_key:
+
+## AIP project configurations
+## either local_file or remote_url should be set
+#mdm_server_project:
+#  local_file: "path/to/MDC_Models.zip"
+#  remote_url: "path/to/MDC_Models"
+#  project_path: templates/model_projects/GeneralMDM.mdc
+#mdm_server_project_templates: templates/GeneralMDM
+## paths below can be either local files on the controller, or an URL
+#rdm_server_config_files_zip: "/path/to/RDM_Models.zip"
+#dqit_server_config_files_zip: "path/to/DQIT_Models.zip"

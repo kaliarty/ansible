@@ -1,0 +1,26 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ frontend_install_dir }}/log/access.json.log
+    Tag     accesslog.one-webapp
+    Parser  json
+[INPUT]
+    Name            systemd
+    Tag             console.one-webapp
+    Systemd_Filter  _SYSTEMD_UNIT=one-webapp.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.one-webapp
+    Key_Name      message
+    Parser        one-webapp
+    Reserve_Data  On

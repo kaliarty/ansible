@@ -1,0 +1,22 @@
+---
+
+# NOTE: this playbook is not included in site.yml, as running it will cause temporary outage during deploy.
+
+- hosts: all
+  tasks:
+    - file:
+        path: /etc/ansible/facts.d/firewall
+        state: absent
+      tags:
+        - firewall
+    - file:
+        path: /etc/ansible/facts.d/monitoring
+        state: absent
+      tags:
+        - monitoring
+    - file:
+        path: /etc/ansible/facts.d/summary
+        state: absent
+      tags:
+        - summary
+  environment: "{{ environment_vars | default({}) }}"

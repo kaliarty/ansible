@@ -1,0 +1,133 @@
+---
+# tasks file for opensearch
+
+- name: OpenSearch install | Create OpenSearch user
+  user:
+    name: "{{ opensearch_system_user }}"
+    state: present
+    shell: /bin/false
+    create_home: no
+    system: yes
+    home: "{{ opensearch_install_dir }}"
+
+- name: "OpenSearch install | Download OpenSearch {{ opensearch_version }}"
+  get_url:
+    url: "{{ opensearch_binary_url }}"
+    dest: "{{ opensearch_download_dir }}/opensearch-{{ opensearch_version }}.tar.gz"
+    checksum: "{{ opensearch_checksums[opensearch_version] }}"
+
+- name: OpenSearch install | Create OpenSearch install directory
+  file:
+    path: "{{ opensearch_install_dir }}-{{ opensearch_version }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+
+- name: "OpenSearch install | Extract OpenSearch to {{ opensearch_install_dir }}-{{ opensearch_version }}"
+  unarchive:
+    src: "{{ opensearch_download_dir }}/opensearch-{{ opensearch_version }}.tar.gz"
+    dest: "{{ opensearch_install_dir }}-{{ opensearch_version }}"
+    owner: "{{ opensearch_system_user }}"
+    group: "{{ opensearch_system_user }}"
+    extra_opts: [--strip-components=1]
+    remote_src: true
+  args:
+    creates: "{{ opensearch_install_dir }}-{{ opensearch_version }}/bin/opensearch"
+
+- name: OpenSearch install | Create symlink to actual version
+  file:
+    state: link
+    src: "{{ opensearch_install_dir }}-{{ opensearch_version }}"
+    dest: "{{ opensearch_install_dir }}"
+
+- name: OpenSearch install | Create OpenSearch log and data directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ opensearch_system_user }}"
+    group: "{{ opensearch_system_user }}"
+    mode: '2750'
+  with_items:
+    - "{{ opensearch_log_dir }}"
+    - "{{ opensearch_data_dirs }}"
+
+- name: OpenSearch install | Create OpenSearch PID directory
+  file:
+    path: "{{ opensearch_pid_file | dirname }}"
+    state: directory
+    owner: "{{ opensearch_system_user }}"
+    group: "{{ opensearch_system_user }}"
+    mode: 0755
+
+- name: OpenSearch install | Create OpenSearch systemd service
+  include_role:
+    name: 0x0i.systemd
+  vars:
+    unit_config:
+      - name: opensearch
+        enabled: yes
+        state: started
+        Unit:
+          Description: "OpenSearch"
+          Wants: network-online.target
+          After: network-online.target
+        Service:
+          RuntimeDirectory: opensearch
+          PrivateTmp: true
+          WorkingDirectory: "{{ opensearch_install_dir }}"
+          User: "{{ opensearch_system_user }}"
+          Group: "{{ opensearch_system_user }}"
+          ExecStart: "{{ opensearch_install_dir }}/bin/opensearch -p {{ opensearch_pid_file }} -q"
+          StandardOutput: journal
+          StandardError: inherit
+          LimitNOFILE: "{{ opensearch_fs_file_max }}"
+          LimitMEMLOCK: infinity
+          LimitNPROC: "{{ opensearch_proc_max }}"
+          LimitAS: infinity
+          LimitFSIZE: infinity
+          TimeoutStopSec: 0
+          KillSignal: SIGTERM
+          KillMode: process
+          SendSIGKILL: no
+          SuccessExitStatus: 143
+        Install:
+          WantedBy: multi-user.target
+
+- name: OpenSearch config | Create OpenSearch config directory
+  file:
+    path: "{{ opensearch_config_dir }}"
+    state: directory
+    owner: "{{ opensearch_system_user }}"
+    group: "{{ opensearch_system_user }}"
+    mode: 0755
+
+- name: OpenSearch config | Copy OpenSearch config file
+  template:
+    src: opensearch.yml.j2
+    dest: "{{ opensearch_config_dir }}/opensearch.yml"
+    owner: root
+    group: "{{ opensearch_system_user }}"
+    mode: 0660
+    force: yes
+  notify: Restart OpenSearch
+
+- name: OpenSearch config | Copy jvm.options file
+  template:
+    src: jvm.options.j2
+    dest: "{{ opensearch_config_dir }}/jvm.options"
+    owner: root
+    group: "{{ opensearch_system_user }}"
+    mode: 0660
+    force: yes
+  notify: Restart OpenSearch
+
+- name: OpenSearch config | Copy log4j2.properties
+  template:
+    src: log4j2.properties.j2
+    dest: "{{ opensearch_config_dir }}/log4j2.properties"
+    owner: root
+    group: "{{ opensearch_system_user }}"
+    mode: 0660
+    force: yes
+  notify: Restart OpenSearch

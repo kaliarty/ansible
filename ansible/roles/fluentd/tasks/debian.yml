@@ -1,0 +1,27 @@
+---
+- name: Add required dependencies.
+  apt:
+    name:
+      - apt-transport-https
+      - gnupg2
+    state: present
+
+- name: Add td-agent apt key.
+  apt_key:
+    url: https://packages.treasuredata.com/GPG-KEY-td-agent
+    state: present
+
+- name: Add td-agent repository.
+  apt_repository:
+    repo: >-
+      deb
+      http://packages.treasuredata.com/{{ fluentd_version }}/{{ ansible_distribution | lower }}/{{ ansible_distribution_release | lower }}/
+      {{ ansible_distribution_release | lower }} contrib
+    state: present
+    update_cache: true
+
+- name: Install td-agent.
+  apt:
+    name: "td-agent={{ fluentd_package_version }}*" # wildcard: support RHEL and Ubuntu versioning schema using a single version number
+    state: "{{ fluentd_package_state }}"
+    force: true

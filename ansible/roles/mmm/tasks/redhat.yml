@@ -1,0 +1,6 @@
+---
+- name: RedHat - Install postgresql-client
+  yum:
+    name: postgresql
+    update_cache: yes
+    state: present

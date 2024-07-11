@@ -1,0 +1,15 @@
+---
+
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: dmm.conf
+        template: dmm.fluentbit.conf.j2
+      - name: console-filter.conf
+        template: fluentbit/filters/console-filter.conf.j2
+    fluentbit_parsers_d:
+      - name: dmm-parser.conf
+        template: dmm-parser.fluentbit.conf.j2

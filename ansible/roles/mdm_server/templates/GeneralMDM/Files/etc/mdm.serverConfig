@@ -1,0 +1,51 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<server>
+  <port>{{ mdm.server.service_port }}</port>
+  <runtimeConfiguration>mdm.runtimeConfig</runtimeConfiguration>
+  <serverComponents>
+
+    <component class="com.ataccama.dqc.server.services.HealthStateProviders" pathVariableRefreshRate="60" dataSourceRefreshRate="60" />
+
+    <component class="com.ataccama.dqc.web.console.WebConsoleComponent" />
+
+    <component class="com.ataccama.dqc.web.health.HealthStateWebConsole" />
+
+    <component class="com.ataccama.dqc.server.services.VersionedFileSystemComponent">
+      <versionedFolders>
+        <versionedFolder>../data/ext/lkp</versionedFolder>
+      </versionedFolders>
+    </component>
+
+    <component class="com.ataccama.dqc.online.OnlineServicesComponent">
+      <serviceLookupFolders>
+        <configFolder>../services</configFolder>
+      </serviceLookupFolders>
+    </component>
+
+    <component class="com.ataccama.adt.web.WorkflowServerComponent">
+      <sources>
+        <source>
+          <path>../workflows</path>
+          <id>WF1</id>
+        </source>
+      </sources>
+      <resourcesFolder>../storage/resources/workflow</resourcesFolder>
+      <stateStorageProvider
+        class="com.ataccama.adt.runtime.state.storage.FileStateStorageProvider" />
+    </component>
+
+    <component
+      class="com.ataccama.adt.scheduler.server.SchedulerServerComponent">
+      <sources>
+        <source>
+          <path>../schedulers</path>
+          <id>S1</id>
+        </source>
+      </sources>
+      <resourcesFolder>../storage/resources/scheduler</resourcesFolder>
+      <resultPersister
+        class="com.ataccama.adt.scheduler.persister.FileStateResultPersister" />
+    </component>
+
+  </serverComponents>
+</server>

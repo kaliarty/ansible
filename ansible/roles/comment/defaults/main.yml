@@ -1,0 +1,42 @@
+---
+# defaults file for comment service
+
+comment_module_name: comment
+comment_version: "{{ packages.comment.version }}"
+comment_license_file: licenses/license.plf
+comment_install_dir: "{{ deployment_folder }}/{{ comment_module_name }}"
+comment_database_name: "comment"
+comment_database_user: "{{ postgres.database.owner }}"
+comment_database_password: "{{ postgres.database.password }}"
+
+comment_package_download_type: "{{ packages.comment.package_download_type | default('maven_artifact') }}"
+comment_package_location: "{{ packages.comment.package_location | default ('') }}"
+comment_package_url: "{{ packages.comment.package_url | default ('') }}"
+comment_package_checksum: "{{ packages.comment.package_checksum | default(omit) }}"
+
+comment_service_user: comment
+comment_service_group: comment
+
+comment_services:
+  - name: comment
+    service_env:
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ comment_jwt_key.private }}"
+    java_opts: "{{ comment_java_opts | default('-Xms512m -Xmx1512m -XX:MaxRAM=1800m') }}"
+
+comment_java_heapdumps: "true"
+comment_java_temp_folder: "{{ comment_install_dir }}/tmp"
+
+comment_port: 8039
+comment_management_port: 8038
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.comments
+  artifact: comment-service
+  version: "{{ packages.comment.version }}"
+  extension: zip
+
+comment_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ comment_install_dir }}/etc/application.properties"

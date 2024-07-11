@@ -1,0 +1,103 @@
+---
+# tasks file for dqit
+- include: preflight-check.yml
+
+- include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- include: install.yml
+
+- include: configure.yml
+
+# When changing this, change the summary below too
+- name: Install DQIT
+  include_role:
+    name: tomcat
+  vars:
+    tomcat_service_state: started
+    tomcat_service_enabled: yes
+    tomcat_instances:
+      - name: "dqit"
+        user: "{{ dqit_service_user }}"
+        group: "{{ dqit_service_group }}"
+        shutdown_port: "{{ dqit_shutdown_port }}"
+        non_ssl_connector_port: "{{ dqit_port }}"
+        ssl_connector_port: "{{ dqit_ssl_connector_port }}"
+        ajp_port: "{{ dqit_ajp_port }}"
+        env_vars: "{{
+          [{'name': 'JAVA_OPTS', 'value': '-javaagent:' ~ jmx_exporter_jar_path ~ '=' ~ dqit_monitoring_port ~ ':' ~ jmx_exporter_config_path ~ '$JAVA_OPTS'}]
+            if jmx_exporter_jar_path is defined
+            else []
+          }}"
+        app_dirs:
+          - dir: "{{ dqit_install_dir }}"
+        libs:
+          - url: "https://jdbc.postgresql.org/download/postgresql-42.2.24.jar"
+        access_log_enabled: yes
+        access_log_directory: "{{ dqit_log_dir }}"
+        access_log_prefix: dqit-acces
+        access_log_suffix: ".log"
+        heapdump_enabled: "{{ dqit_heapdump_enabled }}"
+        xms: "{{ dqit_tomcat_xms }}"
+        xmx: "{{ dqit_tomcat_xmx }}"
+        max_ram: "{{ dqit_tomcat_maxram }}"
+        # No users/roles: Tomcat users are used for HTTP simple auth that is not used (we are using keycloak)
+        tomcat_user_roles: []
+        tomcat_users: []
+
+- name: Restart DQIT if needed
+  service:
+    name: dqit
+    state: restarted
+  when: dqit_create_licdir.changed or dqit_copy_licfile.changed # noqa no-handler WORKAROUND: systemd role flushes handlers early
+  tags:
+    - restart
+
+- name: "Stop DQIT service"
+  no_log: true
+  service:
+    name: dqit
+    state: stopped
+  tags:
+    - never
+    - stop
+
+- name: "Start DQIT service"
+  no_log: true
+  service:
+    name: dqit
+    state: started
+  tags:
+    - never
+    - start
+
+- name: Configure DQIT webapp logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure DQIT webapp monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+# we would like to refer to the dictionary above, but it isn't fully defined here (because it refers to jmx_exporter_jar_path and jmx_exporter_config_path
+# which are run-time facts defined in jmx_exporter role). Therefore, we just copy it here.
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: DQIT
+      description: "Ataccama platform module: data quality issue tracker"
+      version: "{{ package_version }}"
+      details:
+        directories: "{{ [ dqit_install_dir ] }}"
+        os_user: "{{ dqit_service_user }}"
+        os_group: "{{ dqit_service_group }}"
+        services: "{{ ['dqit'] }}"
+  tags: summary

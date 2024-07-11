@@ -1,0 +1,92 @@
+mdm_db_statistics_active_users_last_day:
+  query: |
+    select count(distinct username) as users_day from i_event_log where log_date > current_date - interval '1' day;
+  cache_seconds: 3600
+  metrics:
+    - users_day:
+        usage: "GAUGE"
+        description: "Active users last day"
+
+mdm_db_statistics_active_users_last_month:
+  query: |
+    select count(distinct username) as users_month from i_event_log where log_date > current_date - interval '1' month;
+  cache_seconds: 3600
+  metrics:
+    - users_month:
+        usage: "GAUGE"
+        description: "Active users last month"
+
+
+mdm_db_statistics_drafts:
+  query: |
+    select count(*) as drafts from i_drafts;
+  cache_seconds: 3600
+  metrics:
+    - drafts:
+        usage: "GAUGE"
+        description: "Drafts"
+
+mdm_db_statistics_drafts_history:
+  query: |
+    select count(*) as drafts_h from i_drafts_hist;
+  cache_seconds: 3600
+  metrics:
+    - drafts_h:
+        usage: "GAUGE"
+        description: "Drafts in History"
+
+
+mdm_db_statistics_records_total:
+  query: |
+    select sum(active)+sum(inactive) as records from c__stats;
+  cache_seconds: 3600
+  metrics:
+    - records:
+        usage: "GAUGE"
+        description: "Records (total)"
+
+
+mdm_db_statistics_writes_last_day:
+  query: |
+    select count(*) AS writes_day from i__tasks where finished > current_date - interval '1' day;
+  cache_seconds: 3600
+  metrics:
+    - writes_day:
+        usage: "GAUGE"
+        description: "Write operations last day"
+
+mdm_db_statistics_writes_last_month:
+  query: |
+    select count(*) AS writes_month from i__tasks where finished > current_date - interval '1' month;
+  cache_seconds: 3600
+  metrics:
+    - writes_month:
+        usage: "GAUGE"
+        description: "Write operations last month"
+
+mdm_db_statistics_writes_time_last_day:
+  query: |
+    select round(sum(EXTRACT(EPOCH FROM (finished-started)))) as writes_time_day from i__tasks  where finished> current_date - interval '1' day;
+  cache_seconds: 3600
+  metrics:
+    - writes_time_day:
+        usage: "GAUGE"
+        description: "Write operations (seconds) last day"
+
+mdm_db_statistics_writes_time_last_month:
+  query: |
+    select round(sum(EXTRACT(EPOCH FROM (finished-started)))) as writes_time_month from i__tasks  where finished> current_date - interval '1' month;
+  cache_seconds: 3600
+  metrics:
+    - writes_time_month:
+        usage: "GAUGE"
+        description: "Write operations (seconds) last month"
+
+
+mdm_db_statistics_entities:
+  query: |
+    SELECT count(*) as entities FROM information_schema.tables WHERE table_schema not in ('pg_catalog', 'information_schema') AND table_name ~ '^c_[^x_].*$(?<!_[ok])';
+  metrics:
+    - entities:
+        usage: "GAUGE"
+        description: "Entities (from tables)"

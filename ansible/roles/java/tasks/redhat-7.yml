@@ -1,0 +1,39 @@
+---
+# tasks for RedHat 7 / CentOS 7 installation
+
+- name: RedHat 7 - Add AdoptiumOpenJDK repository key
+  rpm_key:
+    key: "{{ adoptiumopenjdk_rpm_repo_key }}"
+    state: present
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 7 - Add AdoptiumOpenJDK repository
+  yum_repository:
+    name: adoptiumopenjdk
+    description: adoptiumopenjdk repository
+    baseurl: "{{ adoptiumopenjdk_rpm_repo }}"
+    state: present
+    gpgcheck: yes
+    gpgkey: "{{ adoptiumopenjdk_rpm_repo_key }}"
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 7 - Ensure Java is installed
+  yum:
+    name: "{{ java_packages }}"
+    state: present
+    update_cache: yes
+
+- name: RedHat 7 - Create the YUM repository
+  yum_repository:
+    name: "{{ epel_repo.name }}"
+    description: "{{ epel_repo.description }}"
+    metalink: "{{ epel_repo.metalink }}"
+    gpgkey: "{{ epel_repo.gpgkey }}"
+    gpgcheck: yes
+    enabled: yes
+
+- name: RedHat 7 - Install dependencies
+  yum:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: yes

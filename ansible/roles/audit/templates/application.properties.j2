@@ -1,0 +1,35 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Keycloak configuration
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.token.client-id=audit-token-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+internal.encryption.keystore={{ audit_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ audit_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ audit_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ audit_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# Database configuration
+spring.datasource.password={{ postgres.database.password }}
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ audit.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ postgres.database.owner }}
+
+graphql.servlet.cors.allowed-methods=*
+graphql.servlet.cors.allowed-headers=*
+graphql.servlet.cors.allowed-origin-pattern={{ frontend_url }}
+

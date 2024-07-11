@@ -1,0 +1,12 @@
+---
+- name: RedHat 7 - Install ca-certificates
+  yum:
+    name: ca-certificates
+    update_cache: yes
+    state: latest
+
+- name: RedHat 7 - Install python cryptography library
+  become: true
+  pip:
+    name: cryptography
+    state: present

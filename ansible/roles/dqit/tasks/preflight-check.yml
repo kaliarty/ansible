@@ -1,0 +1,38 @@
+---
+# preflight check for one_module
+
+- name: Assert all required configuration variables are defined
+  assert:
+    that:
+      - dqit_service_user is defined and dqit_service_user is string
+      - dqit_service_group is defined and dqit_service_group is string
+      - dqit_install_dir is defined and dqit_install_dir is string
+      - package_download_type is defined and package_download_type is string
+    msg: "Check if you defined all needed variables."
+
+- name: Assert package download is configured correctly
+  assert:
+    that:
+      - package_download_type in ['maven_artifact', 'remote_url', 'local']
+    msg: "Unsupported download type"
+
+- name: Assert package download configured correctly for maven artifact
+  assert:
+    that:
+      - package_version == dqit_maven.version
+    msg: "Maven version must match module version"
+  when: package_download_type == 'maven_artifact'
+
+- name: Assert package download configured correctly for remote_url
+  assert:
+    that:
+      - package_url is defined and package_url is string
+    msg: "Package url is not defined"
+  when: package_download_type == 'remote_url'
+
+- name: Assert package download configured correctly for local
+  assert:
+    that:
+      - package_location is defined and package_location is string
+    msg: "Path to package is not defined"
+  when: package_download_type == 'local'

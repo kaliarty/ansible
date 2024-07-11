@@ -1,0 +1,103 @@
+---
+# this is default configuration for nginx proxy - one
+
+_nginx_one_proxy_upstreams_mmm: "
+  {%- set upstreams=[] -%}
+    {%- if mmm is defined -%}
+      {{- upstreams.append({'name': 'mmm-be',
+                           'ip_hash': true,
+                           'servers': [{
+                             'address': mmm.host + ':' + mmm.http_port,
+                             'weight': 1
+                           }]
+                          })
+      -}}
+      {{- upstreams.append({'name': 'mmm-fe',
+                           'ip_hash': true,
+                           'servers': [{
+                             'address': frontend.host + ':' + frontend.http_port,
+                             'weight': 1
+                           }]
+                          })
+      -}}
+    {%- endif -%}
+  {{- upstreams -}}
+  "
+
+_nginx_one_proxy_upstreams_keycloak:
+  - name: keycloak
+    ip_hash: true
+    servers:
+      - address: "{{ nginx_keycloak_host }}:{{ nginx_keycloak_port }}"
+        weight: 1
+
+_nginx_one_proxy_locations_mmm:
+  - location: /
+    proxy:
+      pass: http://mmm-fe
+      set_header: "{{ nginx_proxy_headers }}"
+  - location: /graphql
+    proxy:
+      pass: http://mmm-be
+      set_header: "{{ nginx_proxy_headers }}"
+  - location: /mmd
+    proxy:
+      pass: http://mmm-be
+      set_header: "{{ nginx_proxy_headers }}"
+  - location: /data
+    proxy:
+      pass: http://mmm-be
+      set_header: "{{ nginx_proxy_headers }}"
+  - location: /subscriptions
+    proxy:
+      pass: http://mmm-be
+      http_version: "1.1"
+      set_header: "{{ nginx_one_proxy_subscriptions_headers + nginx_proxy_headers }}"
+
+_nginx_one_proxy_default_locations:
+  - location: /auth
+    proxy:
+      pass: http://keycloak
+      set_header: "{{ nginx_proxy_headers }}"
+      # NOTE: MDA needs bigger buffers to work properly
+      buffer_size: 128k
+      buffers:
+        number: 4
+        size: 256k
+      busy_buffers_size: 256k
+  - location: /actuator
+    rewrite:
+      return:
+        code: 403
+
+nginx_one_proxy_subscriptions_headers:
+  - field: Upgrade
+    value: $http_upgrade
+  - field: Connection
+    value: "upgrade"
+
+nginx_one_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/one.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.one.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.one.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.one.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.one.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        proxy:
+          hide_header:
+            - X-Powered-By
+        locations: "{{ nginx_one_proxy_default_locations + nginx_default_webserver }}"
+    upstreams: "{{ _nginx_one_proxy_upstreams_keycloak + _nginx_one_proxy_upstreams_mmm }}"
+
+nginx_one_proxy_default_locations: "{{ _nginx_one_proxy_default_locations + (_nginx_one_proxy_locations_mmm if mmm is defined else []) }}"

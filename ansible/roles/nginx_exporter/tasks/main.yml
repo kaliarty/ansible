@@ -1,0 +1,18 @@
+---
+- name: Configure firewall for nginx-exporter
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install nginx-exporter
+  include_role:
+    name: prometheus_exporter
+  vars:
+    prometheus_exporter_service_name: nginx_exporter
+
+- name: Configure nginx-exporter monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring

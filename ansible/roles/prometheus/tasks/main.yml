@@ -1,0 +1,100 @@
+---
+- name: Assert all required configuration variables are defined
+  assert:
+    that:
+      - keycloak_monitoring_user.username is defined
+      - keycloak_monitoring_user.password is defined
+    msg: "Check if required variables are defined"
+
+- name: Include prometheus scrape config variables
+  include_vars: prometheus_scrape_config.yml
+
+# /etc/ansible/facts.d is a well-known path
+- name: ensure ansible facts inventory exists
+  file:
+    path: "{{ fact_path | default('/etc/ansible/facts.d') }}"
+    state: directory
+    mode: 0770
+    owner: root
+    group: root
+
+- name: install the monitoring fact script
+  template:
+    src: monitoring-facts.j2
+    dest: "{{ fact_path | default('/etc/ansible/facts.d') }}/monitoring.fact"
+    mode: 0775
+    owner: root
+    group: root
+
+- name: get newly available facts
+  setup:
+    gather_subset: min
+
+- name: get scrape configs
+  set_fact:
+    prometheus_scrape_configs: "{{- prometheus_scrape_configs_static + ansible_local.monitoring -}}" # both are lists
+
+- name: Include Alertmanager config variables
+  include_vars: alertmanager.yml
+
+- name: Include Prometheus alerts configuration
+  include_vars: alerts.yml
+  when: ( monitoring_import_alerts | default('false') | bool )
+
+# following roles download files to the local machine: reset custom TMP directory
+- name: Install Prometheus
+  include_role:
+    name: cloudalchemy.prometheus
+    apply:
+      environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+  vars:
+    ansible_remote_tmp: null
+
+- name: Install Alertmanager
+  include_role:
+    name: cloudalchemy.alertmanager
+    apply:
+      environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+  when: monitoring_bootstrap | bool
+  vars:
+    ansible_remote_tmp: null
+
+# this one downloads locally too
+- name: Install blackbox-exporter
+  include_role:
+    name: cloudalchemy.blackbox-exporter
+    apply:
+      environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+  when: monitoring_bootstrap | bool
+  vars:
+    ansible_remote_tmp: null
+
+- name: Configure firewall for Prometheus
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Setup logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: Prometheus
+      description: "Monitoring, performance data collection and alerting"
+      version: "{{ prometheus_version }}"
+      # copied from the external role
+      details:
+        directories:
+          - /var/lib/prometheus
+        os_user: prometheus
+        os_group: prometheus
+        services:
+          - prometheus
+  tags: summary

@@ -1,0 +1,58 @@
+{{ ansible_managed | comment }}
+# Logging configuration
+logging.filter.on=false
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=true
+ataccama.logging.jsonFileAppender=false
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=anomaly-detector-token-client
+ataccama.authentication.keycloak.token.secret={{ anomaly_detection_token_client_secret }}
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+{% if nginx_cert_kind is defined
+      and (nginx_cert_kind == 'ownca' or
+      (nginx_cert_kind == 'provided' and
+      nginx_certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0)) %}
+ataccama.client.connection.keycloak.tls.enabled=true
+ataccama.client.connection.keycloak.tls.trust-store={{ java_cacerts_path }}
+ataccama.client.connection.keycloak.tls.trust-store-type=JKS
+ataccama.client.connection.keycloak.tls.trust-store-password={{ java_cacerts_password }}
+{% endif %}
+
+ataccama.authentication.internal.jwt.generator.key={{ anomaly_detection_anomaly_detector_jwt_key.private }}
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+# internal.encryption.keystore={{ anomaly_detection_anomaly_detector_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+# internal.encryption.keystore.passwordFile={{ anomaly_detection_anomaly_detector_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+# internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+# properties.encryption.keystore={{ anomaly_detection_anomaly_detector_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+# properties.encryption.keystore.passwordFile={{ anomaly_detection_anomaly_detector_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+ataccama.one.anomaly-detection.anomaly-detector.force-isolation-forest-on-all-features=false
+ataccama.one.anomaly-detection.anomaly-detector.max-history-length=100
+ataccama.one.anomaly-detection.anomaly-detector.grpc.server.port={{ anomaly_detection.anomaly_detector.grpc_port }}
+ataccama.one.anomaly-detection.anomaly-detector.http.server.listen-address=0.0.0.0
+ataccama.one.anomaly-detection.anomaly-detector.http.server.port={{ anomaly_detection.anomaly_detector.http_port }}
+ataccama.one.anomaly-detection.anomaly-detector.grpc.server.listen-address=0.0.0.0
+
+### MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+{% if nginx_cert_kind is defined and (nginx_cert_kind == 'ownca' or (nginx_cert_kind == 'provided' and nginx_certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0)) %}
+ataccama.client.connection.keycloak.tls.enabled=true
+ataccama.client.connection.keycloak.tls.trust-store={{ install_dir }}/etc/certstore.p12
+ataccama.client.connection.keycloak.tls.trust-store-type=PKCS12
+ataccama.client.connection.keycloak.tls.trust-store-password=
+{% endif %}

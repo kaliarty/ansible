@@ -1,0 +1,47 @@
+---
+# ha enabled
+ai_server_ha: false
+
+# defaults file for Term Suggestions Feedback
+term_suggestions_feedback_module_name: term-suggestions-feedback
+term_suggestions_feedback_version: "{{ packages.term_suggestions_feedback.version }}"
+term_suggestions_feedback_license_file: licenses/license.plf
+term_suggestions_feedback_install_dir: "{{ deployment_folder }}/{{ term_suggestions_feedback_module_name }}"
+
+term_suggestions_feedback_package_download_type: "{{ packages.term_suggestions_feedback.package_download_type | default('maven_artifact') }}"
+term_suggestions_feedback_package_location: "{{ packages.term_suggestions_feedback.package_location | default ('') }}"
+term_suggestions_feedback_package_url: "{{ packages.term_suggestions_feedback.package_url }}"
+term_suggestions_feedback_package_checksum: "{{ packages.term_suggestions_feedback.package_checksum | default(omit) }}"
+
+term_suggestions_feedback_system_user: ts-feedback
+term_suggestions_feedback_system_group: ts-feedback
+
+term_suggestions_feedback_files:
+  - src: "{{ term_suggestions_feedback_license_file }}"
+    dest: "{{ term_suggestions_feedback_install_dir }}/license/"
+
+term_suggestions_feedback_services:
+  - name: term-suggestions-feedback
+    service_exec_start: "{{ term_suggestions_feedback_install_dir }}/bin/python/bin/python3 {{ term_suggestions_feedback_install_dir }}/lib/manage.py run feedback"
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ term_suggestions_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ term_suggestions_feedback_jwt_key.private }}"
+      GRPC_DNS_RESOLVER: "native"
+      PATH: "/usr/bin:/usr/sbin:{{ term_suggestions_feedback_install_dir }}/bin"
+      PYTHONPATH: "$PYTHONPATH:{{ term_suggestions_feedback_install_dir }}/lib"
+      TMPDIR: "{{ temp_folder }}"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.term-suggestions
+  artifact: term-suggestions-feedback-assembly
+  version: "{{ packages.term_suggestions_feedback.version }}"
+  extension: zip
+  classifier: linux
+
+term_suggestions_feedback_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ term_suggestions_feedback_install_dir }}/etc/application.properties"
+
+java_cacerts_password: changeit

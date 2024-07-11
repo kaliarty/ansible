@@ -1,0 +1,26 @@
+---
+- name: Verify that certificates variable is defined correctly
+  assert:
+    that:
+      - certificates is defined and certificates is iterable
+    msg: "Certificates must be a list"
+  when: certificates is defined
+
+- name: Verify that certificates variable contains not more than one CA
+  assert:
+    that:
+      - not (certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 1)
+    msg: "Certificates variable must contain not more than one CA certificate"
+  when: certificates is defined and certificates | length > 0
+
+- name: Verify that certificates in the list are defined correctly
+  assert:
+    that:
+      - item.cn is defined and item.cn is string and (item.cn | length > 0 )
+      - item.kind is defined and item.kind is string and item.kind in ['selfsigned', 'letsencrypt', 'provided', 'ownca']
+      - item.kind != 'provided' or (item.cert is defined and item.cert_key is defined)
+      - item.altnames is not defined or item.altnames is iterable
+    msg: "Certificate configured wrong"
+  with_items: "{{ certificates }}"
+
+  when: certificates is defined and certificates | length > 0

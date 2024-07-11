@@ -1,0 +1,4 @@
+---
+prometheus_exporter_dependencies:
+  - python3-libselinux
+  - unzip

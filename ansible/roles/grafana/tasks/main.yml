@@ -1,0 +1,79 @@
+---
+# tasks file for grafana
+- become: false
+  delegate_to: localhost
+  run_once: true
+  environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+  vars:
+    ansible_remote_tmp: null
+  block:
+    - name: Create local temporary grafana dashboard directory
+      tempfile:
+        state: directory
+      register: _ata_dashboards
+      changed_when: false
+      check_mode: false
+
+    - name: Collect all dashboards into temp directory
+      ansible.builtin.copy:
+        src: "{{ item }}"
+        dest: "{{ _ata_dashboards.path }}/{{ item | basename }}"
+        mode: 0644
+        force: yes
+      with_fileglob:
+        - "{{ playbook_dir }}/files/grafana-dashboards/ataccama-dashboards/dashboards/onprem/ataccama/*.json"
+        - "{{ playbook_dir }}/files/grafana-dashboards/ataccama-dashboards/dashboards/shared/ataccama/*.json"
+        - "{{ playbook_dir }}/files/grafana-dashboards/*.json"
+
+    - name: Set the correct data source name in the dashboards
+      replace:
+        dest: "{{ item }}"
+        regexp: '"(?:\${)?DS_[A-Z0-9_-]+(?:})?"'
+        replace: '"prometheus"'
+      changed_when: false
+      with_fileglob:
+        - "{{ _ata_dashboards.path }}/*.json"
+
+- name: debug
+  debug:
+    msg: "{{ _ata_dashboards.path }}"
+    verbosity: 0
+
+- name: Add Grafana repo | Debian
+  include: repo.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Install grafana
+  include_role:
+    name: cloudalchemy.grafana
+    apply:
+      environment: "{{ (environment_vars | default({})) | dict2items | rejectattr('key', 'in', ['TMP', 'TEMP', 'TMPDIR']) | items2dict }}"
+  vars:
+    grafana_dashboards_dir: "{{ _ata_dashboards.path }}"
+    grafana_yum_repo_template: 'grafana.repo.j2'
+    ansible_remote_tmp: null
+
+- name: Configure firewall for Grafana
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: Grafana
+      description: "performance data visualization tool, performance dashboard"
+      version: "{{ grafana_version | default(grafana_default_version) }}"
+      details:
+        admin_user: "{{ grafana_security.admin_user }}"
+        data_sources: "{{ grafana_datasources | map(attribute='name') | list }}"
+        host: "{{ nginx_hosts.grafana.hostname }}"
+        # values copied from cloudalchemy.grafana role
+        os_user: grafana
+        os_group: grafana
+        services: grafana-server
+  tags: summary

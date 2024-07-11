@@ -1,0 +1,19 @@
+---
+# prepare repository
+- name: RedHat 8 - Create the YUM repository
+  yum_repository:
+    name: "{{ epel_repo.name }}"
+    description: "{{ epel_repo.description }}"
+    metalink: "{{ epel_repo.metalink }}"
+    gpgkey: "{{ epel_repo.gpgkey }}"
+    gpgcheck: yes
+    enabled: yes
+
+# install packages
+- name: RedHat 8 - Install packages
+  package:
+    name:
+      - python3
+      - python3-passlib
+    state: present
+    update_cache: yes

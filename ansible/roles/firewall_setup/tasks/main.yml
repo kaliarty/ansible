@@ -1,0 +1,124 @@
+---
+# tasks file for firewall
+
+- name: Include distribution based variables
+  include_vars: "{{ ansible_os_family | lower }}.yml"
+
+- name: "Create {{ iptables_persistence_service }} service override directory"
+  file:
+    path: "/etc/systemd/system/{{ iptables_persistence_service  }}.service.d"
+    state: directory
+    owner: root
+    group: root
+    mode: 0750
+
+- name: "Create {{ iptables_persistence_service }} service override"
+  template:
+    src: override.conf.j2
+    dest: "/etc/systemd/system/{{ iptables_persistence_service  }}.service.d/override.conf"
+    owner: root
+    group: root
+    mode: 0640
+
+- name: Ensure iptables packages are present.
+  package:
+    name: "{{ iptables_packages }}"
+    state: present
+    update_cache: true
+  when: firewall_install | bool
+
+- name: Disable existing firewall services
+  include: disable-firewalls.yml
+  when: firewall_install | bool
+
+# /etc/ansible is a well-known path
+- name: Ensure ansible facts inventory exists
+  file:
+    path: "/etc/ansible"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+# /etc/ansible/facts.d is a well-known path
+- name: Ensure ansible facts inventory exists
+  file:
+    path: "{{ fact_path | default('/etc/ansible/facts.d') }}"
+    state: directory
+    mode: 0770
+    owner: root
+    group: root
+
+- name: Install the firewall fact script
+  template:
+    src: firewall-facts.j2
+    dest: "{{ fact_path | default('/etc/ansible/facts.d') }}/firewall.fact"
+    mode: 0775
+    owner: root
+    group: root
+
+- name: Get newly available facts
+  setup:
+    gather_subset: min
+
+# This can't be part of defaults, because it would be evaluated too early
+# WARNING: enabling dropped packet logging may softlock servers, even on ligtly loaded testing environment.
+- name: get firewall rules
+  set_fact:
+    _iptables:
+      forwarding_allowed: "{{ ansible_local.firewall.forwarding_allowed  | default (false) }}"
+      icmp_allowed: "{{ ansible_local.firewall.icmp_allowed | default (true) }}"
+      icmp_allowed_from: "{{ ansible_local.firewall.icmp_allowed_from | default ([]) }}"
+      allowed_ports: "{{ ansible_local.firewall.allowed_ports | default ([]) }}"
+      allowed_tcp_ports: "{{ ansible_local.firewall.allowed_tcp_ports | default ([]) }}"
+      chains: "{{ ansible_local.firewall.chains | default ([]) }}"
+      additional_rules: "{{ ansible_local.firewall.additional_rules | default ([]) }}"
+      log_dropped_packets: "{{ ansible_local.firewall.log_dropped_packets | default (false) }}"
+      log_dropped_packets_level: "{{ ansible_local.firewall.log_dropped_packets_level | default (4) }}"
+
+
+- name: "Enable {{ iptables_persistence_service }} on boot | {{ ansible_os_family }} "
+  service:
+    name: "{{ iptables_persistence_service }}"
+    enabled: yes
+  when: ansible_os_family == "Ubuntu" or ansible_os_family == "RedHat"
+
+- name: Copy iptables ipv4 rules
+  template:
+    src: rules.v4.j2
+    dest: "{{ iptables_v4_rules }}"
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - iptables persistent service reload
+
+- name: Copy iptables ipv6 rules
+  template:
+    src: rules.v6.j2
+    dest: "{{ iptables_v6_rules }}"
+    owner: root
+    group: root
+    mode: '0644'
+    backup: yes
+  notify:
+    - iptables persistent service reload
+
+# NOTE: we are called by firewall_rules to ensure ports are open immediately. We can't postpone this.
+# NOTE: reloading iptables rules can close our connection under some circumstances (details unknown,
+#       relation with conntrack suspected). We should allow retries.
+
+- name: Run iptables restore
+  become: true
+  shell: "iptables-restore {{ iptables_command_common_params }} < {{ iptables_v4_rules }}"
+  changed_when: false
+  vars:
+    ansible_ssh_retries: 1
+
+- name: Run ip6tables restore
+  become: true
+  shell: "ip6tables-restore {{ iptables_command_common_params }} < {{ iptables_v6_rules }}"
+  changed_when: false
+  vars:
+    ansible_ssh_retries: 1

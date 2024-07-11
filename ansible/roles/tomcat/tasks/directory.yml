@@ -1,0 +1,11 @@
+---
+
+- name: Deploy webapp from directory
+  file:
+    src: "{{ app_dir.dir }}"
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/webapps/{{ app_dir.dir | basename }}"
+    state: link
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+  when:
+    - app_dir.dir is defined

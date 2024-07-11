@@ -1,0 +1,13 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ dmm_port }}"
+          source: "{{ groups['one_app'] | default([]) }}"
+        - port: "{{ dmm_grpc_port }}"
+          source: "{{ groups['monitoring_server'] }}"
+        - port: "{{ dmm_management_port }}"
+          source: "{{ groups['monitoring_server'] }}"

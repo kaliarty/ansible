@@ -1,0 +1,23 @@
+{{ ansible_managed | comment }}
+
+############################
+# Parsers
+############################
+{% for parser in fluentbit_parsers %}
+
+[PARSER]
+{% for key in parser %}
+    {{ key }} {{ parser[key] }}
+{% endfor %}
+{% endfor %}
+
+############################
+# Multiline parsers
+############################
+{% for parser in fluentbit_multiline_parsers %}
+
+[MULTILINE_PARSER]
+{% for key in parser %}
+    {{ key }} {{ parser[key] }}
+{% endfor %}
+{% endfor %}

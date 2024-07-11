@@ -1,0 +1,57 @@
+---
+# defaults file for mdm_server
+
+mdm_server_module_name: mdm-server
+mdm_server_version: "{{ packages.mdm_server.version }}"
+mdm_server_license_file: licenses/license.plf
+mdm_server_install_dir: "{{ deployment_folder }}/{{ mdm_server_module_name }}"
+
+mdm_server_package_download_type: "{{ packages.mdm_server.package_download_type | default('maven_artifact') }}"
+mdm_server_package_location: "{{ packages.mdm_server.package_location | default ('') }}"
+mdm_server_package_url: "{{ packages.mdm_server.package_url | default ('') }}"
+mdm_server_package_checksum: "{{ packages.mdm_server.package_checksum | default(omit) }}"
+
+mdm_server_service_user: mdm-server
+mdm_server_service_group: mdm-server
+
+mdm_server_http_port: "8051"
+mdm_server_actuators_port: "8056"
+mdm_server_manager_port: "8057"
+mdm_server_health_port: "8058"
+
+mdm_server_services:
+  - name: mdm-server
+    service_exec_start: "{{ mdm_server_install_dir }}/bin/start.sh -config={{ mdm_server_project_dir }}/Files/etc/mdm.serverConfig start"
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ mdm_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ mdm_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ mdm_server_jwt_key.private }}"
+    java_opts: "{{ mdm_server_java_opts | default('-DenableRecordCounters=true -Dlogging.logbackExtensionFile=' ~ mdm_server_project_dir ~'/Files/etc/logback-extension.xml -Druntime.properties=' ~ mdm_server_install_dir ~ '/etc/runtime.properties -Xms1024m -Xmx3072m -XX:MaxRAM=3200m') }}"
+
+mdm_server_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ mdm_server_install_dir }}/etc/application.properties"
+
+mdm_server_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ mdm_server_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ mdm_server_install_dir }}/etc"
+  - src: "{{ mdm_server_license_file }}"
+    dest: "{{ mdm_server_install_dir }}/license.plf" #TODO: change location to license dir, once ONE-27727 is resolved
+  - src: "runtime.properties"
+    dest: "{{ mdm_server_install_dir }}/etc/runtime.properties"
+
+mdm_server_project_dir: "{{ deployment_folder }}/mdm-server-config"
+mdm_server_project_tmp_dir: "{{ temp_folder }}"
+
+mdm_server_project_templates: templates/MDM_blank
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.product.one.mdm
+  artifact: mdm-server-assembly
+  version: "{{ packages.mdm_server.version }}"
+  extension: zip
+  classifier: linux

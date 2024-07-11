@@ -1,0 +1,81 @@
+---
+# defaults file for mmm
+
+mmm_module_name: mmm-backend
+mmm_version: "{{ packages.mmm_be.version }}"
+mmm_license_file: licenses/license.plf
+mmm_install_dir: "{{ deployment_folder }}/{{ mmm_module_name }}"
+
+mmm_package_download_type: "{{ packages.mmm_be.package_download_type | default('maven_artifact') }}"
+mmm_package_location: "{{ packages.mmm_be.package_location | default ('') }}"
+mmm_package_url: "{{ packages.mmm_be.package_url | default ('') }}"
+mmm_package_checksum: "{{ packages.mmm.package_checksum | default(omit) }}"
+
+mmm_service_user: mmm-backend
+mmm_service_group: mmm-backend
+
+mmm_services:
+  - name: mmm-backend
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ mmm_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ mmm_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ mmm_jwt_key.private }}"
+    java_opts: "{{ mmm_be_java_opts | default('-Xms512m -Xmx1512m -XX:MaxRAM=3500m') }}"
+
+mmm_service_exec_start_pre: >-
+  {%- if mmm_install_db_check_script -%}
+  {{ mmm_install_dir }}/bin/check-mmm-db-connection.sh
+  {%- else -%}
+  {%- endif -%}
+
+mmm_java_heapdumps: "true"
+mmm_java_temp_folder: "{{ mmm_install_dir }}/tmp"
+
+mmm_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ mmm_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ mmm_install_dir }}/etc"
+  - src: "{{ mmm_license_file }}"
+    dest: "{{ mmm_install_dir }}/license/"
+
+mmm_templates: "{{ mmm_db_check_script_template if mmm_install_db_check_script else [] }}"
+
+mmm_db_check_script_template:
+  - src: check-mmm-db-connection.sh.j2
+    dest: "{{ mmm_install_dir }}/bin/check-mmm-db-connection.sh"
+    mode: "0700"
+
+mmm_basic_data_dir: "{{ (mmm_install_dir ~ '/etc/data/ansible_managed/basic') if mmm_data_import_url is defined else None }}"
+mmm_data_import_dir: "{{ (mmm_install_dir ~ '/etc/data/ansible_managed/demo') if mmm_data_import_url is defined else None }}"
+mmm_lookups_import_dir: "{{ (mmm_install_dir ~ '/etc/data/ansible_managed/lookups') if mmm_lookups_import_url is defined else None }}"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.product.one.mmm-be
+  artifact: mmm-be-assembly
+  version: "{{ packages.mmm_be.version }}"
+  extension: zip
+  classifier: linux
+
+mmm_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ mmm_install_dir }}/etc/application.properties"
+
+# Install bash script to check if the DB is available before MMM's start
+mmm_install_db_check_script: false
+
+event_storage_enabled: false
+
+mmm_jdbc_metastore_processing: false
+mmm_smtp_enabled: false
+mmm_smtp_host: localhost
+mmm_smtp_port: "587"
+mmm_smtp_user: mmm_smtp
+mmm_smtp_auth: true
+mmm_smtp_starttls: true
+mmm_smtp_password: ""
+
+mmm_search_username: "admin"
+mmm_search_password: ""

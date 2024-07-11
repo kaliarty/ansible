@@ -1,0 +1,12 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset_name: fluentd
+    monitoring_ruleset:
+      metrics_path: /metrics
+      port: "{{ fluentd_http_metrics_port }}"
+  when: "'monitoring_server' in group_names"

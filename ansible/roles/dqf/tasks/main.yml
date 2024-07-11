@@ -1,0 +1,58 @@
+---
+# task file for dqf
+
+- name: Configure firewall for Data Quality Filter (DQF)
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install Data Quality Filter (DQF)
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ dqf_module_name }}"
+    module_version: "{{ dqf_version }}"
+    install_dir: "{{ dqf_install_dir }}"
+    service_user: "{{ dqf_service_user }}"
+    service_group: "{{ dqf_service_group }}"
+    module_services: "{{ dqf_services }}"
+    package_download_type: "{{ dqf_package_download_type }}"
+    package_location: "{{ dqf_package_location }}"
+    package_url: "{{ dqf_package_url }}"
+    package_checksum: "{{ dqf_package_checksum }}"
+    module_config: "{{ dqf_config }}"
+    deploy_files: "{{ dqf_files }}"
+    enable_java_heapdumps: "{{ dqf_java_heapdumps }}"
+    java_temp_folder: "{{ dqf_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure DQF logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure monitoring for DQF
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: Task
+      description: "Ataccama platform module: Task"
+      version: "{{ dqf_version }}"
+      details:
+        directories: "{{ [ dqf_install_dir ] }}"
+        os_user: "{{ dqf_service_user }}"
+        os_group: "{{ dqf_service_group }}"
+        services: "{{ dqf_services | map(attribute='name') | list }}"
+  tags:
+    - summary

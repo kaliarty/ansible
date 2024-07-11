@@ -1,0 +1,4 @@
+---
+nginx_status_stub_config:
+  template_file: http/status.conf.j2
+  deployment_location: /etc/nginx/conf.d/status_stub.conf

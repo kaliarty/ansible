@@ -1,0 +1,34 @@
+---
+- hosts: monitoring_server
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - os_family
+    - processor_count
+  roles:
+    - prometheus
+  tags:
+    - prometheus
+    - monitoring
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: all
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: mounts
+  roles:
+    - node_exporter
+    - process_exporter
+  tags:
+    - monitoring
+  environment: "{{ environment_vars | default({}) }}"
+
+- hosts: frontend
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  roles:
+    - grafana
+  tags:
+    - monitoring
+  environment: "{{ environment_vars | default({}) }}"

@@ -1,0 +1,18 @@
+---
+# opensearch_dashboards system settings
+# according to https://opensearch.org/docs/latest/opensearch/install/important-settings/
+
+- name: Set open files limit in sysctl.conf
+  block:
+    - name: Get current sysctl fs.file-max
+      become: true
+      command: "sysctl -n fs.file-max"
+      register: fs_file_max
+      changed_when: False
+
+    - name: Update sysctl fs.file_max
+      sysctl:
+        name: fs.file-max
+        value: "{{ opensearch_dashboards_fs_file_max }}"
+        state: present
+      when: fs_file_max.stdout | int < opensearch_dashboards_fs_file_max

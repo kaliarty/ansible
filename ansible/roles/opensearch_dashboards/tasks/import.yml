@@ -1,0 +1,22 @@
+---
+# import data into opensearch_dashboards
+
+- name: Import OpenSearch Dashboards saved objects
+  block:
+    - name: Copy saved object file
+      copy:
+        src: "{{ item }}"
+        dest: "/tmp/{{ item }}"
+        mode: 0644
+      with_items: "{{ opensearch_dashboards_saved_objects_import }}"
+
+    - name: Import OpenSearch saved object via API
+      shell: 'curl  -X "POST" "http://{{ ansible_fqdn }}:{{ opensearch_dashboards_server_port }}/api/saved_objects/_import?overwrite=true" \
+                    -H "osd-xsrf: true" \
+                    --form file=@/tmp/{{ item }}'
+      with_items: "{{ opensearch_dashboards_saved_objects_import }}"
+      register: saved_object_import_output
+      failed_when: "not saved_object_import_output.stdout | from_json | json_query('success') | bool"
+      tags:
+        - skip_ansible_lint
+  when: opensearch_dashboards_saved_objects_import is defined and opensearch_dashboards_saved_objects_import | length > 0

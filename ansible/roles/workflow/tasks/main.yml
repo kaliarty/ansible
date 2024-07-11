@@ -1,0 +1,56 @@
+---
+# tasks file for workflow
+
+- name: Configure firewall for Workflow
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install Workflow service
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ workflow_module_name }}"
+    module_version: "{{ workflow_version }}"
+    install_dir: "{{ workflow_install_dir }}"
+    service_user: "{{ workflow_service_user }}"
+    service_group: "{{ workflow_service_group }}"
+    module_services: "{{ workflow_services }}"
+    package_download_type: "{{ workflow_package_download_type }}"
+    package_location: "{{ workflow_package_location }}"
+    package_url: "{{ workflow_package_url }}"
+    package_checksum: "{{ workflow_package_checksum }}"
+    module_config: "{{ workflow_config }}"
+    enable_java_heapdumps: "{{ workflow_java_heapdumps }}"
+    java_temp_folder: "{{ workflow_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure workflow logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure workflow monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: Workflow
+      description: "Ataccama platform module: workflow"
+      version: "{{ workflow_version }}"
+      details:
+        directories: "{{ [ workflow_install_dir ] }}"
+        os_user: "{{ workflow_service_user }}"
+        os_group: "{{ workflow_service_group }}"
+        services: "{{ workflow_services | map(attribute='name') | list }}"
+  tags: summary

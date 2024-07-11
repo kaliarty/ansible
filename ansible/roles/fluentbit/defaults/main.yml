@@ -1,0 +1,38 @@
+---
+# defaults file for fluentbit
+
+fluentbit_version: "{{ fluentbit_version }}"
+
+fluentbit_gpg_key: https://packages.fluentbit.io/fluentbit.key
+fluentbit_apt_repo: "deb https://packages.fluentbit.io/ubuntu/{{ ansible_distribution_release }} {{ ansible_distribution_release }} main"
+fluentbit_yum_repo_amazon_2: http://packages.fluentbit.io/centos/7/$basearch/
+fluentbit_yum_repo: https://packages.fluentbit.io/centos/7/$basearch/
+fluentbit_yum_repo_rhel_9: http://packages.fluentbit.io/centos/8/$basearch/  #RHEL 9 isn't available yet, 8 is tested and compatible
+
+fluentbit_conf_dir: /etc/td-agent-bit
+fluentbit_conf_d_dir: td-agent-bit.conf.d
+fluentbit_conf_file: /etc/td-agent-bit/td-agent-bit.conf
+fluentbit_parsers_file: /etc/td-agent-bit/parsers.conf
+fluentbit_parsers_d_dir: parsers.conf.d
+
+fluentbit_http_port: 2020
+fluentbit_service_flush_seconds: 5
+fluentbit_service_daemon: false
+fluentbit_service_custom_parsers_file: []
+fluentbit_service_log_level: info
+fluentbit_service_enable_metrics: true
+fluentbit_service_metrics_listen_ip: 0.0.0.0
+fluentbit_service_metrics_listen_port: "{{ fluentbit_http_port }}"
+
+fluentbit_max_open_files: 50000
+fluentbit_unit_env: []
+
+# Default inputs
+fluentbit_inputs: []
+
+# Default outputs
+fluentbit_outputs: []
+
+# default dropin conf files
+fluentbit_conf_d: []
+fluentbit_parsers_d: []

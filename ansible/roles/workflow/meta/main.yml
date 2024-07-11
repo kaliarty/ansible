@@ -1,0 +1,15 @@
+---
+galaxy_info:
+  author: t_smat
+  description: Workflow service
+  company: ataccama
+  license: internal
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+    - name: Ubuntu
+      versions:
+        - 20

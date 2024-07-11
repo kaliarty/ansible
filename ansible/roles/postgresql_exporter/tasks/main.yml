@@ -1,0 +1,34 @@
+---
+- name: Install queries file
+  become: true
+  copy:
+    dest: "{{ postgres_exporter_queries_file }}"
+    content: |
+      {{ postgres_exporter_queries }}
+      {%- if postgres_exporter_additional_queries | length %}
+
+      {{ postgres_exporter_additional_queries }}
+      {%- endif %}
+    backup: false
+    owner: "{{ postgres_exporter_user }}"
+    group: "{{ postgres_exporter_group }}"
+    mode: "u=r,g=r,o="
+  notify: restart postgres-exporter
+
+- name: Configure firewall for postgres-exporter
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install postgres-exporter
+  include_role:
+    name: prometheus_exporter
+  vars:
+    prometheus_exporter_service_name: postgres_exporter
+
+- name: Configure monitoring for postgres-exporter
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring

@@ -1,0 +1,53 @@
+<?xml version="1.0"?>
+<settings>
+
+    <!-- Issue metadata file -->
+    <metadataProvider file="{{ project_path }}/metadata.xml" />
+    <messages file="{{ project_path }}/messages.properties" />
+
+    <!-- Issue persistence. Issues can be stored either in a database or in an XML file. -->
+    <!-- Use the following definition for database persistence: -->
+    <dataProvider class="com.ataccama.epp.internal.core.data.db.DbDataProviderFactory">
+        <indexPath>indexes</indexPath>
+        <encryptIndex>false</encryptIndex>
+    </dataProvider>
+
+    <!-- Use the following definition for file persistence -->
+    <!-- <dataProvider class="com.ataccama.epp.internal.core.data.xml.XmlDataProviderFactory" >
+            <fileName>data.xml</fileName>
+    </dataProvider> -->
+
+    <!-- Workflow engine in use. -->
+    <workflowEngine class="com.ataccama.epp.workflow.core.XmlWorkflowEngine" fileName="{{ project_path }}/workflows.xml" />
+
+    <!-- Keycloak configuration for admin api -->
+    <authFactory class="com.ataccama.lib.authclient.keycloak.KeycloakAuthManagerFactory">
+        <!-- Url to keycloak instance -->
+        <serverUrl>https://{{ nginx_hosts.one.hostname }}/auth</serverUrl>
+        <!-- Name of realm -->
+        <realm>ataccamaone</realm>
+        <!-- Name of used keycloak client -->
+        <clientId>{{ keycloak_admin_client }}</clientId>
+        <!-- Secret of keycloak client. Is not necessary for clients with public access.  Can be encrypted by encrypt.sh (encrypt.bat) script. -->
+        <clientSecret>{{ keycloak_admin_client_secret }}</clientSecret>
+        <!-- Use token instead of credentials.  Can be encrypted by encrypt.sh (encrypt.bat) script.  -->
+        <!-- <authorizationToken></authorizationToken> -->
+    </authFactory>
+
+    <!-- Application name -->
+    <appName>DQIT</appName>
+
+    <globalSettings>
+        <!-- Enables additional features for sight-impaired people -->
+        <accessibleApplication>false</accessibleApplication>
+        <!-- Enables additional safe browsing measures, such as anti-frame hijacking,
+          disables displaying error details in the applications, and login form autocomplete -->
+        <safeMode>false</safeMode>
+        <!-- Maximum number of tasks kept in history -->
+        <maxTaskHistorySize>50</maxTaskHistorySize>
+        <!-- Maximum idle time of a task in order to be kept in history even if the history is full -->
+        <maxTaskHistoryIdleInMillis>60000</maxTaskHistoryIdleInMillis>
+    </globalSettings>
+
+
+</settings>

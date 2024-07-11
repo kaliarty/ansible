@@ -1,0 +1,8 @@
+{{ ansible_managed | comment }}
+
+[PARSER]
+    Name         postgresql-multiline
+    Format       regex
+    Regex        ^(?<time>\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}\.\d{3} UTC)\s+\[(?<taskID>.*)\]\s+(?<username>[^\@\s]+)?\@?(?<database>\S+)?\s+(?<level>\b[A-Z0-9]{3,}\b)?:?\s+?(?<message>.*)
+    Time_Format  %Y-%m-%d %H:%M:%S.%L %z
+    Time_Key     time

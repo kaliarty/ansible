@@ -1,0 +1,78 @@
+{{ ansible_managed | comment  }}
+# Disable config server
+ataccama.config-service.runtime=off
+
+# Logging
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ comment_database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ comment_database_user }}
+spring.datasource.password={{ comment_database_password }}
+
+management.endpoints.web.exposure.include=health,prometheus
+
+ataccama.one.comments.http.public.endpoints=/actuator/health,/actuator/health/liveness,/actuator/health/readiness,/actuator/info,/actuator/prometheus/
+
+management.server.port={{ comment_management_port }}
+server.port={{ comment_port }}
+
+# MMM gRPC connection
+ataccama.client.connection.mmm.grpc.host={{ mmm.host }}
+ataccama.client.connection.mmm.grpc.port={{ mmm_grpc_port }}
+
+# task-service gRPC connection
+ataccama.client.connection.tasks.grpc.host={{ task_host }}
+ataccama.client.connection.tasks.grpc.port={{ task_grpc_port }}
+
+# Local authentication configuration
+ataccama.one.platform.deployments.mmmbe.uri={{ mmm_url }}
+ataccama.one.platform.deployments.mmmbe.security.jwt-keys.{{ mmm_deployment_name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.mmmbe.security.jwt-keys.{{ mmm_deployment_name }}.content={{ mmm_jwt_key.content | b64encode }}
+
+
+ataccama.one.platform.deployments.mmmbe.security.jwt-keys.mmmbe.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.mmmbe.security.jwt-keys.mmmbe.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.workflows.security.jwt-keys.workflows.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.workflows.security.jwt-keys.workflows.content={{ mmm_jwt_key.content | b64encode }}
+
+# MinIO storage configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+
+# MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+# Task jwt keys
+ataccama.one.platform.deployments.{{ task_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.module=task
+ataccama.one.platform.deployments.{{ task_deployment_name }}.uri={{ task_host }}:{{ task_port }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.content={{ task_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.fingerprint={{ task_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.jwt-keys.{{ task_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ task_deployment_name }}.security.roles[0]=IMPERSONATION
+
+#Workflow jwt key
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.module=workflow
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.uri={{ workflow_host }}:{{ workflow_port }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.content={{ workflow_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.fingerprint={{ workflow_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.jwt-keys.{{ workflow_deployment_name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[0]=IMPERSONATION
+ataccama.one.platform.deployments.{{ workflow_deployment_name }}.security.roles[1]=MMM_admin

@@ -1,0 +1,107 @@
+---
+# tasks file for mmm
+
+- name: Check MMM role configured correctly
+  include: preflight-check.yml
+
+- name: Configure firewall for MMM
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install necessary packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+  when: mmm_install_db_check_script
+
+- name: "Check if we did import already"
+  stat:
+    path: "{{ mmm_install_dir }}/etc/data/mmm_data_imported"
+  changed_when: false
+  register: mmm_data_imported
+  when: mmm_data_import_url is defined or mmm_lookups_import_url is defined
+
+- name: Install MMM
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ mmm_module_name }}"
+    module_version: "{{ mmm_version }}"
+    install_dir: "{{ mmm_install_dir }}"
+    service_user: "{{ mmm_service_user }}"
+    service_group: "{{ mmm_service_group }}"
+    module_services: "{{ mmm_services }}"
+    package_download_type: "{{ mmm_package_download_type }}"
+    package_location: "{{ mmm_package_location }}"
+    package_url: "{{ mmm_package_url }}"
+    package_checksum: "{{ mmm_package_checksum }}"
+    module_config: "{{ mmm_config }}"
+    deploy_files: "{{ mmm_files }}"
+    deploy_templates: "{{ mmm_templates }}"
+    enable_java_heapdumps: "{{ mmm_java_heapdumps }}"
+    java_temp_folder: "{{ mmm_java_temp_folder }}"
+    _service_exec_start_pre: "{{ mmm_service_exec_start_pre }}"
+    _service_state: "{{ 'stopped' if ((mmm_data_import_url is defined or mmm_lookups_import_url is defined ) and not mmm_data_imported.stat.exists) else 'started' }}"
+    logrotate_enabled: true
+
+- when: (mmm_data_import_url is defined or mmm_lookups_import_url is defined ) and not mmm_data_imported.stat.exists
+  block:
+    - name: Import MMM lookups
+      include: lookups-import.yml
+      tags:
+        - demodata_import
+      when:
+        - mmm_lookups_import_url is defined
+
+    - name: Import MMM demo data
+      include: demodata-import.yml
+      tags:
+        - demodata_import
+      when:
+        - mmm_data_import_url is defined
+
+    - name: Create data import state file
+      file:
+        path: "{{ mmm_install_dir }}/etc/data/mmm_data_imported"
+        state: touch
+        owner: root
+        group: root
+        mode: 0600
+
+- name: Configure mmm-be logging
+  include: logging.yml
+  tags:
+    - logging
+
+# MMM and DPM depend on each other. Don't check status; rely on DPM check ftor waiting; check moved to playbook
+
+- name: Configure MMM monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: MMM
+      description: "Ataccama platform module: metadata management"
+      version: "{{ mmm_version }}"
+      details:
+        directories: "{{ [ mmm_install_dir ] }}"
+        os_user: "{{ mmm_service_user }}"
+        os_group: "{{ mmm_service_group }}"
+        services: "{{ mmm_services | map(attribute='name') | list }}"
+  tags: summary

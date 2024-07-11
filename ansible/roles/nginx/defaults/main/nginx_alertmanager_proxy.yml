@@ -1,0 +1,37 @@
+---
+# this is default configuration for nginx proxy - alertmanager
+
+nginx_alertmanager_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/alertmanager.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.alertmanager.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.alertmanager.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.alertmanager.crt_key | default(omit) }}"
+        auth_basic:
+          realm: "{{ (alertmanager.auth_basic_enabled) | ternary(\"Alertmanager\", \"off\") }}"
+          user_file: "{{ alertmanager.auth_basic_user_file }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.alertmanager.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_alertmanager_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: alertmanager
+        ip_hash: true
+        servers:
+          - address: "{{ alertmanager.host }}:{{ alertmanager.port }}"
+            weight: 1
+
+nginx_alertmanager_proxy_default_locations:
+  - location: /
+    proxy:
+      pass: http://alertmanager
+      set_header: "{{ nginx_proxy_headers }}"

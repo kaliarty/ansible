@@ -1,0 +1,83 @@
+---
+# instantiated service definition for one module
+# See https://www.freedesktop.org/software/systemd/man/systemd.unit.html for details
+
+- name: "Create service user for module {{ module_name }}"
+  user:
+    name: "{{ module_instantiated_service.user | default(_service_user) }}"
+    group: "{{ service_group }}"
+    create_home: no
+    shell: /usr/sbin/nologin
+    home: "{{ install_dir }}"
+    system: yes
+  when: module_instantiated_service.user is defined
+
+- block:
+    - name: "Create {{ module_instantiated_service.name }} service configuration directory"
+      file:
+        path: "/etc/systemd/system/{{ module_instantiated_service.name }}@.service.d"
+        state: directory
+        owner: root
+        group: root
+        mode: 0755
+    - name: "Deploy {{ module_instantiated_service.name  }} service configuration"
+      template:
+        src: service-local.conf.j2
+        dest: "/etc/systemd/system/{{ module_instantiated_service.name }}@.service.d/{{ module_instantiated_service.name }}.conf"
+        owner: root
+        group: root
+        mode: 0600
+      vars:
+        service_name: "{{ module_instantiated_service.name  }}"
+      notify:
+        - Reload systemd daemon
+      register: srvconf # see note below
+
+- name: "Create service template for module {{ module_name }}"
+  include_role:
+    name: 0x0i.systemd
+    tasks_from: common/config
+  vars:
+    unit_config:
+      - name: "{{ module_instantiated_service.name }}@"
+        Unit:
+          Description: "{{ module_instantiated_service.description |
+                           default('Service wrapper for Ataccama application ' ~ module_instantiated_service.name) }}"
+          After: syslog.target
+        Service:
+          User: "{{ module_instantiated_service.user | default(_service_user) }}"
+          Group: "{{ service_group }}"
+          ExecStart: "{{ module_instantiated_service.service_exec_start | default (_service_exec_start) }}"
+          ExecStop: "{{ module_instantiated_service.service_exec_stop | default(_service_exec_stop) }}"
+          WorkingDirectory: "{{ install_dir }}"
+          Restart: always
+          RestartSec: 5
+          SyslogIdentifier: "{{ module_instantiated_service.name }}_%i"
+        Install:
+          WantedBy: multi-user.target
+
+- name: "Activate service instances for module {{ module_name }}"
+  include_role:
+    name: 0x0i.systemd
+    tasks_from: common/launch
+  vars:
+    unit_config: |-
+      {%- set instances_list = [] %}
+      {%- for item in module_instantiated_service.service_instances %}
+        {{- instances_list.append({"name": module_instantiated_service.name + "@" + item.name,
+                                   "state": item.state | default(_service_state),
+                                   "enabled": item.enabled | default(_service_enabled)
+                                  })
+        }}
+      {%- endfor %}
+      {{ instances_list }}
+
+# WORKAROUND: we can't restart services until their unit file is deployed (by 0x0i.systemd), and we want to start them with
+# config snippet already present (deployed even earlier). Sadly, 0x0i.systemd unconditionally flushes handlers before doing
+# anything, so we can't notify at srvconf task: we have to delay the notification after call to 0x0i.systemd.
+- name: Restart if needed
+  debug:
+    msg: Requesting restart of services
+  changed_when: true
+  notify: Restart module services
+  when: srvconf.changed # noqa no-handler

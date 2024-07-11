@@ -1,0 +1,32 @@
+---
+# defaults file for one_module
+
+package_download_directory: "{{ temp_folder }}"
+
+# Default service configuration
+_service_state: started
+_service_enabled: yes
+_service_user: "{{ service_user }}"
+_service_exec_start_pre:
+_service_exec_start: "{{ install_dir }}/bin/start.sh"
+_service_exec_stop:
+_service_env: []
+_post_install_tasks: []
+
+_default_copy_mode: "0700"
+
+_enable_debug: false
+enable_java_heapdumps: false
+java_heapdump_context_dir: "{{ install_dir }}"
+java_heapdump_dir: "{{ java_heapdump_context_dir }}/tmp/heapdump"
+java_temp_folder: ""
+
+logs_folder: "{{ install_dir }}/log"
+logrotate_enabled: false
+
+post_install_tasks_default_args:
+  executable: /bin/bash
+
+# used to look up certificates on the frontend server
+cert_dir: /etc/ssl/one20
+ca_cert_dir: "{{ cert_dir }}"

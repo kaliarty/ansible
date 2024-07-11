@@ -1,0 +1,16 @@
+---
+# list of checksums
+
+binary_checksums:
+  # this is latest feature release
+  minio.RELEASE.2020-11-25T22-36-25Z: ""
+  # This is latest minio release
+  minio.RELEASE.2022-03-22T02-05-10Z: "sha256:cf1bb06df7b821fe532d4014d4e560d75cf17cc5ed4cc2c51713264445856097"
+  # This is version meant for 13.9.0 release
+  minio.RELEASE.2022-07-24T17-09-31Z: "sha256:a046113480736c1a36e384ce86ae2b0f2c7d52b01e6d191388589b4d0e79fe3c"
+  # This is version meant for 13.9.4 & 14.3.0 release
+  minio.RELEASE.2023-03-20T20-16-18Z: "sha256:df0de9982c4ae440d2c9617bc1da805cf71eb7d9ce5b106b3fdb036fa27ba163"
+  # This is version meant for 14.5.0 release
+  minio.RELEASE.2023-07-21T21-12-44Z: "sha256:9d34435d12d07477e72f906aca4d30760627c29d15794da64c031510da6574aa"
+  # This is version meant for 14.5.1 release
+  minio.RELEASE.2023-10-25T06-33-25Z: "sha256:283a8c38a598a5531a08ec33555846fcb596cc90fdf7a1d794420ada3e110a89"

@@ -1,0 +1,11 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ anomaly_detection.anomaly_detector.http_port }}"
+          source: "{{ groups['monitoring_server'] }}"
+        - port: "{{ anomaly_detection.anomaly_detector.grpc_port }}"
+          source: "{{ groups['one_app'] }}"

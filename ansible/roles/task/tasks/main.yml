@@ -1,0 +1,58 @@
+---
+# task file for task
+
+- name: Configure firewall for Task
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install Task
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ task_module_name }}"
+    module_version: "{{ task_version }}"
+    install_dir: "{{ task_install_dir }}"
+    service_user: "{{ task_service_user }}"
+    service_group: "{{ task_service_group }}"
+    module_services: "{{ task_services }}"
+    package_download_type: "{{ task_package_download_type }}"
+    package_location: "{{ task_package_location }}"
+    package_url: "{{ task_package_url }}"
+    package_checksum: "{{ task_package_checksum }}"
+    module_config: "{{ task_config }}"
+    deploy_files: "{{ task_files }}"
+    enable_java_heapdumps: "{{ task_java_heapdumps }}"
+    java_temp_folder: "{{ task_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure Task logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure monitoring for Task
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: Task
+      description: "Ataccama platform module: Task"
+      version: "{{ task_version }}"
+      details:
+        directories: "{{ [ task_install_dir ] }}"
+        os_user: "{{ task_service_user }}"
+        os_group: "{{ task_service_group }}"
+        services: "{{ task_services | map(attribute='name') | list }}"
+  tags:
+    - summary

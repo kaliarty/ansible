@@ -1,0 +1,18 @@
+---
+prometheus_exporter_user: prometheus
+prometheus_exporter_user_manage: false
+prometheus_exporter_group: "{{ prometheus_exporter_user }}"
+prometheus_exporter_group_manage: false
+
+prometheus_exporters_dir: /opt/prometheus/exporters
+prometheus_exporters_dist_dir: "{{ prometheus_exporters_dir }}/dist"
+
+prometheus_exporter_create_dist: false
+
+prometheus_exporter_home: "{{ prometheus_exporters_dir }}/{{ prometheus_exporter_name }}"
+prometheus_exporter_home_manage: true
+
+prometheus_exporter_env_variables: {}
+prometheus_exporter_service_type: simple
+prometheus_exporter_service_restart_sec: 100ms
+prometheus_exporter_service_private_tmp: false

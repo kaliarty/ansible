@@ -1,0 +1,68 @@
+---
+# tasks file for frontend
+
+- name: Configure firewall for frontend
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install frontend
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ frontend_module_name }}"
+    module_version: "{{ frontend_version }}"
+    install_dir: "{{ frontend_install_dir }}"
+    service_user: "{{ frontend_service_user }}"
+    service_group: "{{ frontend_service_group }}"
+    module_services: "{{ frontend_services }}"
+    package_download_type: "{{ frontend_package_download_type }}"
+    package_location: "{{ frontend_package_location }}"
+    package_url: "{{ frontend_package_url }}"
+    package_checksum: "{{ frontend_package_checksum }}"
+    module_config: "{{ frontend_config }}"
+    deploy_files: "{{ frontend_files }}"
+    enable_java_heapdumps: "{{ frontend_java_heapdumps }}"
+    java_temp_folder: "{{ frontend_java_temp_folder }}"
+    logrotate_enabled: true
+
+- name: Configure ONE-WEBAPP logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Wait for frontend to come up (check monitoring endpoint ready)
+  uri:
+    url: "http://{{ ansible_host }}:{{ frontend.http_port }}/actuator/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  when: check_availability | default(false) | bool
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Configure frontend monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: Frontend
+      description: "Ataccama platform module: front-end web appliaction"
+      version: "{{ frontend_version }}"
+      details:
+        directories: "{{ [ frontend_install_dir ] }}"
+        os_user: "{{ frontend_service_user }}"
+        os_group: "{{ frontend_service_group }}"
+        services: "{{ frontend_services | map(attribute='name') | list }}"
+  tags: summary

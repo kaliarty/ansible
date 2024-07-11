@@ -1,0 +1,17 @@
+---
+galaxy_info:
+  author: t_deployment
+  description: ensure taret is monitored by Prometheus
+  company: Ataccama
+  license: internal
+  min_ansible_version: 2.9
+
+  platforms:
+    - name: EL
+      versions:
+        - 8
+    - name: Ubuntu
+      versions:
+        - focal
+
+dependencies: []

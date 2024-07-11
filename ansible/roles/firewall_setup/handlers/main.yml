@@ -1,0 +1,17 @@
+---
+# handlers file for firewall
+
+- name: iptables restore
+  become: true
+  shell: "iptables-restore {{ iptables_command_common_params }} < {{ iptables_v4_rules }}"
+
+- name: ip6tables restore
+  become: true
+  shell: "ip6tables-restore {{ iptables_command_common_params }} < {{ iptables_v6_rules }}"
+
+- name: iptables persistent service reload
+  become: true
+  service:
+    name: "{{ iptables_persistence_service }}"
+    state: "{{ iptables_persistence_service_reload_state }}"
+  throttle: 1

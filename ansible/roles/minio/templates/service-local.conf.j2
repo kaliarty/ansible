@@ -1,0 +1,6 @@
+# Ansible managed
+#
+[Service]
+{% for item in minio_unit_env %}
+Environment="{{ item }}={{ minio_unit_env[item] }}"
+{% endfor %}

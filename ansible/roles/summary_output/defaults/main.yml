@@ -1,0 +1,5 @@
+---
+# defaults file for summary_output
+
+summary_fact_dir: /etc/ansible/facts.d/summary
+summary_fact_suffix: .in

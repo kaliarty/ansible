@@ -1,0 +1,86 @@
+---
+- name: Unlock fluentd version
+  include_role:
+    name: lock_version
+  vars:
+    package: td-agent
+    locked: false
+
+- name: Include installation task for proper distribution
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+#- include_tasks: setup-RedHat.yml
+#  when: ansible_os_family == 'RedHat'
+#
+#- include_tasks: setup-Debian.yml
+#  when: ansible_os_family == 'Debian'
+
+- name: Configure Fluentd.
+  template:
+    src: td-agent.conf.j2
+    dest: /etc/td-agent/td-agent.conf
+    owner: root
+    group: root
+    mode: 0644
+  notify: restart fluentd
+
+- name: Determine fluent-gem executable location for td-agent < v4
+  set_fact:
+    fluent_gem_executable: /opt/td-agent/embedded/bin/fluent-gem
+  when: fluentd_version < 4
+
+- name: Determine fluent-gem executable location for td-agent v4
+  set_fact:
+    fluent_gem_executable: /opt/td-agent/bin/fluent-gem
+  when: fluentd_version >= 4
+
+- name: Ensure Fluentd plugins are installed.
+  gem:
+    name: "{{ item.name | default(item) }}"
+    executable: "{{ fluent_gem_executable }}"
+    state: "{{ item.state | default('present') }}"
+    version: "{{ item.version | default(omit) }}"
+    user_install: false
+  with_items: "{{ fluentd_plugins }}"
+
+- name: Start Fluentd.
+  service:
+    name: "{{ fluentd_service_name }}"
+    state: "{{ fluentd_service_state }}"
+    enabled: "{{ fluentd_service_enabled }}"
+
+- name: Configure FluentD monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Lock fluentd version
+  include_role:
+    name: lock_version
+  vars:
+    package: td-agent
+
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: Fluentd
+      description: "Log collector"
+      version: "{{ fluentd_package_version }}"
+      fluentd_version: "{{ fluentd_version }}"
+      details:
+        # values copied from external role
+        services:
+          - td-agent
+  tags: summary

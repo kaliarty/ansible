@@ -1,0 +1,46 @@
+---
+# fluentbit config tasks - additional parsers and config files in parsers.d and conf.d dirs
+
+- name: Ensure Fluentbit config directories exist
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: root
+    group: root
+    mode: 0755
+  with_items:
+    - "{{ fluentbit_conf_dir }}/{{ fluentbit_conf_d_dir }}"
+    - "{{ fluentbit_conf_dir }}/{{ fluentbit_parsers_d_dir }}"
+
+- name: Configure | Fluentbit parsers.d files
+  template:
+    src: "{{ item.template | default('parser.conf.j2') }}"
+    dest: "{{ fluentbit_conf_dir }}/{{ fluentbit_parsers_d_dir }}/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    fluentbit_parsers: "{{ item.fluentbit_parsers | default([]) }}"
+    fluentbit_multiline_parsers: "{{ item.fluentbit_multiline_parsers| default([]) }}"
+  with_items: "{{ fluentbit_parsers_d }}"
+  notify:
+    - Include parsers.conf.d dir in parsers.conf file
+    - Restart Fluentbit service
+  when: fluentbit_parsers_d is defined and fluentbit_parsers_d | length > 0
+
+- name: Configure | Fluentbit conf.d files
+  template:
+    src: "{{ item.template | default('config.conf.j2') }}"
+    dest: "{{ fluentbit_conf_dir }}/{{ fluentbit_conf_d_dir }}/{{ item.name }}"
+    owner: root
+    group: root
+    mode: 0644
+  vars:
+    fluentbit_inputs: "{{ item.fluentbit_inputs | default([]) }}"
+    fluentbit_filters: "{{ item.fluentbit_filters | default([]) }}"
+    fluentbit_outputs: "{{ item.fluentbit_outputs | default([]) }}"
+  with_items: "{{ fluentbit_conf_d }}"
+  notify:
+    - Include td-agent-bit.conf.d dir in td-agent-bit.conf file
+    - Restart Fluentbit service
+  when: fluentbit_conf_d is defined and fluentbit_conf_d | length > 0

@@ -1,0 +1,21 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.term_suggestions_api
+    Systemd_Filter  _SYSTEMD_UNIT=term-suggestions-api.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.term_suggestions_api
+    Key_Name      message
+    Parser        term-suggestions-api
+    Reserve_Data  On

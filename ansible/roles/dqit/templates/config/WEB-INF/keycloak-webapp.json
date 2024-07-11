@@ -1,0 +1,12 @@
+{
+  "realm": "ataccamaone",
+  "auth-server-url": "https://{{ nginx_hosts.one.hostname }}/auth",
+  "ssl-required": "{{ keycloak_ssl }}",
+  "resource": "{{ keycloak_webapp_client }}",
+  "public-client": false,
+  "always-refresh-token": true,
+  "principal-attribute": "preferred_username",
+  "credentials": {
+    "secret": "{{ keycloak_webapp_client_secret }}"
+  }
+}

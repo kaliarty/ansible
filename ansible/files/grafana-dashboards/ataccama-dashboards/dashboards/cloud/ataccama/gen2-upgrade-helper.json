@@ -1,0 +1,659 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "target": {
+          "limit": 100,
+          "matchAny": false,
+          "tags": [],
+          "type": "dashboard"
+        },
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "fiscalYearStartMonth": 0,
+  "graphTooltip": 0,
+  "id": 81,
+  "iteration": 1661362621224,
+  "links": [],
+  "liveNow": false,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 4,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [
+            "min",
+            "max",
+            "last"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_data_sources{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Data sources",
+          "refId": "C"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_catalog_items{namespace=~\"$namespace\"}",
+          "interval": "",
+          "legendFormat": "Catalog items",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_attributes{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Attributes",
+          "refId": "B"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_number_of_terms{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Terms",
+          "refId": "D"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_relations_between_tables{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Relationships",
+          "refId": "F"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_number_of_profiled_tables{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Profiled tables",
+          "refId": "E"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_number_of_terms_assigned_to_tables{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Terms on tables",
+          "refId": "G"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_number_of_terms_assigned_to_columns{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Terms on columns",
+          "refId": "H"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_rules_amount{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Rules",
+          "refId": "I"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "mmm_db_statistics_monitoring_project_amount{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Monitoring projects",
+          "refId": "J"
+        }
+      ],
+      "title": "MMM statistic",
+      "type": "timeseries"
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 11,
+        "w": 15,
+        "x": 0,
+        "y": 11
+      },
+      "id": 4,
+      "options": {
+        "legend": {
+          "calcs": [
+            "last"
+          ],
+          "displayMode": "table",
+          "placement": "right"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_plugin_executor_jobs_count{status!=\"killed\", status!=\"success\", status!=\"failure\", status!=\"unknown\", status!=\"unrecognized\", namespace=~\"$namespace\"}",
+          "interval": "",
+          "legendFormat": "{{status}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Jobs in progress (DPx)",
+      "type": "timeseries"
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 6,
+        "w": 9,
+        "x": 15,
+        "y": 11
+      },
+      "hiddenSeries": false,
+      "id": 6,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.3.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_count_connected{namespace=~\"$namespace\"}",
+          "interval": "",
+          "legendFormat": "Connected engines",
+          "refId": "B"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_count_disconnected{namespace=~\"$namespace\"}",
+          "interval": "",
+          "legendFormat": "Disconnected engines",
+          "refId": "C"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_count_active{namespace=~\"$namespace\"}",
+          "interval": "",
+          "legendFormat": "Active engines",
+          "refId": "A"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "rate(ataccama_one_dpm_engines_count_inactive{namespace=~\"$namespace\"}[1d])",
+          "interval": "",
+          "legendFormat": "Inactive engines",
+          "refId": "D"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Associated engines",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:255",
+          "decimals": 0,
+          "format": "short",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:256",
+          "decimals": 0,
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "aliasColors": {},
+      "bars": false,
+      "dashLength": 10,
+      "dashes": false,
+      "fieldConfig": {
+        "defaults": {
+          "links": []
+        },
+        "overrides": []
+      },
+      "fill": 1,
+      "fillGradient": 0,
+      "gridPos": {
+        "h": 5,
+        "w": 9,
+        "x": 15,
+        "y": 17
+      },
+      "hiddenSeries": false,
+      "id": 10,
+      "legend": {
+        "avg": false,
+        "current": false,
+        "max": false,
+        "min": false,
+        "show": true,
+        "total": false,
+        "values": false
+      },
+      "lines": true,
+      "linewidth": 1,
+      "nullPointMode": "null",
+      "options": {
+        "alertThreshold": true
+      },
+      "percentage": false,
+      "pluginVersion": "8.3.3",
+      "pointradius": 2,
+      "points": false,
+      "renderer": "flot",
+      "seriesOverrides": [],
+      "spaceLength": 10,
+      "stack": false,
+      "steppedLine": false,
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_status_check_duration_seconds{quantile=\"0.95\", namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Average",
+          "refId": "F"
+        },
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dpm_engines_status_check_duration_seconds_max{namespace=~\"$namespace\"}",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Max",
+          "refId": "J"
+        }
+      ],
+      "thresholds": [],
+      "timeRegions": [],
+      "title": "Engine status check duration",
+      "tooltip": {
+        "shared": true,
+        "sort": 0,
+        "value_type": "individual"
+      },
+      "type": "graph",
+      "xaxis": {
+        "mode": "time",
+        "show": true,
+        "values": []
+      },
+      "yaxes": [
+        {
+          "$$hashKey": "object:764",
+          "format": "s",
+          "logBase": 1,
+          "min": "0",
+          "show": true
+        },
+        {
+          "$$hashKey": "object:765",
+          "format": "short",
+          "logBase": 1,
+          "show": true
+        }
+      ],
+      "yaxis": {
+        "align": false
+      }
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "custom": {
+            "fillOpacity": 70,
+            "lineWidth": 1
+          },
+          "mappings": [
+            {
+              "options": {
+                "0": {
+                  "color": "dark-green",
+                  "index": 0,
+                  "text": "OK"
+                },
+                "1": {
+                  "color": "dark-red",
+                  "index": 1,
+                  "text": "DOWN"
+                },
+                "2": {
+                  "color": "dark-orange",
+                  "index": 2,
+                  "text": "OUT OF SERVICE"
+                },
+                "3": {
+                  "color": "dark-purple",
+                  "index": 3,
+                  "text": "UNKNOWN"
+                }
+              },
+              "type": "value"
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 17,
+        "w": 24,
+        "x": 0,
+        "y": 22
+      },
+      "id": 8,
+      "options": {
+        "colWidth": 0.9,
+        "legend": {
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "rowHeight": 0.9,
+        "showValue": "auto",
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "repeat": "depender",
+      "repeatDirection": "v",
+      "targets": [
+        {
+          "datasource": null,
+          "exemplar": true,
+          "expr": "ataccama_one_dependency_health{namespace=~\"$namespace\"}",
+          "interval": "",
+          "intervalFactor": 5,
+          "legendFormat": "{{depender}} -> {{dependency}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Dependencies health",
+      "type": "status-history"
+    }
+  ],
+  "refresh": "5s",
+  "schemaVersion": 34,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": [
+      {
+        "current": {
+          "selected": false,
+          "text": "product",
+          "value": "product"
+        },
+        "definition": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
+        "hide": 0,
+        "includeAll": false,
+        "multi": false,
+        "name": "namespace",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info{cluster=\"$cluster\"}, namespace)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "selected": false,
+          "text": "dpm-696989c885-7ms42",
+          "value": "dpm-696989c885-7ms42"
+        },
+        "definition": "label_values(ataccama_one_dpm_plugin_executor_jobs_count, pod)",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "DPM",
+        "options": [],
+        "query": {
+          "query": "label_values(ataccama_one_dpm_plugin_executor_jobs_count, pod)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      },
+      {
+        "current": {
+          "isNone": true,
+          "selected": false,
+          "text": "None",
+          "value": ""
+        },
+        "definition": "label_values(kube_pod_info, cluster)",
+        "hide": 2,
+        "includeAll": false,
+        "multi": false,
+        "name": "cluster",
+        "options": [],
+        "query": {
+          "query": "label_values(kube_pod_info, cluster)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 1,
+        "regex": "",
+        "skipUrlSync": false,
+        "sort": 0,
+        "type": "query"
+      }
+    ]
+  },
+  "time": {
+    "from": "now-1h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Upgrade helper",
+  "uid": "J43zUSZ4z",
+  "version": 3
+}

@@ -1,0 +1,6 @@
+---
+- name: Debian - Install postgresql-client
+  apt:
+    name: postgresql-client
+    update_cache: yes
+    state: present

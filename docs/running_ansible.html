@@ -1,0 +1,665 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Running Ansible - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#running-ansible" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Running Ansible
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory.html" class="md-nav__link">
+        Ansible inventory
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Running Ansible
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="running_ansible.html" class="md-nav__link md-nav__link--active">
+        Running Ansible
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-playbook" class="md-nav__link">
+    Running the playbook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-running-the-playbook" class="md-nav__link">
+    Re-running the playbook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-the-work-done" class="md-nav__link">
+    Summary of the work done
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-an-ansible-play-at-a-specific-task" class="md-nav__link">
+    Restart an Ansible play at a specific task
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-services-using-ansible" class="md-nav__link">
+    Restart services using Ansible
+  </a>
+  
+    <nav class="md-nav" aria-label="Restart services using Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#updating-license-files" class="md-nav__link">
+    Updating license files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stopping-and-starting-services" class="md-nav__link">
+    Stopping and starting services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-ansible-temporary-files" class="md-nav__link">
+    Moving Ansible temporary files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#securing-nginx-deployment" class="md-nav__link">
+    Securing Nginx deployment
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tat.html" class="md-nav__link">
+        Ansible installation tips & tricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hybrid.html" class="md-nav__link">
+        Hybrid DPE installation using Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory_examples.html" class="md-nav__link">
+        Inventory examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#running-the-playbook" class="md-nav__link">
+    Running the playbook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#re-running-the-playbook" class="md-nav__link">
+    Re-running the playbook
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#summary-of-the-work-done" class="md-nav__link">
+    Summary of the work done
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-an-ansible-play-at-a-specific-task" class="md-nav__link">
+    Restart an Ansible play at a specific task
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#restart-services-using-ansible" class="md-nav__link">
+    Restart services using Ansible
+  </a>
+  
+    <nav class="md-nav" aria-label="Restart services using Ansible">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#updating-license-files" class="md-nav__link">
+    Updating license files
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#stopping-and-starting-services" class="md-nav__link">
+    Stopping and starting services
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#moving-ansible-temporary-files" class="md-nav__link">
+    Moving Ansible temporary files
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#securing-nginx-deployment" class="md-nav__link">
+    Securing Nginx deployment
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="running-ansible">Running Ansible</h1>
+<h2 id="running-the-playbook">Running the playbook</h2>
+<p>The main playbook file is located in the <code>ansible/</code> directory and called <code>site.yml</code>. To deploy the entire application stack, run the following command from the root dir:</p>
+<pre><code class="language-bash">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b
+</code></pre>
+<p>Ansible should be installed and configured before use. Please, read <a href="installing_ansible.html">installation section</a> before you'll run Ansible.
+Put your ssh user instead of <code>&lt;your-username&gt;</code>, and the path to your main inventory file (f.e. <code>hosts.yml</code>) instead of <code>&lt;path-to-hosts-file&gt;</code>.
+The path to the <code>ansible-playbook</code> command must be in the <code>$PATH</code> environment variable, so if you see errors such as:</p>
+<pre><code class="language-bash">$ ansible-playbook
+Command 'ansible-playbook' not found
+</code></pre>
+<p>In case of errors during the playbook execution, please, read how to read and collect ansible logs in the <a href="installing_ansible.html#ansible-config">config section</a>.</p>
+<h2 id="re-running-the-playbook">Re-running the playbook</h2>
+<p>If you have changed something important, such as hosts in your inventory, you better re-run the entire playbook by running the same command as you did when you ran the playbook.
+If you would like to re-run only some tasks of the playbook, you can use the special Ansible flag - <code>--start-at-task</code>. For instance:</p>
+<pre><code class="language-bash">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --start-at-task &quot;&lt;task-name&gt;&quot;
+</code></pre>
+<p>You can see the name of the task you want in the Ansible output. If you have Ansible output cleared or closed, you can look at the Ansible log. See <a href="installing_ansible.html#ansible-config">config section</a>.
+For instance, the name of the task you want is displayed in the log or in the output as:</p>
+<pre><code class="language-bash">TASK [one_module : Assert that module config defined correctly] ****************
+</code></pre>
+<p>To re-run the playbook from this task you should use the full task name from <code>[</code> to <code>]</code>, for instance:</p>
+<pre><code class="language-bash">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --start-at-task &quot;one_module : Assert that module config defined correctly&quot;
+</code></pre>
+<h2 id="summary-of-the-work-done">Summary of the work done</h2>
+<p>As Ansible runs, it stores information of the work done on the target servers, and compiles it at the end into a set of summary files. These files are stored in the <code>summaries</code> directory, and can be processed into a report describing what was done. They are also ordinary YAML files, machine-readable and somewhat readable by humans. It then converts them into an easy-to-read HTML report.</p>
+<p>You can generate summary files without running the actual installation by running only tasks with <code>summary</code> tag:</p>
+<pre><code class="language-bash">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --tags summary
+</code></pre>
+<p>The report consists of two files: <code>summary_full.html</code> and <code>summary_short.html</code>. The <code>_short</code> file omits details that are of interest mostly to system administrators.</p>
+<p>To open these files in a default browser, run</p>
+<pre><code class="language-bash">xdg-open summary_full.html
+xdg-open summary_short.html
+</code></pre>
+<h2 id="restart-an-ansible-play-at-a-specific-task">Restart an Ansible play at a specific task</h2>
+<p>In case the play fails, you can restart Ansible at a specific task. Note that it might be a wrong thing to do, e. g. if starting a service fails
+because an error in its configuration, retrying the restart will not fix the issue. This is common if the fix included inventory changes.
+(Re-running the whole playbook is always safe.)</p>
+<p>To restart at a specific task, run the same command, but add <code>--start-at-task</code> parameter:</p>
+<pre><code class="language-console">ansible-playbook --start-at-task &quot;Name of the task&quot; &lt;rest of the parameters&gt;
+</code></pre>
+<p>There's a limitation: Ansible can't restart at a task that was dynamically included (as we commonly do). If you try to do this,
+you will get an arror:</p>
+<pre><code class="language-console"> [ERROR]: No matching task &quot;Name of the task&quot; found. Note: --start-at-task can only follow static includes.
+</code></pre>
+<p>In that case, you have to find the name of the include task itself and start at that one.</p>
+<h2 id="restart-services-using-ansible">Restart services using Ansible</h2>
+<p>You can start, stop and restart Platform services using Ansible tags. Supported use-cases are stoppping
+and later starting Platform for the purpose of database maintenance and refreshing license files (followed by restart).</p>
+<h3 id="updating-license-files">Updating license files</h3>
+<p>Update license files in your Ansible installation (generally in the <code>ansible/files</code> directory) and run:</p>
+<pre><code class="language-console">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --tags license,restart
+</code></pre>
+<p>The <code>license</code> tag limits Ansible so that only license-related tasks run. The <code>restart</code> tag is analogous except it relates
+to restarting services.</p>
+<p>Generally, you want to run both tags together: the license file changes are not picked up until
+services are restarted. Also, the restart tasks run only when license files (or containing directories) change.
+It might be useful to run the license changes only and do the restart later manually (e. g. as part of
+a larger maintenance effort).</p>
+<p>Please note the restarts are "edge triggered" - once the license files are changed, following runs
+won't restart any services. You can use the <code>stop</code> and <code>start</code> tags as desribed below and restart MANTA
+manually (also noted below).</p>
+<h3 id="stopping-and-starting-services">Stopping and starting services</h3>
+<p>To stop all database-using Platform services, run</p>
+<pre><code class="language-console">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --tags stop
+</code></pre>
+<p>analogously, to start the same services:</p>
+<pre><code class="language-console">ansible-playbook -u &lt;your-username&gt; -i &lt;path-to-hosts-file&gt; ansible/site.yml -b --tags start
+</code></pre>
+<p>When both tags are combined, the services are stopped and then immediately started again (efectively restarted).</p>
+<p>The set of stopped / started services include Keycloak, but doesn't include MANTA. If you need MANTA restarted too,
+please do it manually.</p>
+<h2 id="moving-ansible-temporary-files">Moving Ansible temporary files</h2>
+<p>Some systems have very limited space for temporary files, or use relatively slow filesystems (e. g. NFS) for root partition.
+It may be useful to move temporary files created by Ansible to a different directory.</p>
+<p>Note that this is only best-effort configuration: Ansible calls external programs that might not respect the settings
+made here. Space-constrained <code>/tmp</code> and <code>/var/tmp</code> are still unsupported for production deployment; sufficient temporary
+file storage is a general requirement for reliable Linux / Unix system operation.</p>
+<p>Furthermore, some tasks download or create files locally to the controller before uploading them to the target server.
+These tasks are configured to always use the default temporary directories (usually <code>/tmp</code>).</p>
+<p>Subject to the caveats above, you can direct Ansible to store its temporary files to a specific directory by adding following
+variables to your inventory:</p>
+<pre><code class="language-yaml">ansible_remote_tmp: &lt;directory&gt;
+temp_folder: &lt;directory&gt;
+environment_vars:
+  TMP: &lt;directory&gt;
+  TEMP: &lt;directory&gt;
+  TMPDIR: &lt;directory&gt;
+</code></pre>
+<p>The directory <code>&lt;directory&gt;</code> must already exist on every target server and have <code>1777</code> privileges (note the sticky bit).</p>
+<h2 id="securing-nginx-deployment">Securing Nginx deployment</h2>
+<p>To provide more secure Nginx connection via TLS security we have enforced more SSL parameters which require random DIFFIE_HELLMAN parameter file
+Default key size for DH parameter file is set to 2048.</p>
+<pre><code class="language-yaml">diffie_hellman_key_size: 4096
+</code></pre>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="inventory.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Ansible inventory" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Ansible inventory
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="tat.html" class="md-footer__link md-footer__link--next" aria-label="Next: Ansible installation tips &amp; tricks" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Ansible installation tips & tricks
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

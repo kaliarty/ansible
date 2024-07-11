@@ -1,0 +1,13 @@
+---
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ task_port }}"
+          source: "{{ groups['monitoring_server'] + groups['one_app'] + groups['frontend'] }}"
+        - port: "{{ task_grpc_port }}"
+          source: "{{ groups['monitoring_server'] + groups['one_app'] + groups['frontend'] }}"
+        - port: "{{ task_management_port }}"
+          source: "{{ groups['monitoring_server'] + groups['one_app'] + groups['frontend'] }}"

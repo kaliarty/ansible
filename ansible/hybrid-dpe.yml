@@ -1,0 +1,16 @@
+---
+- hosts: processing
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset:
+    - distribution
+  pre_tasks:
+    - name: Hybrid preinstallation checks
+      include_role:
+        name: system
+        tasks_from: checks/preinstall-hybrid.yml
+  roles:
+    - role: java
+    - role: fluentbit
+    - role: dpe
+  environment: "{{ environment_vars | default({}) }}"

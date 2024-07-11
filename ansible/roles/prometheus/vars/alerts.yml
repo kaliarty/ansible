@@ -1,0 +1,863 @@
+---
+# prometheus Alerts configuration
+# Any changes to this file should be reflected to Notion page: https://www.notion.so/ataccama/Reference-deployment-monitoring-and-alerting-a2f0405ff9634328938112b4932fe06a?pvs=4
+
+prometheus_alert_rules:
+  - alert: PrometheusJobMissing
+    expr: 'absent(up{job="prometheus"})'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Prometheus job missing (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}A Prometheus job has disappeared.{% endraw %}"
+
+  - alert: PrometheusTargetDown
+    expr: 'up == 0'
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus target is down (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}A Prometheus target has been down for more than 5 minutes. An exporter might be crashed.{% endraw %}"
+
+  - alert: PrometheusAllTargetsDown
+    expr: 'count by (job) (up) == 0'
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus all targets missing (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus does not have any living target anymore for more than 5 minutes.{% endraw %}"
+
+  - alert: PrometheusConfigurationReloadFailure
+    expr: 'prometheus_config_last_reload_successful != 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Prometheus configuration reload failure (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus configuration reload error.{% endraw %}"
+
+  - alert: PrometheusTooManyRestarts
+    expr: 'changes(process_start_time_seconds{job=~"prometheus|pushgateway|alertmanager"}[15m]) > 3'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Prometheus too many restarts (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus has restarted more than three times in the last 15 minutes. It might be crashlooping.{% endraw %}"
+
+  - alert: PrometheusAlertmanagerConfigurationReloadFailure
+    expr: 'alertmanager_config_last_reload_successful != 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Prometheus AlertManager configuration reload failure (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}AlertManager configuration reload error.{% endraw %}"
+
+  - alert: PrometheusNotConnectedToAlertmanager
+    expr: 'prometheus_notifications_alertmanagers_discovered < 1'
+    for: 10m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus not connected to alertmanager (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus cannot connect the alertmanager.{% endraw %}"
+
+  - alert: PrometheusRuleEvaluationFailures
+    expr: 'increase(prometheus_rule_evaluation_failures_total[3m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus rule evaluation failures (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus encountered {{ $value }} rule evaluation failures, leading to potentially ignored alerts.{% endraw %}"
+
+  - alert: PrometheusAlertmanagerNotificationFailing
+    expr: 'rate(alertmanager_notifications_failed_total[1m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus AlertManager notification failing (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Alertmanager is failing sending notifications.{% endraw %}"
+
+  - alert: PrometheusTargetScrapingSlow
+    expr: 'prometheus_target_interval_length_seconds{quantile="0.9"} > 60'
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Prometheus target scraping slow (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus is scraping exporters slowly.{% endraw %}"
+
+  - alert: PrometheusTsdbCheckpointCreationFailures
+    expr: 'increase(prometheus_tsdb_checkpoint_creations_failed_total[1m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus TSDB checkpoint creation failures (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus encountered {{ $value }} checkpoint creation failures.{% endraw %}"
+
+  - alert: PrometheusTsdbCheckpointDeletionFailures
+    expr: 'increase(prometheus_tsdb_checkpoint_deletions_failed_total[1m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus TSDB checkpoint deletion failures (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus encountered {{ $value }} checkpoint deletion failures.{% endraw %}"
+
+  - alert: PrometheusTsdbReloadFailures
+    expr: 'increase(prometheus_tsdb_reloads_failures_total[1m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Prometheus TSDB reload failures (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Prometheus encountered {{ $value }} TSDB reload failures.{% endraw %}"
+
+  # Node exporter related alerts
+
+  - alert: HostOutOfMemory
+    expr: 'node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes * 100 < 10'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host out of memory (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Node memory is filling up (< 10% left).{% endraw %}"
+
+  - alert: HostMemoryUnderMemoryPressure
+    expr: 'rate(node_vmstat_pgmajfault[1m]) > 1000'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host memory under memory pressure (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The node is under heavy memory pressure. High rate of major page faults.{% endraw %}"
+
+  - alert: HostUnusualNetworkThroughputIn
+    expr: 'sum by (instance) (rate(node_network_receive_bytes_total[2m])) / 1024 / 1024 > 100'
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host unusual network throughput in (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Host network interfaces are probably receiving too much data (> 100 MB/s).{% endraw %}"
+
+  - alert: HostUnusualNetworkThroughputOut
+    expr: 'sum by (instance) (rate(node_network_transmit_bytes_total[2m])) / 1024 / 1024 > 100'
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host unusual network throughput out (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Host network interfaces are probably sending too much data (> 100 MB/s).{% endraw %}"
+
+  - alert: HostUnusualDiskReadRate
+    expr: 'sum by (instance) (rate(node_disk_read_bytes_total[2m])) / 1024 / 1024 > 50'
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host unusual disk read rate (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Disk is probably reading too much data (> 50 MB/s).{% endraw %}"
+
+  - alert: HostUnusualDiskWriteRate
+    expr: 'sum by (instance) (rate(node_disk_written_bytes_total[2m])) / 1024 / 1024 > 50'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host unusual disk write rate (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Disk is probably writing too much data (> 50 MB/s).{% endraw %}"
+
+  - alert: HostOutOfInodes
+    expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host out of inodes (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Disk is almost running out of available inodes (< 10% left).{% endraw %}"
+
+  - alert: HostInodesWillFillIn24Hours
+    expr: 'node_filesystem_files_free{mountpoint ="/rootfs"} / node_filesystem_files{mountpoint="/rootfs"} * 100 < 10 and predict_linear(node_filesystem_files_free{mountpoint="/rootfs"}[1h], 24 * 3600) < 0 and ON (instance, device, mountpoint) node_filesystem_readonly{mountpoint="/rootfs"} == 0'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host inodes will fill in 24 hours (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Filesystem is predicted to run out of inodes within the next 24 hours at current write rate.{% endraw %}"
+
+  - alert: HostSystemdServiceCrashed
+    expr: 'node_systemd_unit_state{state="failed"} == 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host SystemD service crashed (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}SystemD service crashed.{% endraw %}"
+
+  - alert: HostHighCpuLoad
+    expr: '100 - (avg by(instance) (rate(node_cpu_seconds_total{mode="idle"}[2m])) * 100) > 80'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host high CPU load (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}CPU load is > 80%.{% endraw %}"
+
+  - alert: HostCriticalRAMUsage
+    expr: '(1 - ((node_memory_MemFree_bytes + node_memory_Buffers_bytes + node_memory_Cached_bytes) / node_memory_MemTotal_bytes)) * 100 > 98'
+    for: 5m
+    labels:
+      severity: critical
+    annotations:
+      description: "{% raw %}{{ $labels.instance }} has Critical Memory Usage more than 5 minutes.{% endraw %}"
+      summary: "{% raw %}Instance {{ $labels.instance }} has Critical Memory Usage.{% endraw %}"
+
+  - alert: HostSwapIsFillingUp
+    expr: '(1 - (node_memory_SwapFree_bytes / node_memory_SwapTotal_bytes)) * 100 > 80'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host swap is filling up (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Swap is filling up (>80%).{% endraw %}"
+
+  - alert: HostKernelVersionDeviations
+    expr: 'count(sum(label_replace(node_uname_info, "kernel", "$1", "release", "([0-9]+.[0-9]+.[0-9]+).*")) by (kernel)) > 1'
+    for: 6h
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host kernel version deviations (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Different kernel versions are running.{% endraw %}"
+
+  - alert: HostOomKillDetected
+    expr: 'increase(node_vmstat_oom_kill[1m]) > 0'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host OOM kill detected (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OOM kill detected.{% endraw %}"
+
+  - alert: HostNetworkReceiveErrors
+    expr: 'rate(node_network_receive_errs_total[2m]) / rate(node_network_receive_packets_total[2m]) > 0.01'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host Network Receive Errors (instance {{ $labels.instance }}){% endraw %}"
+      description: '{% raw %}{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} receive errors in the last five minutes.{% endraw %}'
+
+  - alert: HostNetworkTransmitErrors
+    expr: 'rate(node_network_transmit_errs_total[2m]) / rate(node_network_transmit_packets_total[2m]) > 0.01'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host Network Transmit Errors (instance {{ $labels.instance }}){% endraw %}"
+      description: '{% raw %}{{ $labels.instance }} interface {{ $labels.device }} has encountered {{ printf "%.0f" $value }} transmit errors in the last five minutes.{% endraw %}'
+
+  - alert: HostNetworkInterfaceSaturated
+    expr: '(rate(node_network_receive_bytes_total{device!~"^tap.*"}[1m]) + rate(node_network_transmit_bytes_total{device!~"^tap.*"}[1m])) / node_network_speed_bytes{device!~"^tap.*"} > 0.8'
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host Network Interface Saturated (instance {{ $labels.instance }}){% endraw %}"
+      description: '{% raw %}The network interface "{{ $labels.interface }}" on "{{ $labels.instance }}" is getting overloaded.{% endraw %}'
+
+  - alert: HostConntrackLimitReached
+    expr: 'node_nf_conntrack_entries / node_nf_conntrack_entries_limit > 0.8'
+    for: 5m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host conntrack limit (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The number of conntrack is approching limit.{% endraw %}"
+
+  - alert: HostClockSkewDetected
+    expr: '(node_timex_offset_seconds > 0.05 and deriv(node_timex_offset_seconds[5m]) >= 0) or (node_timex_offset_seconds < -0.05 and deriv(node_timex_offset_seconds[5m]) <= 0)'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host clock skew detected (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Clock skew detected. Clock is out of sync.{% endraw %}"
+
+  - alert: HostClockNotSynchronising
+    expr: 'min_over_time(node_timex_sync_status[1m]) == 0 and node_timex_maxerror_seconds >= 16'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host clock not synchronising (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Clock not synchronising.{% endraw %}"
+
+  - alert: HostRebootRequired
+    expr: "node_reboot_required > 0"
+    labels:
+      severity: warning
+    annotations:
+      description: "{% raw %}Host requires reboot (instance {{ $labels.instance }}){% endraw %}"
+      summary: "{% raw %}Reboot of the host is required.{% endraw %}"
+
+  # Please add ignored mountpoints in node_exporter parameters like
+  # "--collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/)".
+  # Same rule using "node_filesystem_free_bytes" will fire when disk fills for non-root users.
+  - alert: HostOutOfDiskSpace
+    expr: '(node_filesystem_avail_bytes * 100) / node_filesystem_size_bytes < 10 and ON (instance, device, mountpoint) node_filesystem_readonly == 0'
+    for: 4m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Host out of disk space (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Disk is almost full (< 10% left).{% endraw %}"
+
+  - alert: HostCriticalDiskSpace
+    expr: 'node_filesystem_free_bytes{mountpoint!~"^/run(/.*|$)",fstype!~"(squashfs|fuse.*)",job="node"} / node_filesystem_size_bytes{job="node"} < 0.1'
+    for: 4m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Host is completely out of disk space (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Host is completely out of space (instance {{ $labels.instance }}) of job {{ $labels.job }} has less than 10% space remaining.{% endraw %}"
+
+  # PostgreSQL related alerts
+
+  - alert: PostgresqlDown
+    expr: 'pg_up == 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Postgresql down (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Postgresql instance is down.{% endraw %}"
+
+  - alert: PostgresqlRestarted
+    expr: 'time() - pg_postmaster_start_time_seconds < 60'
+    for: 0m
+    labels:
+      severity: info
+    annotations:
+      summary: "{% raw %}Postgresql restarted (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Postgresql restarted.{% endraw %}"
+
+  - alert: PostgresqlExporterError
+    expr: 'pg_exporter_last_scrape_error > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Postgresql exporter error (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Postgresql exporter is showing errors. A query may be buggy in query.yaml.{% endraw %}"
+
+  - alert: PostgresqlTooManyConnections
+    expr: 'sum by (datname) (pg_stat_activity_count{datname!~"template.*|postgres"}) > pg_settings_max_connections * 0.8'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Postgresql too many connections (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}PostgreSQL instance has too many connections (> 80%).{% endraw %}"
+
+  - alert: PostgresqlDeadLocks
+    expr: 'increase(pg_stat_database_deadlocks{datname!~"template.*|postgres"}[1m]) > 5'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Postgresql dead locks (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}PostgreSQL has dead-locks.{% endraw %}"
+
+  - alert: PostgresqlSlowQueries
+    expr: 'pg_slow_queries > 0'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Postgresql slow queries (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}PostgreSQL executes slow queries.{% endraw %}"
+
+  - alert: PostgresqlHighRollbackRate
+    expr: 'rate(pg_stat_database_xact_rollback{datname!~"template.*"}[3m]) / rate(pg_stat_database_xact_commit{datname!~"template.*"}[3m]) > 0.02'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Postgresql high rollback rate (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Ratio of transactions being aborted compared to committed is > 2%.{% endraw %}"
+
+  - alert: PostgresqlHighRateDeadlock
+    expr: 'increase(postgresql_errors_total{type="deadlock_detected"}[1m]) > 1'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Postgresql high rate deadlock (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Postgres detected deadlocks.{% endraw %}"
+
+  - alert: PostgresqlTooManyDeadTuples
+    expr: '((pg_stat_user_tables_n_dead_tup > 10000) / (pg_stat_user_tables_n_live_tup + pg_stat_user_tables_n_dead_tup)) >= 0.1 unless ON(instance) (pg_replication_is_replica == 1)'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Postgresql too many dead tuples (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}PostgreSQL dead tuples is too large.{% endraw %}"
+
+  - alert: PostgresqlTooManyLocksAcquired
+    expr: '((sum (pg_locks_count)) / (pg_settings_max_locks_per_transaction * pg_settings_max_connections)) > 0.20'
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Postgresql too many locks acquired (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Too many locks acquired on the database. If this alert happens frequently, we may need to increase the postgres setting max_locks_per_transaction.{% endraw %}"
+
+  # MinIO related alerts
+
+  - alert: MinioNodeOffline
+    expr: 'minio_cluster_node_offline_total > 0'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Minio node offline (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Minio node is offline.{% endraw %}"
+
+  - alert: MinioNoNodeAvailable
+    expr: 'minio_cluster_node_online_total == 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}No Minio node available (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}There's no Minio node online.{% endraw %}"
+
+  - alert: MinioNodeDiskSpaceUsage
+    expr: '( minio_node_disk_free_bytes / minio_node_disk_total_bytes ) * 100 < 10'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Minio free disk space on node is low (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Minio available free disk space on node is low (< 10%).{% endraw %}"
+
+  - alert: MinioClusterDiskSpaceUsage
+    expr: '( minio_cluster_capacity_raw_free_bytes / minio_cluster_capacity_raw_total_bytes ) * 100 < 10'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Minio total cluster free disk space is low (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Minio available free disk space on the cluster is low (< 10%).{% endraw %}"
+
+  # OpenSearch related alerts
+
+  - alert: OpenSearchHeapUsageTooHigh
+    expr: '(opensearch_jvm_mem_heap_used_bytes / opensearch_jvm_mem_heap_max_bytes) * 100 > 90'
+    for: 2m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}OpenSearch Heap Usage Too High (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The heap usage is over 90%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchHeapUsageWarning
+    expr: '(opensearch_jvm_mem_heap_used_bytes / opensearch_jvm_mem_heap_max_bytes) * 100 > 80'
+    for: 2m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch Heap Usage Warning (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The heap usage is over 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchMountOutOfDiskSpace
+    expr: '( opensearch_fs_path_available_bytes / opensearch_fs_path_total_bytes ) * 100 < 10'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}OpenSearch mount path {{ $labels.path }} is out of disk space (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The disk usage on mount path {{ $labels.path }} is over 90%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchMountDiskSpaceLow
+    expr: 'opensearch_fs_path_total_bytes / opensearch_fs_path_available_bytes * 100 < 20'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch mount path {{ $labels.path }} has low disk space left (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The disk usage on mount path {{ $labels.path }} is over 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchNodeOutOfDiskSpace
+    expr: '( opensearch_fs_total_available_bytes / opensearch_fs_total_total_bytes ) * 100 < 10'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}OpenSearch node is out of disk space (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The disk usage on cluster node is over 90%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchNodeDiskSpaceLow
+    expr: '( opensearch_fs_total_available_bytes / opensearch_fs_total_total_bytes ) * 100 < 20'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch node has low disk space left (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}The disk usage on cluster node is over 80%\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchClusterRed
+    expr: 'opensearch_cluster_status == 2'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}OpenSearch Cluster Red (instance {{ $labels.instance }}, cluster {{ $labels.cluster }}){% endraw %}"
+      description: "{% raw %}OpenSearch Cluster Red status\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchClusterYellow
+    expr: 'opensearch_cluster_status == 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch Cluster Yellow (instance {{ $labels.instance }}, cluster {{ $labels.cluster }}){% endraw %}"
+      description: "{% raw %}OpenSearch Cluster Yellow status\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchClusterTimedOut
+    expr: 'opensearch_cluster_is_timedout_bool > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}OpenSearch Cluster timed out (instance {{ $labels.instance }}, cluster {{ $labels.cluster }}){% endraw %}"
+      description: "{% raw %}OpenSearch Cluster has timed out \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchClusterNodes
+    expr: 'opensearch_cluster_nodes_number == 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}There are no nodes in OpenSearch cluster (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}There are no nodes in OpenSearch cluster \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchClusterDataNodes
+    expr: 'opensearch_cluster_datanodes_number == 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}There are no data nodes in OpenSearch cluster (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}There are no data nodes in OpenSearch cluster \n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchRelocatingShards
+    expr: 'opensearch_cluster_shards_number{type="relocating"} > 0'
+    for: 0m
+    labels:
+      severity: info
+    annotations:
+      summary: "{% raw %}OpenSearch is relocating shards (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch is relocating shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchRelocatingShardsTooLong
+    expr: 'opensearch_cluster_shards_number{type="relocating"} > 0'
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch is relocating shards  too long (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch has been relocating shards for 15min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchInitializingShards
+    expr: 'opensearch_cluster_shards_number{type="initializing"} > 0'
+    for: 0m
+    labels:
+      severity: info
+    annotations:
+      summary: "{% raw %}OpenSearch is initializing shards (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch is initializing shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchInitializingShardsTooLong
+    expr: 'opensearch_cluster_shards_number{type="initializing"} > 0'
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch is initializing shards too long (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch has been initializing shards for 15 min\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchUnassignedShards
+    expr: 'opensearch_cluster_shards_number{type="unassigned"} > 0'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch unassigned shards (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch has unassigned shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchInactiveShardsHigh
+    expr: 'opensearch_cluster_shards_active_percent * 100 < 80'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch has inactive shards (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch has more than 20% of inactive shards\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchPendingTasks
+    expr: 'opensearch_cluster_pending_tasks_number > 0'
+    for: 15m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch pending tasks (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch has pending tasks for 15 mins. Cluster works slowly.\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchNoNewDocuments
+    expr: 'increase(opensearch_indices_doc_number{cluster="logging"}[10m]) < 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}OpenSearch no new documents (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}No new documents for 10 min!\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: OpenSearchDeletingDocuments
+    expr: 'opensearch_indices_indexing_delete_current_number > 0'
+    for: 0m
+    labels:
+      severity: info
+    annotations:
+      summary: "{% raw %}OpenSearch is deleting documents (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}OpenSearch is deleting documents\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+    # Blackbox alerts
+
+  - alert: BlackboxProbeFailed
+    expr: 'probe_success == 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Blackbox probe failed (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Probe failed\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxSlowProbe
+    expr: 'avg_over_time(probe_duration_seconds[1m]) > 1'
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Blackbox slow probe (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Blackbox probe took more than 1s to complete\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxProbeHttpFailure
+    expr: 'probe_http_status_code <= 199 OR probe_http_status_code >= 400'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Blackbox probe HTTP failure (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}HTTP status code is not 200-399\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxSslCertificateWillExpireSoon
+    expr: 'probe_ssl_earliest_cert_expiry - time() < 86400 * 30'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Blackbox SSL certificate will expire soon (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}SSL certificate expires in 30 days\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxSslCertificateWillExpireSoon
+    expr: 'probe_ssl_earliest_cert_expiry - time() < 86400 * 3'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Blackbox SSL certificate will expire soon (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}SSL certificate expires in 3 days\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxSslCertificateExpired
+    expr: 'probe_ssl_earliest_cert_expiry - time() <= 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Blackbox SSL certificate expired (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}SSL certificate has expired already\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxProbeSlowHttp
+    expr: 'avg_over_time(probe_http_duration_seconds[1m]) > 1'
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Blackbox probe slow HTTP (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}HTTP request took more than 1s\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: BlackboxProbeSlowPing
+    expr: 'avg_over_time(probe_icmp_duration_seconds[1m]) > 1'
+    for: 1m
+    labels:
+      severity: warning
+    annotations:
+      summary: "{% raw %}Blackbox probe slow ping (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Blackbox ping took more than 1s\n  VALUE = {{ $value }}\n  LABELS = {{ $labels }}{% endraw %}"
+
+  # MMM Elastiscearch alerts
+
+  - alert: CatalogSearchEventsPending
+    expr: 'ataccama_one_mmm_catalogsearch_events_pending > 5000'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Too much catalog search events pending"
+      description: "{% raw %} {{ $labels.instance }} of {{ $labels.job }} experience {{ $value }} pending catalog search events. {% endraw %}"
+
+  - alert: CatalogSearchEventsPartlyFailed
+    expr: 'ataccama_one_mmm_catalogsearch_events_partly_failed > 101'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Too much catalog search events partly failed"
+      description: "{% raw %} {{ $labels.instance }} of {{ $labels.job }} experience {{ $value }} partially failed catalog search events. {% endraw %}"
+
+  - alert: CatalogSearchEventsFailed
+    expr: 'ataccama_one_mmm_catalogsearch_events_failed > 1'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "Catalog search events failed"
+      description: "{% raw %} {{ $labels.instance }} of {{ $labels.job }} experience {{ $value }} failed catalog search events. {% endraw %}"
+
+  # Term suggestions alerts
+
+  - alert: TermSuggestionsApiCallFailed
+    expr: 'increase(ataccama_one_grpc_client_call_seconds_count{method=~"ProcessEvents|GetTermSuggestions|GetRestorationState|SetThreshold|GetThreshold|SetAdaptiveLearning|GetAdaptiveLearning", status!="OK"}[5m]) > 1'
+    for: 0m
+    labels:
+      severity: warning
+    annotations:
+      summary: "MMM grpc calls to Term suggestions api service are failing"
+      description: "{% raw %}There were Term suggestions grpc api call failures from MMM in last 5 minutes. (labels {{ $labels }}){% endraw %}"
+
+  - alert: TermSuggestionsForNonExistentEntities
+    expr: 'increase(ataccama_one_mmm_term_suggestions_update_attributes_non_existent_total[5m]) + increase(ataccama_one_mmm_term_suggestions_update_terms_non_existent_total[5m]) > 1'
+    for: 30m
+    labels:
+      severity: warning
+    annotations:
+      summary: "Term suggestions are made on non-existent entities"
+      description: "{% raw %}There were term suggestions made on non-existent entities repeatedly (at least one in each 5 min span) in last 30 minutes. (labels {{ $labels }}){% endraw %}"
+
+  # Nginx related alerts
+
+  - alert: NginxIsDown
+    expr: 'nginx_up < 1'
+    for: 30s
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Nginx is unavailable on instance {{ $labels.instance }}{% endraw %}"
+      description: "{% raw %}Nginx is unavailable \n  LABELS = {{ $labels }}{% endraw %}"
+
+  ## FluentBit Alerts
+
+  - alert: FluentBitOutputErrors
+    expr: 'delta(fluentbit_output_errors_total[15m]) > 0'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Fluent Bit instance {{ $labels.instance }} has output errors.{% endraw %}"
+      description: "{% raw %}Fluent Bit instance {{ $labels.instance }}'s output plugin {{ $labels.name }} had errors in last 15 minutes \n  LABELS = {{ $labels }}{% endraw %}"
+
+  - alert: FluentBitNoOutputBytesProcessed
+    expr: 'rate(fluentbit_output_proc_bytes_total[5m]) == 0'
+    annotations:
+      summary: 'Fluent Bit instance no output bytes processed'
+      description: "{% raw %}Fluent Bit instance {{ $labels.instance }}'s output plugin {{ $labels.name }} has not processed any bytes for at least 15 minutes. {% endraw %}"
+    for: 15m
+    labels:
+      severity: warning
+
+  - alert: FluentBitDroppedRecordsHighCount
+    expr: 'delta(fluentbit_output_dropped_records_total[15m]) / (delta(fluentbit_output_dropped_records_total[15m]) + delta(fluentbit_output_retried_records_total[15m]) + delta(fluentbit_output_proc_records_total[15m])) * 100 > 20'
+    annotations:
+      summary: 'Fluent Bit instance dropping records on output'
+      description: "{% raw %}Fluent Bit instance {{ $labels.instance }}'s output plugin has > 20% of dropped records in last 15 minutes. {% endraw %}"
+      for: 15m
+    labels:
+      severity: warning
+
+  - alert: FluentBitRetriedRecordsHighCount
+    expr: 'delta(fluentbit_output_retried_records_total[15m]) / (delta(fluentbit_output_dropped_records_total[15m]) + delta(fluentbit_output_retried_records_total[15m]) + delta(fluentbit_output_proc_records_total[15m])) * 100 > 20'
+    annotations:
+      summary: 'Fluent Bit instance retrying records on output'
+      description: "{% raw %}Fluent Bit instance {{ $labels.instance }}'s output plugin has > 20% of retried records in last 15 minutes. {% endraw %}"
+      for: 15m
+    labels:
+      severity: warning
+
+  ## FluentD alerts
+
+  - alert: FluentDErrors
+    expr: 'fluentd_output_status_num_errors > 0'
+    annotations:
+      summary: 'FluentD is experiencing errors'
+      description: "{% raw %}FluentD instance {{ $labels.instance }} is experiencing errors \n  LABELS = {{ $labels }}{% endraw %}"
+      for: 0m
+    labels:
+      severity: critical
+
+  - alert: FluentDLosingRecords
+    expr: 'increase(fluentd_output_status_num_records_total[10m]) - increase(fluentd_input_status_num_records_total[10m]) > 0'
+    annotations:
+      summary: 'FluentD is not shipping all records'
+      description: "{% raw %}FluentD instance {{ $labels.instance }} is failing to process some records \n  LABELS = {{ $labels }}{% endraw %}"
+      for: 10m
+    labels:
+      severity: warning
+
+  - alert: FluentDAvailableBufferSpaceLow
+    expr: 'fluentd_output_status_buffer_available_space_ratio < 20'
+    annotations:
+      summary: 'FluentD has low available space in buffer'
+      description: "{% raw %}FluentD instance {{ $labels.instance }} has less than 20% of space in buffer available \n  LABELS = {{ $labels }}{% endraw %}"
+      for: 10m
+    labels:
+      severity: warning
+
+  - alert: FluentDNoAvailableBufferSpace
+    expr: 'fluentd_output_status_buffer_available_space_ratio < 5'
+    annotations:
+      summary: 'FluentD has almost no available space in buffer'
+      description: "{% raw %}FluentD instance {{ $labels.instance }} has less than 5% of space in buffer available \n  LABELS = {{ $labels }}{% endraw %}"
+      for: 10m
+    labels:
+      severity: critical
+
+  - alert: Keycloak SystemdServiceCrashed
+    expr: 'node_systemd_unit_state{state="failed", name="keycloak-server.service"} == 1'
+    for: 0m
+    labels:
+      severity: critical
+    annotations:
+      summary: "{% raw %}Keycloak SystemD service crashed (instance {{ $labels.instance }}){% endraw %}"
+      description: "{% raw %}Keycloak service crashed.{% endraw %}"

@@ -1,0 +1,11 @@
+---
+# handlers file for mdm
+
+- name: Restart mdm service
+  become: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  loop: "{{ module_services }}"
+  listen: Populate mdm application.properties
+  no_log: true

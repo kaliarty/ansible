@@ -1,0 +1,10 @@
+---
+# handlers file for server
+
+- name: Restart Ataccama server service
+  no_log: true
+  become: true
+  service:
+    name: "{{ item.name }}"
+    state: restarted
+  loop: "{{ server_services }}"

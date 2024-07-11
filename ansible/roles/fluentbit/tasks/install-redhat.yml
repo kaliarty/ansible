@@ -1,0 +1,10 @@
+---
+
+- name: Add fluentbit yum repository on RedHat
+  yum_repository:
+    name: TD_Agent_Bit
+    baseurl: "{{ fluentbit_yum_repo }}"
+    gpgcheck: true
+    gpgkey: "{{ fluentbit_gpg_key }}"
+    description: Fluent bit repo
+    enabled: true

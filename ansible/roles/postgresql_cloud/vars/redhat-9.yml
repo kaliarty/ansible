@@ -1,0 +1,5 @@
+---
+# variables for RHEL9  & CentOS 9
+
+psycopg2_packages:
+  - python3-psycopg2

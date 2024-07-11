@@ -1,0 +1,14 @@
+{{ ansible_managed | comment }}
+
+[MULTILINE_PARSER]
+    name          java-dqit-multiline
+    type          regex
+    flush_timeout 1000
+    rule      "start_state"   "/(\d{2}-\w+-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})(.*)/"   "cont"
+    rule      "cont"          "/^((?!\d{2}-\w+-\d{4} \d{2}:\d{2}:\d{2}\.\d{3}).)*$/" "cont"
+[PARSER]
+    Name         java-dqit
+    Format       regex
+    Regex        ^(?<time>\d{2}-\w+-\d{4} \d{2}:\d{2}:\d{2}\.\d{3})\s+(?<severity>[A-Z]+)\s+\[(?<thread>.*)\]\s+(?<logger>\S+)\s+(?<message>(.|\n)*)
+    Time_Key     time
+    Time_Format  %d-%b-%Y %H:%M:%S.%L

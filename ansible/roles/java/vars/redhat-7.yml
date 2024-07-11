@@ -1,0 +1,25 @@
+---
+_java_packages_adoptiumopenjdk:
+  - temurin-{{ java_distribution_version }}-jdk
+
+_default_java_adoptiumopenjdk: temurin-{{ java_distribution_version }}-jdk
+
+_java_packages_openjdk:
+  - java-{{ java_distribution_version }}-openjdk
+  - java-{{ java_distribution_version }}-openjdk-devel
+
+_default_java_openjdk: java-{{ java_distribution_version }}-openjdk
+
+adoptiumopenjdk_rpm_repo: "{{ adoptiumopenjdk_rpm_rhel7_repo }}"
+adoptiumopenjdk_rpm_repo_key: "{{ adoptiumopenjdk_rpm_rhel7_repo_key }}"
+
+dependency_packages:
+  - python36-lxml
+  - unzip
+  - tar
+
+epel_repo:
+  name: epel
+  description: "Extra Packages for Enterprise Linux $releasever - $basearch"
+  metalink: "https://mirrors.fedoraproject.org/metalink?repo=epel-$releasever&arch=$basearch&infra=$infra&content=$contentdir"
+  gpgkey: "https://dl.fedoraproject.org/pub/epel/RPM-GPG-KEY-EPEL-{{ ansible_distribution_major_version }}"

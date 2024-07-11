@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.audit
+    Systemd_Filter  _SYSTEMD_UNIT=audit-server.service
+
+[INPUT]
+    Name    tail
+    path    {{ audit_install_dir }}/log/access.json.log
+    Tag     accesslog.audit
+    Parser  json
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.audit
+    Key_Name      message
+    Parser        audit
+    Reserve_Data  On

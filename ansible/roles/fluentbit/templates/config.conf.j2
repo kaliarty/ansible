@@ -1,0 +1,34 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+{% for input in fluentbit_inputs %}
+
+[INPUT]
+{% for key in input %}
+    {{ key }} {{ input[key] }}
+{% endfor %}
+{% endfor %}
+
+############################
+# Filters
+############################
+{% for filter in fluentbit_filters %}
+
+[FILTER]
+{% for key in filter %}
+    {{ key }} {{ filter[key] }}
+{% endfor %}
+{% endfor %}
+
+############################
+# Outputs
+############################
+{% for output in fluentbit_outputs %}
+
+[OUTPUT]
+{% for key in output %}
+    {{ key }} {{ output[key] }}
+{% endfor %}
+{% endfor %}

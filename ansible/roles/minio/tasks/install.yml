@@ -1,0 +1,56 @@
+---
+# installation tasks for MinIO
+
+- name: Create MinIO system group and user
+  include_role:
+    name: system
+    tasks_from: "{{ task }}"
+  loop:
+    - groups.yml
+    - users.yml
+  loop_control:
+    loop_var: task
+  vars:
+    system_groups:
+      - name: "{{ minio_system_group }}"
+        state: present
+        system: yes
+    system_users:
+      - username: "{{ minio_system_user }}"
+        system: yes
+        group: "{{ minio_system_group }}"
+        home: "{{ minio_install_dir }}"
+        shell: /usr/sbin/nologin
+        create_home: no
+
+- name: Ensure MinIO directories exists
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ minio_system_user }}"
+    group: "{{ minio_system_group }}"
+    recurse: true
+    mode: 0755
+  with_items:
+    - "{{ minio_install_dir }}"
+    - "{{ minio_data_dir }}"
+
+- name: Include binary checksums
+  include_vars: checksums.yml
+
+- name: Download MinIO server binary
+  become: true
+  get_url:
+    url: "{{ minio_download_url }}"
+    dest: "{{ minio_install_dir }}/{{ minio_binary }}"
+    mode: 0755
+    checksum: "{{ binary_checksums[ minio_binary ] }}"
+
+- name: Create symlink to downloaded binary
+  become: true
+  file:
+    state: link
+    src: "{{ minio_install_dir }}/{{ minio_binary }}"
+    dest: "/usr/local/bin/minio"
+    owner: "{{ minio_system_user }}"
+    group: "{{ minio_system_group }}"

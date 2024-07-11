@@ -1,0 +1,173 @@
+---
+- name: "Check that role is configured correctly"
+  include: preflight-check.yml
+
+- name: "Create system group and user for prometheus exporter: {{ prometheus_exporter_name }}"
+  include_role:
+    name: system
+    tasks_from: "{{ task }}"
+  loop: |
+    {{
+      (['groups.yml'] if ( prometheus_exporter_group_manage | bool ) else [] ) +
+      (['users.yml'] if ( prometheus_exporter_user_manage | bool ) else [] )
+    }}
+  loop_control:
+    loop_var: task
+  vars:
+    system_groups:
+      - name: "{{ prometheus_exporter_group }}"
+        system: true
+    system_users:
+      - username: "{{ prometheus_exporter_user }}"
+        group: "{{ prometheus_exporter_group }}"
+        home: "{{ prometheus_exporter_home if prometheus_exporter_home_manage else omit }}"
+        comment: "{{ prometheus_exporter_name }}"
+        shell: /usr/sbin/nologin
+        system: true
+        create_home: no
+
+#- name: "Create home directory for the system user | exporter: {{ prometheus_exporter_name }}"
+#  become: true
+#  file:
+#    path: "{{ prometheus_exporter_home }}"
+#    owner: "{{ prometheus_exporter_user }}"
+#    group: "{{ prometheus_exporter_group }}"
+#    mode: "u=rwx,g=rx,o="
+#    state: directory
+#  when: prometheus_exporter_home_manage | bool
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - files:
+        - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_distribution | lower }}.yml"
+        - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+        - "{{ ansible_os_family | lower }}.yml"
+      paths:
+        - "vars"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+  tags:
+    - summary
+
+- name: "Install required packages"
+  package:
+    name: "{{ prometheus_exporter_dependencies }}"
+    state: present
+    update_cache: true
+
+- name: "Create logs directory | exporter: {{ prometheus_exporter_name }}"
+  become: true
+  file:
+    path: "{{ prometheus_exporter_log_path }}"
+    owner: "{{ prometheus_exporter_user }}"
+    group: "{{ prometheus_exporter_group }}"
+    mode: "u=rwx,g=rx,o="
+    state: directory
+  when:
+    - prometheus_exporter_log_path is defined
+    - prometheus_exporter_log_path != ""
+
+- name: Create distribution directory
+  become: true
+  file:
+    path: |-
+      {%- if prometheus_exporter_create_dist %}
+      {{ prometheus_exporters_dist_dir }}/{{ prometheus_exporter_dist }}
+      {%- else %}
+      {{ prometheus_exporters_dist_dir }}
+      {%- endif %}
+    owner: root
+    group: root
+    mode: "u=rwx,go=rx"
+    state: directory
+
+- name: "Download & extract package | exporter: {{ prometheus_exporter_name }}"
+  become: true
+  unarchive:
+    src: "{{ prometheus_exporter_download_url }}"
+    dest: |-
+      {%- if prometheus_exporter_create_dist %}
+      {{ prometheus_exporters_dist_dir }}/{{ prometheus_exporter_dist }}
+      {%- else %}
+      {{ prometheus_exporters_dist_dir }}
+      {%- endif %}
+    owner: root
+    group: root
+    mode: "u=rwx,g=rx,o=rx"
+    remote_src: true
+    creates: "{{ prometheus_exporters_dist_dir }}/{{ prometheus_exporter_dist }}/{{ prometheus_exporter_bin }}"
+
+- name: "Create symlink | exporter: {{ prometheus_exporter_name }}"
+  become: true
+  file:
+    src: "{{ prometheus_exporters_dist_dir }}/{{ prometheus_exporter_dist }}"
+    path: "{{ prometheus_exporters_dir }}/{{ prometheus_exporter_name }}"
+    owner: root
+    group: root
+    force: true
+    state: link
+  notify: restart prometheus exporter
+
+- name: "Install environment variables file for systemd unit | exporter: {{ prometheus_exporter_name }}"
+  become: true
+  template:
+    src: "prometheus_exporter_default.conf.j2"
+    dest: "{{ prometheus_exporter_config_file | default('') }}"
+    owner: "{{ prometheus_exporter_user }}"
+    group: "{{ prometheus_exporter_group }}"
+    mode: "u=rw,g=r,o="
+  notify: restart prometheus exporter
+  when:
+    - prometheus_exporter_env_variables is defined
+    - prometheus_exporter_env_variables.keys() | length > 0
+
+- name: "Create systemd service unit | exporter: {{ prometheus_exporter_name }}"
+  include_role:
+    name: 0x0i.systemd
+    tasks_from: "{{ item }}"
+  vars:
+    unit_config:
+      - name: "{{ prometheus_exporter_service_name }}"
+        state: started
+        enabled: yes
+        Unit:
+          Description: "{{ prometheus_exporter_service_description | default('') }}"
+          After: "{{ prometheus_exporter_service_dependency | default('network.target') }}"
+        Service:
+          Type: "{{ prometheus_exporter_service_type }}"
+          User: "{{ prometheus_exporter_user }}"
+          Group: "{{ prometheus_exporter_group }}"
+          EnvironmentFile: "{{ prometheus_exporter_config_file | default('') }}"
+          ExecStart: "{{ prometheus_exporter_service_execstart }}"
+          ExecStop: "{{ prometheus_exporter_service_execstop | default('') }}"
+          ExecReload: "{{ prometheus_exporter_service_execreload | default('') }}"
+          Restart: always
+          SyslogIdentifier: "{{ prometheus_exporter_service_name }}"
+          RestartSec: "{{ prometheus_exporter_service_restart_sec }}"
+          PrivateTmp: "{{ prometheus_exporter_service_private_tmp }}"
+          NoNewPrivileges: "yes"
+          ProtectSystem: strict
+          ProtectControlGroups: "true"
+          ProtectKernelModules: "true"
+          ProtectKernelTunables: "yes"
+        Install:
+          WantedBy: multi-user.target
+  loop:
+    - common/config
+    - common/launch
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Prometheus exporters
+    summary:
+      name: "{{ prometheus_exporter_name | regex_replace('_?exporter_?', '') | regex_replace('_?ataccama_?', '') }}"
+      details:
+        directories: "{{ [ prometheus_exporters_dist_dir ] }}"
+        user: "{{ prometheus_exporter_user }}"
+        group: "{{ prometheus_exporter_user }}"
+        services: "{{ [prometheus_exporter_service_name] }}"
+  tags: summary

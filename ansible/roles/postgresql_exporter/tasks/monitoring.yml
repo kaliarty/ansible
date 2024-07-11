@@ -1,0 +1,10 @@
+---
+
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      metrics_path: "/metrics"
+      port: 9187

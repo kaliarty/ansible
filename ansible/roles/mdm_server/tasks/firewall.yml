@@ -1,0 +1,45 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ mdm.server.http_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['ai_server'] | default([])
+            + groups['frontend'] | default([])
+            + groups['processing'] | default([])
+          }}"
+        - port: "{{ mdm_server_actuators_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['ai_server'] | default([])
+            + groups['frontend'] | default([])
+            + groups['processing'] | default([])
+          }}"
+        - port: "{{ mdm_server_manager_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['ai_server'] | default([])
+            + groups['proxies'] | default([])
+            + groups['frontend'] | default([])
+            + groups['processing'] | default([])
+          }}"
+        - port: "{{ mdm_server_health_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['frontend'] | default([])
+          }}"
+        - port: "{{ mdm.server.grpc_port }}"
+          source: "{{
+            groups['monitoring_server'] | default([])
+            + groups['ai_server'] | default([])
+            + groups['processing'] | default([])
+          }}"
+        - port: "{{ mdm.server.service_port }}"
+          source: "{{ groups['mdm_server'] | default([]) }}" # internal communication only
+        - port: "{{ mdm_server_manager_port }}"
+          source: "{{ groups['mdm_server'] | default([]) }}"

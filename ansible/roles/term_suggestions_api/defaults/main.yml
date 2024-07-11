@@ -1,0 +1,47 @@
+---
+# ha enabled
+ai_server_ha: false
+
+# defaults file for Term Suggestions Recommender
+term_suggestions_api_module_name: term-suggestions-api
+term_suggestions_api_version: "{{ packages.term_suggestions_api.version }}"
+term_suggestions_api_license_file: licenses/license.plf
+term_suggestions_api_install_dir: "{{ deployment_folder }}/{{ term_suggestions_api_module_name }}"
+
+term_suggestions_api_package_download_type: "{{ packages.term_suggestions_api.package_download_type | default('maven_artifact') }}"
+term_suggestions_api_package_location: "{{ packages.term_suggestions_api.package_location | default ('') }}"
+term_suggestions_api_package_url: "{{ packages.term_suggestions_api.package_url }}"
+term_suggestions_api_package_checksum: "{{ packages.term_suggestions_api.package_checksum | default(omit) }}"
+
+term_suggestions_api_system_user: ts-api
+term_suggestions_api_system_group: ts-api
+
+term_suggestions_api_files:
+  - src: "{{ term_suggestions_api_license_file }}"
+    dest: "{{ term_suggestions_api_install_dir }}/license/"
+
+term_suggestions_api_services:
+  - name: term-suggestions-api
+    service_exec_start_pre: "{{ term_suggestions_api_install_dir }}/bin/python/bin/python3 {{ term_suggestions_api_install_dir }}/lib/manage.py schema upgrade"
+    service_exec_start: "{{ term_suggestions_api_install_dir }}/bin/python/bin/python3 {{ term_suggestions_api_install_dir }}/lib/manage.py run api"
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ term_suggestions_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ term_suggestions_api_jwt_key.private }}"
+      GRPC_DNS_RESOLVER: "native"
+      PATH: "/usr/bin:/usr/sbin:{{ term_suggestions_api_install_dir }}/bin"
+      PYTHONPATH: "$PYTHONPATH:{{ term_suggestions_api_install_dir }}/lib"
+      TMPDIR: "{{ temp_folder }}"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.term-suggestions
+  artifact: term-suggestions-api-assembly
+  version: "{{ packages.term_suggestions_api.version }}"
+  extension: zip
+  classifier: linux
+
+term_suggestions_api_config:
+  type: properties_local
+  # todo
+  src: application.properties.j2
+  dest: "{{ term_suggestions_api_install_dir }}/etc/application.properties"

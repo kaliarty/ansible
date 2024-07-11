@@ -1,0 +1,53 @@
+---
+# defaults file for workflow
+
+workflow_module_name: workflow
+workflow_version: "{{ packages.workflow.version }}"
+workflow_install_dir: "{{ deployment_folder }}/{{ workflow_module_name }}"
+workflow_database_name: "workflow"
+workflow_database_user: "{{ postgres.database.owner }}"
+workflow_database_password: "{{ postgres.database.password }}"
+
+workflow_port: 8013
+workflow_management_port: 8014
+workflow_grpc_port: 8513
+
+workflow_package_download_type: "{{ packages.workflow.package_download_type | default('maven_artifact') }}"
+workflow_package_location: "{{ packages.workflow.package_location | default ('') }}"
+workflow_package_url: "{{ packages.workflow.package_url | default ('') }}"
+workflow_package_checksum: "{{ packages.workflow.package_checksum | default(omit) }}"
+
+workflow_service_user: workflow
+workflow_service_group: workflow
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.workflow
+  artifact: "workflow-service"
+  version: "{{ packages.workflow.version }}"
+  extension: zip
+
+workflow_services:
+  - name: workflow
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ workflow_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ workflow_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ workflow_jwt_key.private }}"
+    java_opts: "{{ workflow_be_java_opts | default('-Xms512m -Xmx1512m -XX:MaxRAM=1800m') }}"
+
+
+workflow_java_heapdumps: "true"
+workflow_java_temp_folder: "{{ workflow_install_dir }}/tmp"
+
+workflow_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ workflow_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ workflow_install_dir }}/etc"
+
+workflow_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ workflow_install_dir }}/etc/application.properties"
+
+task_http_port: "8593"

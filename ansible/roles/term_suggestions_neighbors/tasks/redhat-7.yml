@@ -1,0 +1,15 @@
+---
+- name: RedHat 7 - Create the YUM repository
+  yum_repository:
+    name: "{{ epel_repo.name }}"
+    description: "{{ epel_repo.description }}"
+    metalink: "{{ epel_repo.metalink }}"
+    gpgkey: "{{ epel_repo.gpgkey }}"
+    gpgcheck: yes
+    enabled: yes
+
+- name: RedHat 7 - Install openssl libs
+  yum:
+    name: openssl11-libs
+    update_cache: yes
+    state: present

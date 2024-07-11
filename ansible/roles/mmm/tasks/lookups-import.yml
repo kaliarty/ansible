@@ -1,0 +1,18 @@
+---
+- name: Create MMM lookups import dir
+  file:
+    path: "{{ mmm_lookups_import_dir }}"
+    state: directory
+    owner: "{{ mmm_service_user }}"
+    group: "{{ mmm_service_group }}"
+    mode: 0755
+
+- name: Download and unzip lookups
+  become: true
+  unarchive:
+    src: "{{ mmm_lookups_import_url }}"
+    dest: "{{ mmm_lookups_import_dir }}"
+    remote_src: true
+    owner: "{{ mmm_service_user }}"
+    group: "{{ mmm_service_group }}"
+    mode: 0755

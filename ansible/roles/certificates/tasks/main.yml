@@ -1,0 +1,66 @@
+---
+# main tasks to obtain and install certificates to proper places
+- name: Check the role is configured correctly
+  include: preflight-check.yml
+
+- name: Ensure certs directory exists
+  file:
+    path: "{{ cert_dir }}"
+    state: directory
+    mode: '0755'
+
+- name: Set certificates to variables according to type
+  set_fact:
+    selfsigned_certs: "{{ certificates | selectattr('kind', 'equalto', 'selfsigned') | list }}"
+    ownca_signed_certs: "{{ certificates | selectattr('kind', 'equalto', 'ownca') | list }}"
+    le_certs: "{{ certificates | selectattr('kind', 'equalto', 'letsencrypt') | list }}"
+    provided_certs: "{{ certificates | selectattr('kind', 'equalto', 'provided') | list }}"
+  tags: summary
+
+- name: Gather os specific variables
+  include_vars: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Ensure CA certs directory exists
+  file:
+    path: "{{ ca_cert_dir }}"
+    state: directory
+    mode: '0755'
+  when: |
+    (certificates | selectattr('ca', 'defined') | map(attribute='ca') | list | length > 0
+    and ca_cert_dir != cert_dir)
+    or ownca_signed_certs | length > 0
+
+- name: Create selfsigned certificates
+  include: selfsigned.yml
+  when: selfsigned_certs | length > 0
+  tags: summary
+
+- name: Create ownca-signed certificates
+  include: ownca.yml
+  when: ownca_signed_certs | length > 0
+
+- name: Create internal Let's Encrypt cerfiticate(s)
+  include_role:
+    name: one_letsencrypt_cert
+  vars:
+    le_cert_dir: "{{ cert_dir }}"
+    le_certificates: "{{ le_certs }}"
+  when:
+    - le_cloud_provider is defined and (le_cloud_provider == 'azure')
+    - le_certs | length > 0
+  tags: summary
+
+- name: Use provided certificates
+  include: provided.yml
+  loop: "{{ provided_certs }}"
+  loop_control:
+    loop_var: certificate
+  when: provided_certs | length > 0
+  tags: summary

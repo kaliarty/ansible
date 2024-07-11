@@ -1,0 +1,58 @@
+---
+# vars file for grafana
+
+grafana_domain: "{{ nginx_hosts.grafana.hostname }}"
+grafana_url: "%(protocol)s://%(domain)s/"
+
+grafana_server:
+  serve_from_sub_path: true
+
+grafana_log:
+  level: info
+  file:
+    format: json
+
+grafana_database:
+  type: sqlite3   
+  log_queries: true
+grafana_ldap: {}  
+
+grafana_metrics:
+  enabled: true   # FIXME [security]: should use basic auth
+
+grafana_plugins:
+  - grafana-piechart-panel
+
+grafana_datasources:
+  - name: prometheus
+    type: prometheus
+    access: proxy
+    url: "http://{{groups['monitoring_server'][0]}}:9090"
+    basicAuth: false
+    isDefault: true
+
+grafana_dashboards:
+  - dashboard_id: 13502   # MinIO dashboard
+    revision_id: 10
+    datasource: prometheus
+  - dashboard_id: 6742    # PostgreSQL Statistics dashboard
+    revision_id: 1
+    datasource: prometheus
+  - dashboard_id: 11074   # Node Exporter dashboard
+    revision_id: 9
+    datasource: prometheus
+  - dashboard_id: 249     # Named Processes dashboard
+    revision_id: 2
+    datasource: prometheus
+  - dashboard_id: 1860    # Node Exporter full dashboard
+    revision_id: 21
+    datasource: prometheus
+  - dashboard_id: 8704  # Tomcat dashboard
+    revision_id: 10
+    datasource: prometheus
+  - dashboard_id: 8563  # JVM dashboard
+    revision_id: 17
+    datasource: prometheus
+  - dashboard_id: 3066  # JVM overview - Prometheus dashboard
+    revision_id: 1
+    datasource: prometheus

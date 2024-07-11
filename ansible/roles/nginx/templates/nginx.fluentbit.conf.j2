@@ -1,0 +1,11 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    Tag     console.nginx_error
+    Path    /var/log/nginx/error.log
+    Parser  nginx

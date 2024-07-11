@@ -1,0 +1,4 @@
+---
+# defaults file for monitoring-rules
+
+monitoring_server_list: "{{ groups.monitoring_server }}"

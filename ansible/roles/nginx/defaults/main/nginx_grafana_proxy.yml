@@ -1,0 +1,32 @@
+---
+nginx_grafana_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/grafana.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.grafana.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.grafana.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.grafana.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.grafana.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_grafana_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: grafana
+        ip_hash: true
+        servers:
+          - address: "{{ grafana.host }}:{{ grafana.port }}"
+            weight: 1
+
+nginx_grafana_proxy_default_locations:
+  - location: /
+    proxy:
+      pass: http://grafana
+      set_header: "{{ nginx_proxy_headers }}"

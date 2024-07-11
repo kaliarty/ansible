@@ -1,0 +1,33 @@
+---
+# opensearch system settings
+# according to https://opensearch.org/docs/latest/opensearch/install/important-settings/
+
+- name: Set vm.max_map_count in sysctl.conf
+  block:
+    - name: Get current sysctl vm.max_map_count
+      become: true
+      command: "sysctl -n vm.max_map_count"
+      register: vm_max_map_count
+      changed_when: False
+
+    - name: Update sysctl vm.max_map_count
+      sysctl:
+        name: vm.max_map_count
+        value: "{{ opensearch_vm_max_map_count }}"
+        state: present
+      when: vm_max_map_count.stdout | int < opensearch_vm_max_map_count
+
+- name: Set open files limit in sysctl.conf
+  block:
+    - name: Get current sysctl fs.file-max
+      become: true
+      command: "sysctl -n fs.file-max"
+      register: fs_file_max
+      changed_when: False
+
+    - name: Update sysctl fs.file_max
+      sysctl:
+        name: fs.file-max
+        value: "{{ opensearch_fs_file_max }}"
+        state: present
+      when: fs_file_max.stdout | int < opensearch_fs_file_max

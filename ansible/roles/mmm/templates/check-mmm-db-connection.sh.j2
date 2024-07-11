@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+
+set -e pipefail
+
+db_user=${DB_USER:-{{ postgres.database.owner }}}
+db_name=${DB_NAME:-{{ mmm.database_name }}}
+db_password=${DB_PASSWORD:-{{ postgres.database.password }}}
+db_max_retries=${DB_MAX_RETRIES:-1200}
+
+host="{{ postgres.host }}"
+pgpassfile="/tmp/.{{ ansible_date_time.iso8601_micro | to_uuid }}"
+psql_command="psql -h ${host} -p 5432 -U ${db_user} -d ${db_name}"
+declare -i retries_count=0
+
+touch ${pgpassfile}
+chmod 0600 ${pgpassfile}
+echo -n "*:*:${db_name}:${db_user}:${db_password}" > ${pgpassfile}
+export PGPASSFILE=${pgpassfile}
+
+until [[ $(${psql_command} -tAc "select true;") == "t" ]]; do
+        echo "Waiting for the db connection to be established"
+        ((++retries_count))
+        if [[ $retries_count -gt $db_max_retries ]]; then
+                echo "PostgreSQL bootstrap failed" >&2
+                rm -f ${pgpassfile}
+                exit 1
+        fi
+        sleep 2
+done
+
+echo "PostgreSQL bootstrap complete"
+rm -f ${pgpassfile}
+exit 0

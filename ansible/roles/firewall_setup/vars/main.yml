@@ -1,0 +1,13 @@
+---
+# vars file for firewall
+
+
+firewall_disable_firewalld: true
+firewall_disable_ufw: true
+
+# iptables commands hold a lock to prevent multiple instances changing FW rules concurrently.
+# This lock is somehow released *after* the iptables command exits, causing a sequence of multiple iptables commands
+# to fail with "Another app is currently holding the xtables lock." We have to wait for the lock to be released.
+# More info: https://bugs.debian.org/cgi-bin/bugreport.cgi?bug=816087
+# (I coudn't reproduce it manually. Take this analysis with a grain of salt. Waiting for lock should not do any harm.)
+iptables_command_common_params: "-w 120"

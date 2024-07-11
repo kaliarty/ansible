@@ -1,0 +1,24 @@
+---
+
+- name: Create data import directories
+  file:
+    path: "{{ item }}"
+    state: directory
+    owner: "{{ mmm_service_user }}"
+    group: "{{ mmm_service_group }}"
+    mode: 0755
+  with_items:
+    - "{{ mmm_data_import_dir }}"
+    - "{{ mmm_basic_data_dir }}"
+
+- name: Download and unzip default data
+  become: true
+  unarchive:
+    src: "{{ mmm_data_import_url }}"
+    dest: "{{ mmm_data_import_dir }}"
+    remote_src: true
+    owner: "{{ mmm_service_user }}"
+    group: "{{ mmm_service_group }}"
+    mode: 0755
+  notify:
+    - Restart mmm backend service

@@ -1,0 +1,103 @@
+---
+- name: check if we are running supported os
+  assert:
+    fail_msg: "{{ role_name }} only supports Amazon Linux 2, ubuntu versions 16, 18, 20, centos versions 7, 8 and RHEL"
+    success_msg: "{{ role_name }} supports {{ ansible_distribution }} version {{ ansible_distribution_version }}"
+    quiet: "{{ not ansible_check_mode }}"
+    that:
+      ( ansible_distribution|lower == "ubuntu" and ansible_distribution_version|int in [16, 18, 20] )
+      or ( ansible_distribution|lower == "centos" and ansible_distribution_major_version|int in [7, 8] )
+      or ( ansible_distribution|lower == "redhat" and ansible_distribution_major_version|int in [8, 9] )
+      or ( ansible_distribution|lower == "amazon" and ansible_distribution_major_version|int in [2] )
+
+- name: specific config for debian, amazon2 and redhat systems
+  include: "{{ ansible_os_family | lower }}.yml"
+
+- name: chrony_ variables for ubuntu
+  set_fact:
+    chrony_path: /etc/chrony/
+    chrony_service: chrony
+    ntp_service: ntp
+  when: ansible_os_family|lower == "debian"
+
+- name: chrony_ variables for centos
+  set_fact:
+    chrony_path: /etc/
+    chrony_service: chronyd
+    ntp_service: ntpd
+  when: ansible_os_family|lower == "redhat"
+
+- name: chrony_ variables for centos
+  set_fact:
+    chrony_path: /etc/
+    chrony_service: chronyd
+    ntp_service: ntpd
+  when: ansible_os_family|lower == "amazon"
+
+- name: set chrony config version 2
+  set_fact:
+    chrony_version: v2
+  when:
+    ( ansible_distribution|lower == "ubuntu" and ansible_distribution_version|int in [16] )
+
+- name: set chrony config version 3
+  set_fact:
+    chrony_version: v3
+  when:
+    ( ansible_distribution|lower == "ubuntu" and ansible_distribution_version|int in [18, 20] ) or
+    ( ansible_distribution|lower == "centos" and ansible_distribution_major_version|int in [7, 8] ) or
+    ( ansible_distribution|lower == "redhat" and ansible_distribution_major_version|int in [8, 9] ) or
+    ( ansible_distribution|lower == "amazon" and ansible_distribution_major_version|int in [2] )
+
+## Install chrony
+
+- name: install chrony on ubuntu
+  apt:
+    name: chrony
+    cache_valid_time: 3600
+    update_cache: true
+  when: ansible_os_family|lower == "debian"
+
+- name: install chrony on centos and redhat
+  yum:
+    name: chrony
+  when:
+    - ansible_os_family|lower == "redhat"
+
+- name: install chrony on Amazon Linux 2
+  yum:
+    name: chrony
+  when:
+    - ansible_os_family|lower == "amazon"
+
+## Disable old ntpd
+
+- name: check ntpd is running
+  shell: |
+    pgrep ntpd
+  register: ntpd_running
+  changed_when: ntpd_running.rc == 0
+  failed_when: false
+  when: chrony_disable_ntpd
+
+## Config chrony
+
+- name: chrony config
+  template:
+    src: 'chrony-{{ chrony_version }}.conf.j2'
+    dest: '{{ chrony_path }}/chrony.conf'
+    mode: 0644
+  notify: Restart chrony
+
+- name: enable chrony service and start
+  service:
+    name: '{{ chrony_service }}'
+    state: '{{ "started" if chrony_enable else "stopped" }}'
+    pattern: '{{ "chronyd" if ansible_distribution|lower == "ubuntu" and ansible_distribution_version|int in [12, 14] else omit }}'
+    enabled: '{{ chrony_enable }}'
+
+## Set timezone
+
+- name: set timezone
+  timezone:
+    name: '{{ chrony_timezone }}'

@@ -1,0 +1,6 @@
+{{ ansible_managed | comment }}
+## This is a default application.properties file for generic ONE 2.0 module.
+
+{% for item in application_properties %}
+{{ item.key }}={{ item.value }}
+{% endfor %}

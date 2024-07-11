@@ -1,0 +1,57 @@
+---
+# defaults file for task
+
+task_module_name: task
+task_version: "{{ packages.task.version }}"
+task_install_dir: "{{ deployment_folder }}/{{ task_module_name }}"
+
+task_package_download_type: "{{ packages.task.package_download_type | default('maven_artifact') }}"
+task_package_location: "{{ packages.task.package_location | default ('') }}"
+task_package_url: "{{ packages.task.package_url | default ('') }}"
+task_package_checksum: "{{ packages.task.package_checksum | default(omit) }}"
+
+task_service_user: task
+task_service_group: task
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.workflow
+  artifact: "task-service"
+  version: "{{ packages.task.version }}"
+  extension: zip
+
+task_port: "8093"
+task_http_port: "8093"
+task_grpc_port: "8593"
+task_management_port: "8092"
+
+task:
+  host: "{{ groups['one_app'][0] }}"
+  port: "{{ task_http_port }}"
+  database_name: task
+  auth_basic_enabled: true
+  auth_basic_name: admin
+
+task_database_name: task
+
+task_services:
+  - name: task
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ task_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_ADMIN_SECRET: "{{ task_admin_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ task_jwt_key.private }}"
+    java_opts: "{{ task_java_opts | default('-Xms512m -Xmx1152m -XX:MaxRAM=1800m') }}"
+
+task_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ task_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ task_install_dir }}/etc"
+
+task_java_heapdumps: "true"
+task_java_temp_folder: "{{ task_install_dir }}/tmp"
+
+task_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ task_install_dir }}/etc/application.properties"

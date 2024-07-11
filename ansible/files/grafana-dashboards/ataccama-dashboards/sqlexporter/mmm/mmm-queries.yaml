@@ -1,0 +1,333 @@
+mmm_db_statistics_catalog:
+  query: |
+    select count(*) as items from "catalogItem_q" where kind_i in ('pc', 'pd', 'p');
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Catalog items"
+
+mmm_db_statistics_data:
+  query: |
+    select count(*) as sources from  source_q where kind_i in ('pc', 'pd', 'p');
+  cache_seconds: 3600
+  metrics:
+    - sources:
+        usage: "GAUGE"
+        description: "Data sources"
+
+mmm_db_statistics_connectors:
+  query: |
+    select "executorType_s" as connector, count(*) as count from "connection_q" where kind_i in ('p', 'pd', 'pc') group by connector;
+  cache_seconds: 86400
+  metrics:
+    - connector:
+        usage: "LABEL"
+        description: "Connector type"
+    - count:
+        usage: "GAUGE"
+        description: "Total connections"
+
+mmm_db_statistics_ci_per_connector:
+  query: |
+    select "executorType_s" as connector, count(ci."connection_ri") as count from "connection_q" cq
+    left join "catalogItem_q" ci on cq."id_i" = ci."connection_ri"
+    where ci.kind_i in ('p', 'pd', 'pc')
+    group by connector;
+  cache_seconds: 86400
+  metrics:
+    - connector:
+        usage: "LABEL"
+        description: "Connector type"
+    - count:
+        usage: "GAUGE"
+        description: "Total catalogs"
+
+mmm_db_statistics_jobs:
+  query: |
+    select count(*) as number from "baseJob_q" where kind_i in ('pc', 'pd', 'p');
+  cache_seconds: 86400
+  metrics:
+    - sources:
+        usage: "GAUGE"
+        description: "Jobs"
+
+mmm_db_statistics_max_attributes_per_catalog:
+  query: |
+    select count(*) as item
+    from "catalogItem_q" c inner join attribute_q a on c.id_i = a.parent_id_i
+    where a.kind_i in ('pc', 'pd', 'p') and c.kind_i in ('pc', 'pd', 'p')
+    group by c.id_i
+    order by item desc
+    limit 1;
+  cache_seconds: 86400
+  metrics:
+    - item:
+        usage: "GAUGE"
+        description: "Max columns per table"
+
+mmm_db_statistics:
+  query: |
+    select count(*) as attributes from  attribute_q where kind_i in ('pc', 'pd', 'p');
+  cache_seconds: 3600
+  metrics:
+    - attributes:
+        usage: "GAUGE"
+        description: "Total columns in catalog"
+
+mmm_db_statistics_relations_between:
+  query: |
+    select count (*) as tables from  (
+        select distinct c.source_ri from "catalogItemRelationship_q" as c
+        where c.kind_i in ('pc', 'pd', 'p')) as r
+  cache_seconds: 3600
+  metrics:
+    - tables:
+        usage: "GAUGE"
+        description: "Relationships between tables"
+
+mmm_db_statistics_number_of_profiled:
+  query: |
+    select count (*) as tables from
+        (select distinct c.id_i
+        from "catalogItem_q" c inner join "profilingConfigurationInstance_q" pc  on c.id_i = pc.parent_id_i inner join "catalogItemProfile_q" p on pc.id_i = p.parent_id_i
+        where pc.kind_i in ('pc', 'pd', 'p') and c.kind_i in ('pc', 'pd', 'p') and p.kind_i in ('pc', 'pd', 'p')) pf
+  cache_seconds: 3600
+  metrics:
+    - tables:
+        usage: "GAUGE"
+        description: "Number of profiled tables"
+
+mmm_db_statistics_number_of_terms_assigned_to:
+  query: |
+    select count(*) as columns
+    from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+    where d.name = '/sources/locations/catalogItems/attributes/termInstances' and t.kind_i in ('pc', 'pd', 'p')
+  cache_seconds: 3600
+  metrics:
+    - columns:
+        usage: "GAUGE"
+        description: "Number of terms assigned to columns"
+
+mmm_db_statistics_average_assigned_terms_on:
+  query: |
+    select coalesce(avg(countPerAttribute.count),0) as columns
+    from (
+            select count (*) as count
+            from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+            where d.name = '/sources/locations/catalogItems/attributes/termInstances' and t.kind_i in ('pc', 'pd', 'p') group by t.parent_id_i
+        ) as countPerAttribute
+  cache_seconds: 86400
+  metrics:
+    - columns:
+        usage: "GAUGE"
+        description: "Average number of terms assigned to columns"
+
+mmm_db_statistics_max_assigned_terms_on:
+  query: |
+    select coalesce(max(countPerAttribute.count),0) as column
+    from (
+            select count (*) as count
+            from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+            where d.name = '/sources/locations/catalogItems/attributes/termInstances' and t.kind_i in ('pc', 'pd', 'p') group by t.parent_id_i
+        ) as countPerAttribute
+  cache_seconds: 86400
+  metrics:
+    - column:
+        usage: "GAUGE"
+        description: "Max number of terms assigned to columns"
+
+mmm_db_statistics_number_of_terms_assigned:
+  query: |
+    select count(*) to_tables
+    from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+    where d.name = '/sources/locations/catalogItems/termInstances' and t.kind_i in ('pc', 'pd', 'p')
+  cache_seconds: 3600
+  metrics:
+    - to_tables:
+        usage: "GAUGE"
+        description: "Number of terms assigned to tables"
+
+mmm_db_statistics_average_terms_assigned:
+  query: |
+    select coalesce(avg(countPerAttribute.count),0) as to_tables
+    from (
+            select count (*) as count
+            from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+            where d.name = '/sources/locations/catalogItems/termInstances' and t.kind_i in ('pc', 'pd', 'p') group by t.parent_id_i
+        ) as countPerAttribute
+  cache_seconds: 86400
+  metrics:
+    - to_tables:
+        usage: "GAUGE"
+        description: "Average number of terms assigned to tables"
+
+mmm_db_statistics_max_terms_assigned:
+  query: |
+    select coalesce(max(countPerAttribute.count),0) as to_table
+    from (
+            select count (*) as count
+            from "termInstance_q" t inner join "_MmdDictionary" d on t.path_i = d.id
+            where d.name = '/sources/locations/catalogItems/termInstances' and t.kind_i in ('pc', 'pd', 'p') group by t.parent_id_i
+        ) as countPerAttribute
+  cache_seconds: 86400
+  metrics:
+    - to_table:
+        usage: "GAUGE"
+        description: "Max number of terms assigned to tables"
+
+mmm_db_statistics_number:
+  query: |
+    select count(*) as of_terms from  term_q where kind_i in ('pc', 'pd', 'p')
+  cache_seconds: 3600
+  metrics:
+    - of_terms:
+        usage: "GAUGE"
+        description: "Number of terms"
+
+mmm_db_statistics_average_columns:
+  query: |
+    SELECT (SELECT CAST(count(*) AS decimal) FROM attribute_q WHERE kind_i in ('pc', 'pd', 'p')) / (SELECT count(*) FROM "catalogItem_q" WHERE kind_i in ('pc', 'pd', 'p')) AS per_table;
+  cache_seconds: 86400
+  metrics:
+    - per_table:
+        usage: "GAUGE"
+        description: "Average number of columns per table"
+
+mmm_db_statistics_profiled_tables:
+  query: |
+    SELECT ((select count (*) count from (select distinct c.id_i from "catalogItem_q" c inner join "profilingConfigurationInstance_q" pc  on c.id_i = pc.parent_id_i inner join "catalogItemProfile_q" p on pc.id_i = p.parent_id_i where pc.kind_i in ('pc', 'pd', 'p') and c.kind_i in ('pc', 'pd', 'p') and p.kind_i in ('pc', 'pd', 'p')) pf) * 100 ) / (SELECT count(*) FROM "catalogItem_q" WHERE kind_i in ('pc', 'pd', 'p')) AS percentage;
+  cache_seconds: 86400
+  metrics:
+    - percentage:
+        usage: "GAUGE"
+        description: "Percentage of profiled tables"
+
+# DQ
+
+mmm_db_statistics_rules:
+  query: |
+    select count(*) as amount from "rule_q" WHERE kind_i in ('p', 'pc', 'pd');
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Number of Rules"
+
+mmm_db_statistics_monitoring_project:
+  query: |
+    select count(*) as amount from "monitoringProject_q" WHERE kind_i in ('p', 'pc', 'pd');
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Monitoring projects"
+
+mmm_db_statistics_monitoring_project_processings:
+  query: |
+    select count(*) as amount from "monitoringProjectProcessing_q" WHERE kind_i in ('p', 'pc', 'pd');
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Monitoring project processings"
+
+mmm_db_statistics_monitoring_project_agg_results:
+  query: |
+    select count(*) as rows from "dq_aggregation_result";
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Number of rows in DQ aggregation table"
+
+mmm_db_statistics_monitoring_project_check_results:
+  query: |
+    select count(*) as rows from "dq_check_result";
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Number of rows in DQ check results table"
+
+mmm_db_statistics_monitoring_project_filter_values:
+  query: |
+    select count(*) as rows from "dq_filter_values";
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Number of rows in DQ filter values table"
+
+mmm_db_statistics_monitoring_project_average_processings:
+  query: |
+    select floor(avg(amount)) as number from (select count(*) as amount from "monitoringProjectProcessing_q" WHERE kind_i in ('p', 'pc', 'pd') group by parent_id_i) as amount;
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Average number of processings per project. Projects without processing are not included."
+
+mmm_db_statistics_monitoring_project_max_processings:
+  query: |
+    select count(*) as number from "monitoringProjectProcessing_q" WHERE kind_i in ('p', 'pc', 'pd') group by parent_id_i order by number desc limit 1;
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Max number of project processings"
+
+mmm_db_statistics_monitoring_project_max_items:
+  query: |
+    select count(*) as number from "projectCatalogItemInstance_q" WHERE kind_i in ('p', 'pc', 'pd') group by parent_id_i order by number desc limit 1;
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Max number of catalog items in project"
+
+mmm_db_statistics_deleted_catalog_items:
+  query: |
+    select count(*) as number from "catalogItem_q" where kind_i = 'hd';
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Deleted catalog items"
+
+mmm_db_statistics_deleted_sources:
+  query: |
+    select count(*) as number from "source_q" where kind_i = 'hd';
+  cache_seconds: 3600
+  metrics:
+    - sources:
+        usage: "GAUGE"
+        description: "Deleted data sources"
+
+mmm_db_statistics_deleted_rules:
+  query: |
+    select count(*) as number from "rule_q" WHERE kind_i = 'hd';
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Deleted rules"
+
+mmm_db_statistics_deleted_monitoring_projects:
+  query: |
+    select count(*) as number from "monitoringProject_q" WHERE kind_i = 'hd';
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Deleted projects"
+
+mmm_db_statistics_deleted_profilings:
+  query: |
+    select count(*) as number from "catalogItemProfile_q" WHERE kind_i = 'hd';
+  cache_seconds: 3600
+  metrics:
+    - items:
+        usage: "GAUGE"
+        description: "Deleted profilings"
+

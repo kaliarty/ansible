@@ -1,0 +1,69 @@
+---
+# tasks file for opensearch_dashboards
+
+- name: Tune the system settings
+  include_tasks: system_settings.yml
+
+- name: Configure firewall for OpenSearch Dashboards
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install and configure OpenSearch Dashboards
+  include_tasks: install.yml
+
+- name: Disable OpenSearch security plugin
+  include_tasks: plugin.yml
+  vars:
+    plugin:
+      name: securityDashboards
+      state: absent
+  when: not opensearch_dashboards_security_enabled
+
+- name: Install OpenSearch Dashboards plugins
+  include_tasks: plugin.yml
+  vars:
+    plugin: "{{ item }}"
+  with_items: "{{ opensearch_dashboards_plugins }}"
+  when: opensearch_dashboards_plugins | length > 0
+
+- name: Configure OpenSearch Dashboards security
+  include_tasks: security.yml
+  when: not opensearch_dashboards_security_enabled
+
+- name: Force OpenSearch Dashboards restart before import
+  meta: flush_handlers
+
+- name: Wait for OpenSearch Dashboards started
+  uri:
+    url: "http://{{ ansible_fqdn }}:{{ opensearch_dashboards_server_port }}/api/status"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  environment: "{{ (environment_vars | default({})) | combine({'http_proxy': '', 'https_proxy': ''}) }}"
+
+- name: Import OpenSearch Dashboards saved objects
+  include_tasks: import.yml
+  when: opensearch_dashboards_saved_objects_import is defined and opensearch_dashboards_saved_objects_import | length > 0
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Observability stack
+    summary:
+      name: OpenSearch Dashboards
+      description: "Default visualization tool for data in OpenSearch"
+      version: "{{ opensearch_dashboards_version }}"
+      details:
+        admin_user: "{{ opensearch_dashboards.auth_basic_name }}"
+        host: "{{ nginx_hosts.opensearch_dashboards.hostname }}"
+        # values copied from cloudalchemy.grafana role
+        os_user: "{{ opensearch_dashboards_system_user }}"
+        os_group: "{{ opensearch_dashboards_system_user }}"
+        services:
+          - opensearch-dashboards
+  tags: summary

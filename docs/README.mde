@@ -1,0 +1,20 @@
+# Ansible reference deployment
+
+This repository contains Ansible manifests required for One20 v14.x platform installation. Once all requirements are met and inventories are properly prepared, this set of Ansible manifests helps you to install and configure One20 platform (including base & default data). Observability stack is deployed as well.
+
+!!! warning
+
+    Please note, this package is intended for installing One20 platfom only in version 14.1 and above. It is not compatible with v13.x.
+
+## Note about users and privileges
+
+Ansible can (and should) be installed under an ordinary (non-`root`) user. Whenever we talk about anything related to installing Ansible, we expect commands to be run under your own user.
+We include `sudo` in the command when `root` privileges are needed.
+
+## Version
+
+This documentation is part of One 2.0 package version `@@VERSION@@`.
+
+## Download PDF
+
+You can download a [PDF version of this guide](documentation.pdf).

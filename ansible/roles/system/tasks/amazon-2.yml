@@ -1,0 +1,99 @@
+---
+- name: AL-2 - Replace system repositories with custom ones
+  block:
+    - name: Create backup directory
+      file:
+        path: /etc/yum.repos.d/bak
+        state: directory
+        mode: 0750
+
+    - name: Get repositories configs
+      find:
+        paths: /etc/yum.repos.d/
+        file_type: file
+        patterns: "*.repo"
+        excludes: "{{ system_custom_repos_exclude | default('') }}"
+      register: system_repo_configs
+
+    - name: Backup old repositories
+      copy:
+        src: "{{ backup_repo_item.path }}"
+        dest: "/etc/yum.repos.d/bak/{{ backup_repo_item.path | regex_replace('.*/') }}"
+        mode: 0644
+        remote_src: yes
+        backup: yes
+      loop: "{{ system_repo_configs.files }}"
+      loop_control:
+        loop_var: backup_repo_item
+        label: "{{ backup_repo_item.path | regex_replace('.*/') }}"
+
+    - name: Remove old repositories
+      file:
+        path: "{{ remove_repo_item.path }}"
+        state: absent
+      loop: "{{ system_repo_configs.files }}"
+      loop_control:
+        loop_var: remove_repo_item
+        label: "{{ remove_repo_item.path | regex_replace('.*/') }}"
+
+    - name: Import rpm gpg keys
+      rpm_key:
+        state: present
+        key: "{{ gpg_keys_item }}"
+      loop: "{{ system_custom_repos_pgp_keys }}"
+      loop_control:
+        loop_var: gpg_keys_item
+      when: system_custom_repos_pgp_keys is defined
+
+    - name: Create custom repositories config
+      copy:
+        content: "{{ system_custom_repos_content }}"
+        dest: "/etc/yum.repos.d/{{ ansible_distribution }}.repo"
+        mode: 0644
+
+  when: system_custom_repos_content is defined
+
+- name: Update list of yum packages in repository
+  yum:
+    update_cache: yes
+
+- name: AL-2 - Install python3
+  yum:
+    name:
+      - python3
+      - python3-pip
+    update_cache: yes
+    state: present
+
+- name: AL-2 - Upgrade pip3
+  pip:
+    name: pip
+    extra_args: --upgrade
+    executable: pip-3
+
+- name: AL-2 - package installation for Azure CLI 2.32
+  yum:
+    name:
+      - gcc
+      - python3-devel.x86_64
+      - make
+    state: present
+
+- name: AL-2 - package installation python-lxml
+  yum:
+    name:
+      - python-lxml
+    state: present
+
+- name: AL-2 - package installation ca-certificates
+  yum:
+    name:
+      - ca-certificates
+    state: latest # noqa package-latest
+    update_cache: yes
+
+- name: AL-2 - package installation amazon-linux-extras
+  yum:
+    name:
+      - amazon-linux-extras
+    state: present

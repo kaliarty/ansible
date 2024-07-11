@@ -1,0 +1,16 @@
+---
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: term-suggestions-neighbors.conf
+        template: term-suggestions-neighbors.fluentbit.conf.j2
+      - name: console-filter.conf
+        template: fluentbit/filters/console-filter.conf.j2
+      - name: accesslog-rm-filter.conf
+        template: fluentbit/filters/accesslog-rm-filter.conf.j2
+    fluentbit_parsers_d:
+      - name: term-suggestions-neighbors-parser.conf
+        template: term-suggestions-neighbors-parser.fluentbit.conf.j2

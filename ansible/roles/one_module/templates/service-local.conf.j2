@@ -1,0 +1,24 @@
+# Ansible managed
+#
+[Service]
+{% set one_service = module_instantiated_service
+    if (module_instantiated_service | default({}) | length > 0)
+    else one_service
+%}
+{% for item in one_service.service_env %}
+Environment="{{ item }}={{ one_service.service_env[item] }}"
+{% endfor %}
+{% if java_temp_folder != "" %}
+Environment="START_OPTS=-Djava.io.tmpdir={{ java_temp_folder }}"
+{% endif %}
+
+{% if enable_java_heapdumps %}
+Environment="JAVA_OPTS={{ one_service.java_opts | default('') }} {{ java_heapdump_params }}"
+{% elif one_service.java_opts is defined %}
+Environment="JAVA_OPTS={{ one_service.java_opts }}"
+{% endif %}
+
+{% if _enable_debug %}
+Environment="MANAGEMENT_ENDPOINTS_ENABLED_BY_DEFAULT=true"
+Environment="MANAGEMENT_ENDPOINTS_WEB_EXPOSURE_INCLUDE=*"
+{% endif %}

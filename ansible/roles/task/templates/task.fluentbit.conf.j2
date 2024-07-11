@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ task_install_dir }}/log/access.json.log
+    Tag     accesslog.task
+    Parser  json
+
+[INPUT]
+    Name            systemd
+    Tag             console.task
+    Systemd_Filter  _SYSTEMD_UNIT=task.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.task
+    Key_Name      message
+    Parser        task
+    Reserve_Data  On

@@ -1,0 +1,49 @@
+---
+# tasks file for summary
+
+# /etc/ansible is a well-known path
+- name: Ensure ansible inventory exists
+  file:
+    path: "/etc/ansible"
+    state: directory
+    mode: 0755
+    owner: root
+    group: root
+
+# /etc/ansible/facts.d is a well-known path
+- name: Ensure ansible facts inventory exists
+  file:
+    path: "{{ fact_path | default('/etc/ansible/facts.d') }}"
+    state: directory
+    mode: 0770
+    owner: root
+    group: root
+
+- name: Install the summary fact script
+  template:
+    src: summary-facts.j2
+    dest: "{{ fact_path | default('/etc/ansible/facts.d') }}/summary.fact"
+    mode: 0775
+    owner: root
+    group: root
+
+- name: Get newly available facts
+  setup:
+    gather_subset: min
+
+- name: local work
+  delegate_to: localhost
+  become: false
+  block:
+
+    - name: create summaries directory
+      file:
+        path: "{{ playbook_dir }}/../summaries"
+        state: directory
+        mode: 0755
+
+    - name: Generate summary output
+      template:
+        src: out.j2
+        dest: "{{ playbook_dir }}/../summaries/{{ inventory_hostname }}.yml"
+        mode: 0644

@@ -1,0 +1,13 @@
+---
+# tasks for Amazon Linux 2 installation
+
+- name: Amazon Linux 2 - Ensure Java is installed
+  command: amazon-linux-extras install java-openjdk11 -y
+  register: al2_java
+  changed_when: al2_java.rc != 0
+
+- name: Amazon Linux 2- Ensure Java devel is installed
+  yum:
+    name: java-11-openjdk-devel
+    state: present
+    update_cache: yes

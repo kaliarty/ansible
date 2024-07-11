@@ -1,0 +1,18 @@
+---
+# vars file for prometheus alertmanager
+
+prometheus_alertmanager_config:
+  - static_configs:
+      - targets:
+          - "localhost:{{ alertmanager_port }}"
+
+alertmanager_slack_api_url: "{{ alertmanager_slack_webhook_url }}"
+alertmanager_receivers:
+  - "{{ alertmanager_slack_receiver }}"
+
+alertmanager_route:
+  group_by: [ 'alertname', 'instance' ]
+  group_wait: 5s
+  group_interval: 10m
+  repeat_interval: 3h
+  receiver: "{{ alertmanager_slack_receiver.name }}"

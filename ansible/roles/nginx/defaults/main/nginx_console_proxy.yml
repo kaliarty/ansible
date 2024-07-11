@@ -1,0 +1,57 @@
+---
+# this is default configuration for nginx proxy - console (mdm server)
+
+nginx_console_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/console.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.console.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.console.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.console.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.console.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_console_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: mdm-server
+        ip_hash: true
+        servers:
+          - address: "{{ mdm.server.host }}:{{ mdm.server.http_port }}"
+            weight: 1
+      - name: mdm-server-manager
+        ip_hash: true
+        servers:
+          - address: "{{ mdm.server.host }}:{{ mdm.server.manager_port }}"
+            weight: 1
+
+nginx_console_proxy_default_locations:
+  - location: /manager
+    proxy:
+      pass: http://mdm-server-manager
+      set_header: "{{ nginx_proxy_headers }}"
+      buffer_size: 256k
+      busy_buffers_size: 512k
+      buffers:
+        number: 4
+        size: 512k
+  - location: /
+    proxy:
+      pass: http://mdm-server
+      set_header: "{{ nginx_proxy_headers }}"
+      buffer_size: 256k
+      busy_buffers_size: 512k
+      buffers:
+        number: 4
+        size: 512k
+  - location: /actuator
+    rewrite:
+      return:
+        code: 404

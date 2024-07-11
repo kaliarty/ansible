@@ -1,0 +1,50 @@
+---
+# defaults file for frontend
+frontend_module_name: one-webapp
+frontend_version: "{{ packages.mmm_fe.version }}"
+frontend_license_file: licenses/license.plf
+frontend_install_dir: "{{ deployment_folder }}/{{ frontend_module_name }}"
+
+frontend_package_download_type: "{{ packages.mmm_fe.package_download_type | default('maven_artifact') }}"
+frontend_package_location: "{{ packages.mmm_fe.package_location | default ('') }}"
+frontend_package_url: "{{ packages.mmm_fe.package_url | default ('') }}"
+frontend_package_checksum: "{{ packages.frontend.package_checksum | default(omit) }}"
+
+frontend_service_user: one-webapp
+frontend_service_group: one-webapp
+
+frontend_disable_posthog: true
+
+frontend_services:
+  - name: one-webapp
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ one_webapp_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ frontend_jwt_key.private }}"
+      ATACCAMA_ONE_WEBSERVER_FF_PROPS_DISABLEPOSTHOG: "{{ frontend_disable_posthog | lower | default(true) }}"
+    java_opts: "{{ mmm_fe_java_opts | default('-Xms128m -Xmx256m -XX:MaxRAM=300m') }}"
+
+frontend_java_heapdumps: "true"
+frontend_java_temp_folder: "{{ frontend_install_dir }}/tmp"
+
+frontend_files:
+  - src: "{{ ataccama_internal_encryption.keystore }}"
+    dest: "{{ frontend_install_dir }}/etc"
+  - src: "{{ ataccama_internal_encryption.passwordfile }}"
+    dest: "{{ frontend_install_dir }}/etc"
+  - src: "{{ frontend_license_file }}"
+    dest: "{{ frontend_install_dir }}/license/"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.mmm.fe
+  artifact: mmm-fe-assembly
+  version: "{{ packages.mmm_fe.version }}"
+  extension: zip
+  classifier: linux
+
+frontend_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ frontend_install_dir }}/etc/application.properties"
+
+event_storage_enabled: false

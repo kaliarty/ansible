@@ -1,0 +1,12 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ frontend.http_port }}"
+          source: "{{ groups['monitoring_server'] + groups['frontend'] + groups['one_app'] + (
+            [] if nginx_hosts.one.hostname is defined else (groups['one_app'] | default([])) + (groups['mdm_server'] | default([])) + (groups['rdm_server'] | default([]))
+          ) }}"

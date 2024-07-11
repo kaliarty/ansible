@@ -1,0 +1,12 @@
+---
+
+- name: deploy lib
+  get_url:
+    url: "{{ lib.url }}"
+    dest: "{{ tomcat_directory }}/{{ instance.name }}/lib/"
+    owner: "{{ instance.user | default(tomcat_user) }}"
+    group: "{{ instance.group | default(tomcat_group) }}"
+  when:
+    - lib.url is defined
+  notify:
+    - restart tomcat instance

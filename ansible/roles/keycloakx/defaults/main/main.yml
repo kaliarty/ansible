@@ -1,0 +1,78 @@
+---
+# defaults file for keycloak
+keycloak_version: 22.0.5-3
+# this variable enables deployment of demo users into Keycloak installation.
+# deploy demo users with weak passwords! do not use in production, it's only for demo purposes
+keycloak_demo_users: false
+keycloak_download_url: "https://ataccama.s3.amazonaws.com/products/releases/keycloak/keycloak-{{ keycloak_version }}.zip"
+keycloak_download_zip: true
+keycloak_service_file: "keycloak.service.j2"
+keycloak_system_user: keycloak
+keycloak_system_group: keycloak
+keycloak_install_dir: /opt
+keycloak_dir: "{{ keycloak_install_dir }}/keycloak"
+keycloak_database_name: keycloak
+keycloak_http_port: "{{ keycloak.port | default(8080) }}"
+keycloak_https_port: "{{ keycloak.https_port | default(8443) }}"
+
+# NOTE: following configuration allows to override specific options inside
+# keycloak client definitions - this must be done for clients having pre-defined URLs
+keycloak_client_json_files:
+  cloud_portal:
+    file: cloud-portal
+    options:
+      adminUrl: ""
+      baseUrl: ""
+  dpm_public_client:
+    file: dpm-webapp-public-client
+    options:
+      redirectUris:
+        - "{{ dpm_url | default([]) }}/*"
+  dqit_steps_client:
+    file: dqit-steps-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+      redirectUris:
+        - "{{ dqit_server_url | default([]) }}/*"
+        - "{{ dqit_url | default([]) }}/*"
+  dqit_webapp_client:
+    file: dqit-webapp-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+      redirectUris:
+        - "{{ dqit_server_url | default([]) }}/*"
+        - "{{ dqit_url | default([]) }}/*"
+        - "{{ dqit_url | default([]) | regex_replace('https', 'http') }}/*"  
+  frontend_public_client:
+    file: one-webapp-public-client
+    options: []
+  mdm_webapp_public_client:
+    file: mdm-webapp-public-client
+    options:
+      redirectUris:
+        - "{{ mda_url | default([]) }}/*"
+      webOrigins:
+        - "{{ mda_url | default([]) }}"
+  mdm_server_client:
+    file: mdm-token-client
+    options:
+      redirectUris:
+        - "{{ mdm_server_url | default([]) }}/*"
+  rdm_public_client:
+    file: rdm-webapp-public-client
+    options:
+      redirectUris:
+        - "{{ rdm_fe_url | default([]) }}/*"
+      webOrigins:
+        - "{{ rdm_fe_url | default([]) }}"
+  runtime_server:
+    file: runtime-server-token-client
+    options:
+      adminUrl: ""
+      baseUrl: ""
+      redirectUris:
+        - "{{ orch_server_url | default([]) }}/*"
+      webOrigins:
+        - "{{ orch_server_url | default([]) }}"

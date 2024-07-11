@@ -1,0 +1,37 @@
+---
+- name: Download JDBC archive
+  get_url:
+    url: "{{ dpe_jdbc_drivers_archive_url }}/{{ dpe_jdbc_drivers_archive_name }}"
+    dest: "{{ temp_folder }}"
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_group }}"
+    checksum: "{{ dpe_jdbc_drivers_archive_checksum }}"
+
+- name: Deploy JDBC drivers
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: "{{ temp_folder }}/{{ dpe_jdbc_drivers_archive_name }}"
+    dest: "{{ dpe_install_dir }}/lib"
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_group }}"
+    include:
+      - jdbc/*
+
+- name: Extract JDBC configuration
+  ansible.builtin.unarchive:
+    remote_src: true
+    src: "{{ temp_folder }}/{{ dpe_jdbc_drivers_archive_name }}"
+    dest: "{{ temp_folder }}"
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_group }}"
+    include:
+      - configs/application-JDBC_DRIVERS.properties
+
+- name: Copy JDBC configuration
+  ansible.builtin.copy:
+    remote_src: true
+    owner: "{{ dpe_service_user }}"
+    group: "{{ dpe_service_user }}"
+    mode: 0664
+    src: "{{ temp_folder }}/configs/application-JDBC_DRIVERS.properties"
+    dest: "{{ dpe_install_dir }}/etc/application-JDBC_DRIVERS.properties"

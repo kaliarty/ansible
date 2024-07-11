@@ -1,0 +1,25 @@
+---
+nginx_dpm_grpc_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/dpm-grpc.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.dpm_grpc.hostname | default(omit) }}"
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.dpm_grpc.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.dpm_grpc.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.dpm_grpc.hostname | default(omit) }}.access.log"
+              format: main
+        locations:
+          - location: /
+            grpc:
+              pass: grpc://dpm_grpc
+    upstreams:
+      - name: dpm_grpc
+        servers:
+          - address: "{{ dpm.host }}:{{ dpm.grpc_port }}"
+            weight: 1

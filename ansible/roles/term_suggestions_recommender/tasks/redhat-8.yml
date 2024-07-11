@@ -1,0 +1,8 @@
+---
+- name: RedHat 8 - Install virtualenv dependencies
+  yum:
+    name:
+      - openssl-devel
+      - sqlite-devel
+    update_cache: yes
+    state: present

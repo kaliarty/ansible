@@ -1,0 +1,4 @@
+<mda-config>
+  <gui defaultLocale="en"/>
+  <displaySettings>mda-display.gen.xml</displaySettings>
+</mda-config>

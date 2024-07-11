@@ -1,0 +1,11 @@
+---
+- name: Enable dblink extension
+  become: true
+  become_user: "{{ postgresql_user }}"
+  postgresql_ext:
+    db: postgres
+    name: dblink
+    state: present
+    port: "{{ postgresql_port }}"
+  vars:
+    ansible_ssh_pipelining: true

@@ -1,0 +1,23 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      # all sources allowed (this is the frontend)
+      allowed_tcp_ports: "
+        {%- set out=namespace(v=[]) -%}
+        {%- for template in nginx_config_http_template -%}
+          {%- if 'config' in template -%}
+            {%- if 'servers' in template.config -%}
+              {%- for server in template.config.servers -%}
+                {%- for endpoint in server.core.listen -%}
+                  {%- set out.v = out.v + [{ 'port': endpoint.port }] -%}
+                {%- endfor -%}
+              {%- endfor -%}
+            {%- endif -%}
+          {%- endif -%}
+        {%- endfor -%}
+        {{- out.v | unique -}}
+      "

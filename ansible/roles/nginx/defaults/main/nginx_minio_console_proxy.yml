@@ -1,0 +1,47 @@
+---
+# this is a configuration for nginx proxy - minio ui
+nginx_minio_client_max_body_size: 1000m
+
+nginx_minio_console_proxy_headers:
+  - field: Upgrade
+    value: $http_upgrade
+  - field: Connection
+    value: "'upgrade'"
+
+nginx_minio_console_proxy_config:
+  template_file: http/default.conf.j2
+  deployment_location: /etc/nginx/conf.d/minio-ui.conf
+  config:
+    servers:
+      - core:
+          listen: "{{ nginx_listen_ssl }}"
+          server_name: "{{ nginx_hosts.minio_ui.hostname | default(omit) }}"
+          error_page: "{{ nginx_default_http_error_pages }}"
+          client_max_body_size: "{{ nginx_minio_client_max_body_size }}"
+          ignore_invalid_headers: false
+        ssl:
+          certificate: "{{ nginx_cert_dir }}/{{ nginx_hosts.minio_ui.crt | default(omit) }}"
+          certificate_key: "{{ nginx_cert_dir }}/{{ nginx_hosts.minio_ui.crt_key | default(omit) }}"
+        log:
+          access:
+            - path: "/var/log/nginx/{{ nginx_hosts.minio_ui.hostname | default(omit) }}.access.log"
+              format: main
+        headers:
+          add_headers: "{{ nginx_headers }}"
+        locations: "{{ nginx_minio_console_proxy_default_locations + nginx_default_webserver }}"
+    upstreams:
+      - name: minio-ui
+        ip_hash: true
+        servers:
+          - address: "{{ minio_ui.host }}:{{ minio_ui.http_ui_port }}"
+            weight: 1
+
+nginx_minio_console_proxy_default_locations:
+  - location: /
+    core:
+      chunked_transfer_encoding: false
+    proxy:
+      pass: http://minio-ui
+      buffering: false
+      set_header: "{{ nginx_minio_console_proxy_headers + nginx_proxy_headers }}"
+      http_version: "1.1"

@@ -1,0 +1,5 @@
+---
+# vars file for fluentbit
+
+fluentbit_package: td-agent-bit
+fluentbit_service: td-agent-bit

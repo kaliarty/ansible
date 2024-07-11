@@ -1,0 +1,42 @@
+---
+# handlers file for fluentbit
+
+- name: Reload systemd daemon
+  systemd:
+    daemon_reload: true
+
+- name: Include parsers.conf.d dir in parsers.conf file
+  lineinfile:
+    path: "{{ fluentbit_conf_dir }}/parsers.conf"
+    line: "@INCLUDE {{ fluentbit_parsers_d_dir }}/*.conf"
+    state: present
+  register: result
+  failed_when: |
+    not result.changed and
+    result.msg is defined and result.msg | length > 0 and
+    (('Destination ' ~ fluentbit_conf_dir ~ '/parsers.conf does not exist') not in result.msg )
+
+- name: Include td-agent-bit.conf.d dir in td-agent-bit.conf file
+  lineinfile:
+    path: "{{ fluentbit_conf_dir }}/td-agent-bit.conf"
+    line: "@INCLUDE {{ fluentbit_conf_d_dir }}/*.conf"
+    state: present
+  register: result
+  failed_when: |
+    not result.changed and
+    result.msg is defined and result.msg | length > 0 and
+    (('Destination ' ~ fluentbit_conf_dir ~ '/td-agent-bit.conf does not exist') not in result.msg )
+
+- name: Restart Fluentbit service
+  become: true
+  service:
+    name: "{{ fluentbit_service }}"
+    enabled: true
+    state: restarted
+  register: result
+  failed_when: |
+    result.msg is defined and
+    not (
+      ((fluentbit_service + '.service does not exist') in result.msg) or
+      (('Could not find the requested service ' + fluentbit_service) in result.msg)
+    )

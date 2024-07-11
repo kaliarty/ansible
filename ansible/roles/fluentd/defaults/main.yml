@@ -1,0 +1,114 @@
+---
+fluentd_version: 4
+fluentd_package_state: present
+fluentd_package_version: 4.4.0
+
+fluentd_service_name: td-agent
+fluentd_service_state: started
+fluentd_service_enabled: true
+
+fluentd_plugins:
+  - fluent-plugin-opensearch
+  - fluent-plugin-prometheus
+
+fluentd_conf_sources: |
+  <source>
+    @type forward
+    bind 0.0.0.0
+    port {{ fluentd_port }}
+  </source>
+  # expose metrics in prometheus format
+  <source>
+    @type prometheus
+    bind 0.0.0.0
+    port {{ fluentd_http_metrics_port }}
+    metrics_path /metrics
+  </source>
+  <source>
+    @type prometheus_output_monitor
+    interval 10
+    <labels>
+      hostname ${hostname}
+    </labels>
+  </source>
+
+fluentd_conf_filters: |
+  # count the number of incoming records per tag
+  <filter **>
+    @type prometheus
+    <metric>
+      name fluentd_input_status_num_records_total
+      type counter
+      desc The total number of incoming records
+      <labels>
+        tag ${tag}
+        hostname ${hostname}
+      </labels>
+    </metric>
+  </filter>
+
+fluentd_conf_matches: |
+  <match console.**>
+    @type opensearch
+    host 127.0.0.1
+    port {{ opensearch_api_port }}
+    # user myuser
+    # password mypassword
+    logstash_format true
+    logstash_prefix console
+    <buffer>
+      @type file
+      path /var/tmp/opensearch-buffer-c
+      flush_thread_count 8
+      flush_interval 5s
+      chunk_limit_size 32M
+      queue_limit_length 4
+      flush_mode interval
+      retry_max_interval 30
+      retry_forever true
+    </buffer>
+    # count number of outgoing records per tag
+    <store>
+      @type prometheus
+      <metric>
+        name fluentd_output_status_num_records_total
+        type counter
+        desc The total number of outgoing records
+        <labels>
+          tag ${tag}
+          hostname ${hostname}
+        </labels>
+      </metric>
+    </store>
+  </match>
+  <match accesslog.**>
+    @type opensearch
+    host 127.0.0.1
+    port {{ opensearch_api_port }}
+    logstash_format true
+    logstash_prefix accesslog
+    <buffer>
+      @type file
+      path /var/tmp/opensearch-buffer-a
+      flush_thread_count 8
+      flush_interval 5s
+      chunk_limit_size 32M
+      queue_limit_length 4
+      flush_mode interval
+      retry_max_interval 30
+      retry_forever true
+    </buffer>
+    # count number of outgoing records per tag
+    <store>
+      @type prometheus
+      <metric>
+        name fluentd_output_status_num_records_total
+        type counter
+        desc The total number of outgoing records
+        <labels>
+          tag ${tag}
+          hostname ${hostname}
+        </labels>
+      </metric>
+    </store>
+  </match>

@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name            systemd
+    Tag             console.mmm_be
+    Systemd_Filter  _SYSTEMD_UNIT=mmm-backend.service
+
+[INPUT]
+    Name    tail
+    path    {{ mmm_install_dir }}/log/access.json.log
+    Tag     accesslog.mmm_be
+    Parser  json
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.mmm_be
+    Key_Name      message
+    Parser        mmm
+    Reserve_Data  On

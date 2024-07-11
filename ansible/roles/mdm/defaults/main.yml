@@ -1,0 +1,43 @@
+---
+# defaults file for mdm
+
+mdm_module_name: mdm
+mdm_version: "{{ packages.mdm.version }}"
+mdm_license_file: licenses/license.plf
+mdm_install_dir: "{{ deployment_folder }}/{{ mdm_module_name }}"
+
+mdm_package_download_type: "{{ packages.mdm.package_download_type | default('maven_artifact') }}"
+mdm_package_location: "{{ packages.mdm.package_location | default ('') }}"
+mdm_package_url: "{{ packages.mdm.package_url | default ('') }}"
+mdm_package_checksum: "{{ packages.mdm.package_checksum | default(omit) }}"
+
+mdm_service_user: mdm
+mdm_service_group: mdm
+
+mdm_monitoring_port: "8055"
+
+mdm_services:
+  - name: mdm-webapp
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ mdm_webapp_public_client_secret }}"
+    java_opts: "{{ mdm_java_opts | default('-Xms256m -Xmx288m -XX:MaxRAM=425m') }}"
+
+mdm_java_heapdumps: "true"
+mdm_java_temp_folder: "{{ mdm_install_dir }}/tmp"
+
+mdm_files:
+  - src: "{{ mdm_license_file }}"
+    dest: "{{ mdm_install_dir }}/license/"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.product.one.mdm
+  artifact: mdm-assembly
+  version: "{{ packages.mdm.version }}"
+  extension: zip
+  classifier: linux
+
+mdm_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ mdm_install_dir }}/etc/application.properties"

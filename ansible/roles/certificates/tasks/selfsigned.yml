@@ -1,0 +1,18 @@
+---
+# tasks to create selfsigned certificates
+
+- name: Install necessary packages
+  include_tasks: "{{ item }}"
+  with_first_found:
+    - "{{ ansible_distribution | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_distribution | lower }}.yml"
+    - "{{ ansible_os_family | lower }}-{{ ansible_distribution_major_version }}.yml"
+    - "{{ ansible_os_family | lower }}.yml"
+  loop_control:
+    label: "{{ item | regex_replace('.*/') }}"
+
+- name: Generate selfsigned key pairs
+  include: selfsigned-pair.yml
+  loop: "{{ selfsigned_certs }}"
+  loop_control:
+    loop_var: certificate

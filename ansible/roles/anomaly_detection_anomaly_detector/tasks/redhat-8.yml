@@ -1,0 +1,9 @@
+---
+- name: RedHat 8 - Install virtualenv and Anomaly Detector dependencies
+  yum:
+    name:
+      - openssl-devel
+      - sqlite-devel
+      - libgomp
+    update_cache: yes
+    state: present

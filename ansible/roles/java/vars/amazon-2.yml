@@ -1,0 +1,4 @@
+---
+_java_packages_openjdk:
+  - java-11-openjdk
+_default_java_openjdk: java-11-openjdk

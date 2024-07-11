@@ -1,0 +1,55 @@
+<html>
+{% macro print(input) %}
+    {% if input is mapping %}
+        {# avoid printing tables containing only a header line #}
+        {% if (input | length) == 2 and "details" in input %}
+            {% for key, val in input.items() %}
+                {% if key != "details" %}
+                    <p><b>{{ key }}: </b>{{ val }}</p>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            <table>
+            {%if 'name' in input %}<th colspan=2>{{ input.name }}</th>{% endif %}
+            {% for key, val in input.items() %}
+                {% if key != "name" and key != "details" %}
+                    <tr>
+                        <td class="key">{{ key | replace("_", " ") | capitalize }}</td><td>{{ print(val) }}</td>
+                    </tr>
+                {% endif %}
+            {% endfor %}
+            </table>
+        {% endif %}
+    {% elif (input is sequence) and (input is not string) %}
+        <ul>
+        {% for item in input %}
+            <li>{{ print(item) }}</li>
+        {% endfor %}
+        </ul>
+    {% else %}
+        {{ input }}
+    {% endif %}</dd>
+{% endmacro %}
+<head>
+<meta charset="UTF-8">
+<title>Ataccama Platform installation report</title>
+<style>
+    body {background-color: white; color: black}
+    table {border-collapse: collapse; width: 100%; max-width: 100em}
+    td, th {border: 1px solid black; padding: 3px;}
+    th {background-color: lightblue}
+    table td.key {background-color: #cccccc}
+    table table td.key {background-color: #dddddd}
+    table table table td.key {background-color: #eeeeee}
+    table table table table td.key {background-color: white}
+    ul {list-style-type: none; margin: 0px; padding: 0px}
+    li table {margin-bottom: 10pt}
+</style>
+</head>
+<body>
+<h1>Summary by category</h1>
+{{ print(by_group) }}
+<hr>
+<h1>Summary by host</h1>
+{{ print(by_host) }}
+</body></html>

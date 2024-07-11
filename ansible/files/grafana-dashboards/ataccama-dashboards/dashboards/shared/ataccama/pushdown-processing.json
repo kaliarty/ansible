@@ -1,0 +1,185 @@
+{
+  "annotations": {
+    "list": [
+      {
+        "builtIn": 1,
+        "datasource": "-- Grafana --",
+        "enable": true,
+        "hide": true,
+        "iconColor": "rgba(0, 211, 255, 1)",
+        "name": "Annotations & Alerts",
+        "type": "dashboard"
+      }
+    ]
+  },
+  "editable": true,
+  "gnetId": null,
+  "graphTooltip": 0,
+  "id": 5,
+  "links": [],
+  "panels": [
+    {
+      "datasource": null,
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 9,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "id": 2,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom"
+        },
+        "tooltip": {
+          "mode": "single"
+        }
+      },
+      "targets": [
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_total_processing_time/1000",
+          "instant": false,
+          "interval": "",
+          "legendFormat": "Total processing [s]",
+          "refId": "A"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_deployment_time/1000",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Deployment [s]",
+          "refId": "B"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_statistics_processing_time",
+          "hide": false,
+          "interval": "",
+          "intervalFactor": 1,
+          "legendFormat": "Statistics [ms]",
+          "refId": "C"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_business_rules_processing_time",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Business rules [ms]",
+          "refId": "D"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_lookups_upload_time/1000",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Lookups upload [s]",
+          "refId": "E"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_group_by_queries_time/1000",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Group by queries [s]",
+          "refId": "F"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_aggregated_statistics_time/1000",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Aggregated statistics [s]",
+          "refId": "G"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_report_build_time",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Report build [ms]",
+          "refId": "H"
+        },
+        {
+          "exemplar": true,
+          "expr": "ataccama_one_dpe_plugin_snowflake_incoming_requests_count",
+          "hide": false,
+          "interval": "",
+          "legendFormat": "Profiling requests count",
+          "refId": "I"
+        }
+      ],
+      "title": "Pushdown Processing",
+      "type": "timeseries"
+    }
+  ],
+  "refresh": "",
+  "schemaVersion": 30,
+  "style": "dark",
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-15m",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "Pushdown Processing",
+  "uid": "5UANMs1nz",
+  "version": 10
+}

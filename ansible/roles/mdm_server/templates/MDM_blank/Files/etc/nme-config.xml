@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<config>
+  <persistenceLayers>
+    <persistenceLayer class="com.ataccama.nme.persistence.database.DbPersistenceFactory">
+      <dataSource>mdc_db</dataSource>
+      <prefix>I_</prefix>
+    </persistenceLayer>
+  </persistenceLayers>
+
+  <model>
+    <models>
+      <consolidation>
+        <persistenceLayer class="com.ataccama.nme.persistence.vldb.VldbPersistenceFactory">
+          <dataSource>mdc_db</dataSource>
+          <prefix>C_</prefix>
+        </persistenceLayer>
+        <configFile>nme-model.gen.xml</configFile>
+        <!--                <datasets>nme-datasets.gen.xml</datasets>-->
+        <!--                <customActions>nme-custom-actions.gen.xml</customActions>-->
+        <!--                <eventHandlersConfigFile>nme-event_handler.gen.xml</eventHandlersConfigFile>-->
+        <!--                <executionPlanConfigFile>nme-consolidation-plan.xml</executionPlanConfigFile>-->
+      </consolidation>
+    </models>
+  </model>
+
+  <batchLayerDefinitionFile>nme-batch.gen.xml</batchLayerDefinitionFile>
+  <serviceDefinitionFile>nme-services.gen.xml</serviceDefinitionFile>
+  <!--    <taskExecutorConfigFile>nme-executor.xml</taskExecutorConfigFile>-->
+  <!--    <streamDefinitionFile>nme-stream.gen.xml</streamDefinitionFile>-->
+  <!--    <securityConfigFile>nme-security.xml</securityConfigFile>-->
+  <plugins>
+    <!--    <plugin class="com.ataccama.nme.rest.NmeRestPlugin" path="/nme-rest" listener="default" prettyPrint="true" />-->
+    <!--        <plugin class="com.ataccama.nme.history.NmeHistoryPlugin">-->
+    <!--            <persistenceLayer class="com.ataccama.nme.persistence.vldb.VldbPersistenceFactory">-->
+    <!--                <dataSource>mdc_db</dataSource>-->
+    <!--                <prefix>H_</prefix>-->
+    <!--            </persistenceLayer>-->
+    <!--            <configFile>nme-history.gen.xml</configFile>-->
+    <!--            <storageDirectory>../storage/history</storageDirectory>-->
+    <!--        </plugin>-->
+  </plugins>
+</config>

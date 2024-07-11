@@ -1,0 +1,27 @@
+{{ ansible_managed | comment }}
+
+############################
+# Inputs
+############################
+
+[INPUT]
+    Name    tail
+    path    {{ dqf_install_dir }}/log/access.json.log
+    Tag     accesslog.task
+    Parser  json
+
+[INPUT]
+    Name            systemd
+    Tag             console.dqf
+    Systemd_Filter  _SYSTEMD_UNIT=dqf.service
+
+############################
+# Filters
+############################
+
+[FILTER]
+    Name          parser
+    Match         console.dqf
+    Key_Name      message
+    Parser        dqf
+    Reserve_Data  On

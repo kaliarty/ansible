@@ -1,0 +1,29 @@
+{{ ansible_managed | comment }}
+
+{% if instance.env_vars is defined %}
+{% for env_var in instance.env_vars %}
+{{ env_var.name }}="{{ env_var.value }}"
+{% endfor %}
+{% endif %}
+
+{% if instance.xmx is defined %}
+JAVA_OPTS="-Xmx{{ instance.xmx }} ${JAVA_OPTS}"
+{% else %}
+JAVA_OPTS="-Xmx{{ tomcat_xmx }} ${JAVA_OPTS}"
+{% endif %}
+
+{% if instance.xms is defined %}
+JAVA_OPTS="-Xms{{ instance.xms }} ${JAVA_OPTS}"
+{% else %}
+JAVA_OPTS="-Xms{{ tomcat_xms }} ${JAVA_OPTS}"
+{% endif %}
+
+{% if instance.max_ram is defined %}
+JAVA_OPTS="-XX:MaxRAM={{ instance.max_ram }} ${JAVA_OPTS}"
+{% else %}
+JAVA_OPTS="-XX:MaxRAM={{ tomcat_max_ram }} ${JAVA_OPTS}"
+{% endif %}
+
+{% if instance.heapdump_enabled %}
+JAVA_OPTS="{{ instance_heapdump_params }} ${JAVA_OPTS}"
+{% endif %}

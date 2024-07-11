@@ -1,0 +1,1470 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Ansible inventory - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#ansible-inventory" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Ansible inventory
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Ansible inventory
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="inventory.html" class="md-nav__link md-nav__link--active">
+        Ansible inventory
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-inventory" class="md-nav__link">
+    What is inventory
+  </a>
+  
+    <nav class="md-nav" aria-label="What is inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copying-an-example" class="md-nav__link">
+    Copying an example
+  </a>
+  
+    <nav class="md-nav" aria-label="Copying an example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#note-on-component-selection" class="md-nav__link">
+    Note on component selection
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-hosts" class="md-nav__link">
+    Inventory hosts
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventory hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-custom-modules-combination" class="md-nav__link">
+    Creating custom modules combination
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifying-the-inventory-machines" class="md-nav__link">
+    Verifying the inventory machines
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-variables" class="md-nav__link">
+    Inventory variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-necessary-to-configure" class="md-nav__link">
+    What is necessary to configure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#licenses" class="md-nav__link">
+    Licenses
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#package-versions" class="md-nav__link">
+    Package versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nginx-configuration" class="md-nav__link">
+    Nginx configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-secrets" class="md-nav__link">
+    Keycloak secrets
+  </a>
+  
+    <nav class="md-nav" aria-label="Keycloak secrets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-module-secrets" class="md-nav__link">
+    Keycloak module secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-secrets-using-pwgen" class="md-nav__link">
+    Generate secrets using pwgen
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-demo-users-deployment" class="md-nav__link">
+    Keycloak demo users deployment
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-secrets" class="md-nav__link">
+    Database secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-secrets" class="md-nav__link">
+    JWT secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firewall-config" class="md-nav__link">
+    Firewall config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mmm-demo-data" class="md-nav__link">
+    MMM demo data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-alerting-config" class="md-nav__link">
+    Monitoring + alerting config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observability-tab" class="md-nav__link">
+    Observability tab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp-e-mail-server-configuration" class="md-nav__link">
+    SMTP (e-mail) server configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#availability-check" class="md-nav__link">
+    Availability check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#java-options" class="md-nav__link">
+    Java options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proxy-configuration" class="md-nav__link">
+    Proxy configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bastion-host" class="md-nav__link">
+    Bastion host
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_ansible.html" class="md-nav__link">
+        Running Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tat.html" class="md-nav__link">
+        Ansible installation tips & tricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="hybrid.html" class="md-nav__link">
+        Hybrid DPE installation using Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory_examples.html" class="md-nav__link">
+        Inventory examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#introduction" class="md-nav__link">
+    Introduction
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#what-is-inventory" class="md-nav__link">
+    What is inventory
+  </a>
+  
+    <nav class="md-nav" aria-label="What is inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#copying-an-example" class="md-nav__link">
+    Copying an example
+  </a>
+  
+    <nav class="md-nav" aria-label="Copying an example">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#note-on-component-selection" class="md-nav__link">
+    Note on component selection
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-hosts" class="md-nav__link">
+    Inventory hosts
+  </a>
+  
+    <nav class="md-nav" aria-label="Inventory hosts">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#creating-custom-modules-combination" class="md-nav__link">
+    Creating custom modules combination
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#verifying-the-inventory-machines" class="md-nav__link">
+    Verifying the inventory machines
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#inventory-variables" class="md-nav__link">
+    Inventory variables
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#what-is-necessary-to-configure" class="md-nav__link">
+    What is necessary to configure
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#licenses" class="md-nav__link">
+    Licenses
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#package-versions" class="md-nav__link">
+    Package versions
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#nginx-configuration" class="md-nav__link">
+    Nginx configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-secrets" class="md-nav__link">
+    Keycloak secrets
+  </a>
+  
+    <nav class="md-nav" aria-label="Keycloak secrets">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-module-secrets" class="md-nav__link">
+    Keycloak module secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#generate-secrets-using-pwgen" class="md-nav__link">
+    Generate secrets using pwgen
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#keycloak-demo-users-deployment" class="md-nav__link">
+    Keycloak demo users deployment
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#database-secrets" class="md-nav__link">
+    Database secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#jwt-secrets" class="md-nav__link">
+    JWT secrets
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#firewall-config" class="md-nav__link">
+    Firewall config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#mmm-demo-data" class="md-nav__link">
+    MMM demo data
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#monitoring-alerting-config" class="md-nav__link">
+    Monitoring + alerting config
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#observability-tab" class="md-nav__link">
+    Observability tab
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#smtp-e-mail-server-configuration" class="md-nav__link">
+    SMTP (e-mail) server configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#availability-check" class="md-nav__link">
+    Availability check
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#java-options" class="md-nav__link">
+    Java options
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#proxy-configuration" class="md-nav__link">
+    Proxy configuration
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#bastion-host" class="md-nav__link">
+    Bastion host
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#references" class="md-nav__link">
+    References
+  </a>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="ansible-inventory">Ansible inventory</h1>
+<h2 id="introduction">Introduction</h2>
+<p>Having Ansible installed, the most important part is to prepare and customize the deployment before the installation.
+That means - prepare your inventory and set correctly some variables.</p>
+<h2 id="what-is-inventory">What is inventory</h2>
+<p>Ansible works against provided list of managed destination servers (called hosts) in your infrastructure at the same time.
+These are organized into groups and altogether the organized list of managed hosts is called an inventory.</p>
+<p>You can prepare a new inventory either by creating it from scratch, or copying an example and modifying it.</p>
+<p>In both cases, you will have to name it: use only letters, numbers, dashes and underscores. We strongly recommend
+using a customer name as the inventory name (e.g. <code>ataccama</code>). Whenever you see <code>&lt;inventory-name&gt;</code>, substitute
+your chosen inventory name, omitting the angle brackets.</p>
+<h3 id="copying-an-example">Copying an example</h3>
+<p>We prepared example inventories, meant to be used as templates for the actual installation. These inventories are stored in <code>~/one/ansible/inventories/example_&lt;variant-name&gt;</code>. Find the one matching your chosen deployment scenario:</p>
+<ul>
+<li><strong>Ataccama ONE 2.0</strong></li>
+<li>installation of the plain Ataccama ONE 2.0 platform and observability stack, without any of the Ataccama AIP modules.</li>
+<li>Variant name: <code>plain</code></li>
+<li>Playbook to run: <code>site.yml</code></li>
+<li><strong>Ataccama ONE 2.0 + DQIT (issue tracker):</strong></li>
+<li>Ataccama ONE 2.0 platform, observability stack and DQ Issue Tracker</li>
+<li>Variant name: <code>dqit</code></li>
+<li>Playbook to run: <code>site.yml</code></li>
+<li><strong>Ataccama ONE 2.0 + all AIP components</strong></li>
+<li>full Ataccama installation with ONE 2.0 and all AIP components</li>
+<li>Variant name: <code>full</code></li>
+<li>Playbook to run: <code>site.yml</code></li>
+<li><strong>Plain DPE for hybrid deployment</strong></li>
+<li>plain DPE that can be used for hybrid deployment</li>
+<li>Variant name: <code>hybrid</code></li>
+<li>Playbook to run: <code>hybrid-dpe.yml</code></li>
+<li><strong>Standalone RDM deployment</strong></li>
+<li>RDM installation with all related components</li>
+<li>Variant name: <code>rdm_standalone</code></li>
+<li>Playbook to run: <code>rdm_standalone.yml</code></li>
+<li><strong>Standalone MDM deployment</strong></li>
+<li>MDM installation with all related components</li>
+<li>Variant name: <code>mdm_standalone</code></li>
+<li>Playbook to run: <code>mdm_standalone.yml</code></li>
+<li><strong>MDM + RDM deployment</strong></li>
+<li>MDM + RDM installation with all related components</li>
+<li>Variant name: <code>mdm_rdm</code></li>
+<li>Playbook to run: <code>mdm_rdm.yml</code></li>
+</ul>
+<p>Then, run following command to copy it:</p>
+<pre><code class="language-console">cp -r ~/one/ansible/inventories/example_&lt;chosen_variant&gt;/. ~/one/ansible/inventories/&lt;inventory-name&gt;
+</code></pre>
+<p>You now have a default inventory that needs to be filled with specific hosts and variables.</p>
+<h4 id="note-on-component-selection">Note on component selection</h4>
+<ul>
+<li>It is technically possible to choose any component combination by removing groups from inventory. This is officially unsupported: combinatorial explosion prevents us from testing all possible combinations.</li>
+<li>For MDM and DQIT there is a currently known issue with the installed server configuration, as we cannot distribute the demo configuration outside Ataccama. To get those components running, Ataccama consultant has to create the demo project for the customers specific usecase.</li>
+</ul>
+<h3 id="inventory-hosts">Inventory hosts</h3>
+<p>Inventory hosts are defined in hosts file - <code>~/one/ansible/inventories/&lt;inventory-name&gt;/hosts.yml</code>.
+In the supplied Ansible playbooks we work with the following predefined host groups.</p>
+<ul>
+<li><code>one_app</code> - server for ONE 2.0 Applications (MMM, DPM, CS)</li>
+<li><code>frontend</code> - frontend server (FE)</li>
+<li><code>ai_server</code> - server for AI microservices</li>
+<li><code>processing</code> - server for processing (DPE)</li>
+<li><code>dependencies</code> - server for Ataccama dependencies</li>
+<li><code>one_database</code> - database server for ONE 2.0</li>
+<li><code>monitoring_server</code> - server for observability (monitoring + logging) tools</li>
+<li><code>proxies</code> - server for nginx reverse proxy. Usually the same as <code>one_app</code> server.</li>
+<li><code>rdm_server</code> (optional, AIP only) - RDM application and webapp server</li>
+<li><code>rdm_database</code> (optional, AIP only) - database server for RDM</li>
+<li><code>mdm_server</code> (optional, AIP only) - MDM and MDA application server</li>
+<li><code>mdm_database</code> (optional, AIP only) - database server for MDM</li>
+<li><code>mdm_frontend</code> (optional, AIP only) - MDM frontend application server. Usually the same as <code>frontend</code>.</li>
+<li><code>dqit_server</code> (optional, DQIT only) - DQIT application and webapp server. Usually the same as <code>one_app</code>.</li>
+<li><code>dqit_database</code> (optional, DQIT only) - database server for RDM. Usually the same as <code>one_database</code>.</li>
+<li><code>monitoring_server</code> (optional) - monitoring and logging tools server</li>
+<li><code>orchestration_server</code> (optional) - orchestration server (scheduler, online services, workflow)</li>
+</ul>
+<p>Groups that are marked optional relate to optional Ataccama modules. If your deployment scenario does not contain a module,
+its groups won't be present in the inventory. This is expected.</p>
+<p>The same server can be listed in multiple groups, depending on the agreed size of the installation.</p>
+<p>As a result you should end up with a similar <code>hosts.yml</code> file.</p>
+<pre><code class="language-yaml">---
+all:
+  children:
+    monitoring_server:
+      hosts:
+        monitoring.internal.domain.tld:   # monitoring server domain name
+    ai_server:
+      hosts:
+        app.internal.domain.tld:          # ai server domain name
+...
+...
+...
+</code></pre>
+<h4 id="creating-custom-modules-combination">Creating custom modules combination</h4>
+<p>To create custom combination of modules, start with fresh copy of <code>example_plain</code> inventory
+and modify <code>hosts.yml</code> to contain host groups you need. Then proceed with installation as
+you would proceed with standard inventory.</p>
+<p>You can create any combination of hosts groups, that are marked as <em>optional</em> in previous
+chapter. Rest have to be present everytime.</p>
+<p>Example for ONE + MDM standalone:</p>
+<pre><code class="language-yaml">all:
+  children:
+    monitoring_server:
+      hosts:
+        monitoring.internal.domain.tld:
+    frontend:
+      hosts:
+        app.internal.domain.tld:
+    proxies:
+      hosts:
+        app.internal.domain.tld:
+    ai_server:
+      hosts:
+        app.internal.domain.tld:
+    one_app:
+      hosts:
+        app.internal.domain.tld:
+    processing:
+      hosts:
+        app.internal.domain.tld:
+    dependencies:
+      hosts:
+        dependency.internal.domain.tld:
+    one_database:
+      hosts:
+        app.internal.domain.tld:
+# MDM module
+    mdm_database:
+      hosts:
+        app.internal.domain.tld:
+    mdm_server:
+      hosts:
+        app.internal.domain.tld:
+    mdm_frontend:
+      hosts:
+        app.internal.domain.tld:
+</code></pre>
+<h4 id="verifying-the-inventory-machines">Verifying the inventory machines</h4>
+<p>To check that inventory machines are reachable and Ansible can connect to them, run the following command</p>
+<pre><code class="language-shell">ansible -u &lt;username&gt; -b --private-key &lt;path-to-ssh-key&gt; -i &lt;path-to-inventory&gt; all -m ping
+</code></pre>
+<p>The output should look similar to the example below. All servers must return SUCCESS: any other result signals error in connection, SSH access or sudo (if used).</p>
+<pre><code class="language-shell">monitoring.internal.domain.tld | SUCCESS =&gt; {
+    &quot;ansible_facts&quot;: {
+        &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot;
+    },
+    &quot;changed&quot;: false,
+    &quot;ping&quot;: &quot;pong&quot;
+}
+app.internal.domain.tld | SUCCESS =&gt; {
+    &quot;ansible_facts&quot;: {
+        &quot;discovered_interpreter_python&quot;: &quot;/usr/bin/python&quot;
+    },
+    &quot;changed&quot;: false,
+    &quot;ping&quot;: &quot;pong&quot;
+}
+...
+</code></pre>
+<h3 id="inventory-variables">Inventory variables</h3>
+<p>Inventory variables are used to customize the deployment. You should create variable files in your inventory in the <code>group_vars</code> directory as well.
+Default variables are placed in <code>./ansible/defaults/</code> directory. To include the common global scoped variables, copy them from the <code>./ansible/defaults</code> directory in your inventory (see <code>./ansible/inventories/example/</code> for reference).</p>
+<p>Description of all global variables is given below.</p>
+<p>Variables can be defined per role, or for all roles at once. Unless specified otherwise, you should change the global variables. Set them in <code>group_vars</code> directory, file <code>vars.yml</code>, that is a part of your inventory:</p>
+<p>Content of directory <code>inventories/&lt;inventory-name&gt;/</code></p>
+<pre><code class="language-shell">.
+├── group_vars
+│   ├── _packages.yml &lt;- default ONE package versions
+│   ├── _vars.yml     &lt;- default variables
+│   └── secrets.yml      &lt;- customer-specific overrides
+└── hosts.yml
+</code></pre>
+<h3 id="what-is-necessary-to-configure">What is necessary to configure</h3>
+<ul>
+<li>licenses</li>
+<li>You should have obtained the license from Ataccama beforehand, that allows to run the modules.
+     For each module for which you have license there's variable <code>&lt;module-name&gt;_license_key</code> that should point to path to the license file on local.
+     Default value for each of those variables is <code>licenses/license.plf</code>.</li>
+<li>content pack S3 access</li>
+<li>There is requirement to install basic content package. This package is installed by Ansible from S3 storage, which is behind the authentification. To be able to access S3, you need to manage credentials in advance. For more details see <code>defaults/_vars.yml</code> file, "MMM content_packs configuration" section. In other words, you need obtain <code>access_key</code> and <code>secret_key</code> to be able to install Gen2, without basic content installation will fail.</li>
+<li>If you want to install mmm content package that was created with the <code>jdbcMetastoreProcessing</code> plugin enabled, set <code>mmm_jdbc_metastore_processing: true</code> to your <code>vars.yml</code> file to enable its import.</li>
+<li>AIP modules configuration</li>
+<li>RDM and DQIT modules can be configured manually after installation</li>
+<li>MDM module needs to be configured during installation</li>
+<li>ansible can be set to use local files or remote project to configure MDM</li>
+<li>for more details see defaults/vars.yml file, "AIP project configuration" section</li>
+<li>database credentials</li>
+<li>jwt keys for module communication</li>
+<li>secrets (keycloak clients, monitoring endpoints credentials, etc...)</li>
+<li>nginx configuration</li>
+</ul>
+<p>Example inventories contain <code>vars.yml</code> ready for modification, with comments to guide you through the process. Fill in every value that's missing
+or marked with <code>&lt;placeholer-in-angle-brackets&gt;</code>. Failure to fill in variable <code>XYZ</code> so usually manifests as errors
+containing message <code>'XYZ' is undefined</code>.</p>
+<h3 id="licenses">Licenses</h3>
+<p>Before the installation you should obtain license file(s) from Ataccama that allows execution of the modules according to the installation/license agreement.</p>
+<p>Before running the installation you need to copy the license files on the same machine from which you are provisioning (running Ansible) and set the variables for the paths to the licenses for the modules that you will be installing.
+Default value for the license file location for each of the variables is <code>licenses/license.plf</code>.</p>
+<pre><code class="language-yaml">## the following variables are to set path to licenses for modules that  form ONE 2.0
+audit_license_file: /path/to/audit-license-file.plf
+dpe_license_file: ...
+dpm_license_file: ...
+frontend_license_file: ...
+mmm_license_file: ...
+anomaly_detection_anomaly_detector_license_file: ...
+term_suggestions_api_license_file: ...
+term_suggestions_feedback_license_file: ...
+term_suggestions_neighbors_license_file: ...
+term_suggestions_recommender_license_file: ...
+## the following variable is to set path to license for orchestration server for ONE 2.0
+orchestration_server_license_file: ...
+## the following variables are to set path to licenses for modules that form the MDM solution
+mdm_license_file: ...
+mdm_server_license_file: ...
+## the following variables are to set path to licenses for modules that form the RDM solution
+rdm_license_file: ...
+rdm_server_license_file: ...
+## the following variables are to set path to licenses for modules that form the DQIT solution
+dqit_license_file: ...
+dqit_server_license_file: ...
+</code></pre>
+<p>Each path is either absolute or relative to the <code>./ansible/files</code> dir.</p>
+<p>Not providing the variables will result in an error, similar to this:</p>
+<pre><code class="language-shell">fatal: [&lt;hostname&gt;]: FAILED! =&gt; {&quot;msg&quot;: &quot;{{ dpm_files }}: [{'src': '{{ ataccama_internal_encryption.keystore }}', 'dest': '{{ dpm_install_dir }}/etc'},
+{'src': '{{ ataccama_internal_encryption.passwordfile }}', 'dest': '{{ dpm_install_dir }}/etc'}, {'src': '{{ dpm_license_file }}',
+'dest': '{{ dpm_install_dir }}/license/'}]: 'dpm_license_file' is undefined&quot;}
+</code></pre>
+<h3 id="package-versions">Package versions</h3>
+<p>We keep package versions in <code>_packages.yml</code> file.
+Apart from the version, you can configure for each module <code>package_download type</code>:</p>
+<ul>
+<li><code>maven_artifact</code> (default) - uses packages in Artifactory defined in <code>artifactory_repo_url</code></li>
+<li><code>remote_url</code> - uses remote location to download package, define <code>package_url</code> to specify url to the package</li>
+<li><code>local</code> - uses package downloaded to your local machine, specify <code>package_location</code> to specify path</li>
+</ul>
+<h3 id="nginx-configuration">Nginx configuration</h3>
+<p>You need to properly set nginx hosts and certificates for the nginx endpoints. The following variables need to be set correctly:</p>
+<ul>
+<li><code>nginx_cert_kind</code> - type: string (values: <code>selfsigned</code>, <code>letsencrypt</code>, <code>provided</code>, <code>ownca</code>)</li>
+<li>The variable is used to set the way how nginx certificates are created (self-signed, ownca-signed, let's encrypt or manually provided certs).</li>
+<li>Self-signed certificates are used if this value is left untouched. This behaviour is intended only for verification than ansible playbook is working. There is a big chance that most of the application won't work properly due to unknown certificate authority.</li>
+<li>As a customer you'd probably have your certificates prepared, so <code>provided</code> is the correct way.</li>
+<li><code>nginx_certificates</code> - type: list</li>
+<li>This is a list of certificate files (and their private keys) that will be uploaded to the Nginx server. You can assign them to specific hosts
+     in nginx_hosts later.</li>
+<li>each item in the list has the following keys:<ul>
+<li><code>cn</code> (certificate common name - mandatory)</li>
+<li><code>kind</code> - certificate kind (<code>selfsigned</code>, <code>ownca</code>, <code>letsencrypt</code> or <code>provided</code>)</li>
+<li><code>cert</code> and <code>cert_key</code> - path to certificate and key, in case of provided certificates. Path is either absolute, or relative to <code>./ansible/files</code> directory.</li>
+</ul>
+</li>
+<li><code>nginx_domain</code> - type: string</li>
+<li>Nginx domain name for endpoints on which the application responds (e.g. <code>customer.domain.tld</code>)</li>
+<li>Used to unify the hostnames. Specifically, it is used to derive all other hostnames (as is apparent from <code>nginx_hosts</code>)</li>
+<li>Provided certificates should be issued for hostnames in this domain (either wildcard or one per each host in <code>nginx_hosts</code> - see below)</li>
+<li>This variable has to be set in every environment and default domain (dt.ataccama.dev) should not be used.</li>
+<li><code>nginx_hosts</code> - type: dictionary</li>
+<li>Dictionary assigning nginx host (with associated configuration) to each application endpoint</li>
+<li>Optional, missing components still must be present, but should be marked <code>enabled: false</code>. This is technical limitation of Ansible.
+     The configuration in examples contains code that will set this automatically.</li>
+</ul>
+<p>It is technically possible to set hostnames unrelated to each other, and issue certificates for each of them. This is unsupported.
+See <a href="certificates.html">certificates section</a> for more details about certificates.</p>
+<p>For reasons of simplicity and clarity, it is recommended to use a single certificate (wildcard or SANs), name its files after the <code>nginx_domain</code>
+(e.g. <code>customer.domain.tld.crt</code>, <code>customer.domain.tld.key</code>) and leave the <code>nginx_hosts</code> unchanged.</p>
+<p>Example full configuration with possible values:</p>
+<pre><code class="language-yaml">nginx_cert_kind: provided
+nginx_certificates:
+  - cn: one.customer.domain.tld
+    kind: provided
+    cert: &quot;/path/to/cert/{{ nginx_domain }}-fullchain.crt&quot;
+    cert_key: &quot;/path/to/certkey/{{ nginx_domain }}.key&quot;
+nginx_domain: customer.domain.tld
+nginx_hosts:
+  one:
+    enabled: true
+    hostname: &quot;one.{{ nginx_domain }}&quot;
+    crt: &quot;{{ nginx_domain }}.crt&quot;
+    crt_key: &quot;one.{{ nginx_domain }}.key&quot;
+  console:
+    enabled: &quot;{{ 'mdm_server' in groups.keys() | difference(['all', 'ungrouped']) | default(false) }}&quot; # autogenerate enabled: true/false
+    hostname: &quot;console.{{ nginx_domain }}&quot;
+    crt: &quot;{{ nginx_domain }}.crt&quot;
+    crt_key: &quot;{{ nginx_domain }}.key&quot;
+  dpm:
+    ...
+  dqit:
+    ...
+  dqit_console:
+    ...
+  mda:
+    ...
+  minio:
+    ...
+  rdm:
+    ...
+  rdm_console:
+    ...
+  opensearch_dashboards:
+    ...
+  monitoring:
+    ...
+  alertmanager:
+    ...
+  grafana:
+    ...
+</code></pre>
+<p>This will result in services being available on following domains when installation is finished:</p>
+<ul>
+<li>Keycloak admin console: <a href="https://one.customer.domain.tld/auth/">https://one.customer.domain.tld/auth/</a></li>
+<li>Grafana: <a href="https://one.customer.domain.tld/grafana/">https://one.customer.domain.tld/grafana/</a></li>
+<li>
+<p>OpenSearch Dashboards: <a href="https://kibana.customer.domain.tld/">https://kibana.customer.domain.tld/</a></p>
+</li>
+<li>
+<p>MMM FE: <a href="https://one.domain.tld">https://one.domain.tld</a></p>
+</li>
+<li>...</li>
+</ul>
+<h3 id="keycloak-secrets">Keycloak secrets</h3>
+<p>To keep the installation secure, it is required to change keycloak credentials. Generate a strong, random password e.g. using a password manager.
+If you don't have a password manager handy, you can use following command:</p>
+<pre><code class="language-console">&lt; /dev/urandom tr -dc _A-Za-z0-9 | head -c16 ; echo
+</code></pre>
+<p>For Keycloak admin and Ataccama realm users, there are three predefined user variables:</p>
+<ul>
+<li><code>keycloak_admin</code> - Keycloak admin console administrator,</li>
+<li><code>keycloak_one_admin</code>- Ataccama ONE 2.0 realm keycloak administrator (can access all applications), and</li>
+<li><code>keycloak_monitoring_user</code>- Ataccama ONE 2.0 realm keycloak user that can access only monitoring endpoints.</li>
+</ul>
+<p>Change each one to a strong, unique password. Use separate password for each one.</p>
+<p>However, note that current limitation is that the credentials cannot be updated for existing users when the realm is already imported.</p>
+<p>Technical limitations of Ansible require you to fill in Keycloak configuration unrelated to passwords.
+Please, don't touch it: parts of Ansible rely on it. We are sorry.</p>
+<pre><code class="language-yaml">keycloak_admin:
+  username: &lt;keycloak-admin-username&gt;
+  password: &lt;super-strong-password&gt;
+keycloak_one_admin:
+  username: &lt;ataccama-admin-username&gt;
+  password: &lt;super-strong-password&gt;
+keycloak_monitoring_user:
+  username: monitoring_user
+  password: &lt;super-strong-password&gt;
+</code></pre>
+<h4 id="keycloak-module-secrets">Keycloak module secrets</h4>
+<p>Each module is authenticating to Keycloak via its own client (token clients). The applications that have web UI also require public client, that has different authentication flow.
+Fill in all required passwords (the list in your inventory may be shorter, depending on chosen deployment scenario)</p>
+<pre><code class="language-yaml">anomaly_detection_token_client_secret: &lt;super-strong-password&gt;
+term_suggestions_token_client_secret: &lt;super-strong-password&gt;
+mmm_admin_client_secret: &lt;super-strong-password&gt;
+mmm_token_client_secret: &lt;super-strong-password&gt;
+dpm_token_client_secret: &lt;super-strong-password&gt;
+one_webapp_token_client_secret: &lt;super-strong-password&gt;
+dpe_admin_client_secret: &lt;super-strong-password&gt;
+dpe_token_client_secret: &lt;super-strong-password&gt;
+rdm_admin_client_secret: &lt;super-strong-password&gt;
+rdm_token_client_secret: &lt;super-strong-password&gt;
+mdm_admin_client_secret: &lt;super-strong-password&gt;
+mdm_token_client_secret: &lt;super-strong-password&gt;
+mdm_webapp_public_client_secret: &lt;super-strong-password&gt;
+runtime_server_token_client_secret: &lt;super-strong-password&gt;
+dqit_webapp_token_client_secret: &lt;super-strong-password&gt;
+dqit_steps_token_client_secret: &lt;super-strong-password&gt;
+dqit_admin_client_secret: &lt;super-strong-password&gt;
+audit_token_client_secret: &lt;super-strong-password&gt;
+</code></pre>
+<h4 id="generate-secrets-using-pwgen">Generate secrets using pwgen</h4>
+<p>Secrets can be generated using the <code>pwgen</code> command and the following commandline from the ansible top level directory:</p>
+<pre><code class="language-bash">while IFS= read -r line;
+  do printf &quot;%s\n&quot; &quot;$line&quot; | sed -re &quot;s#((.*password|secret(_key)?):).*#\1 $(pwgen -n 30)#&quot;
+done &lt; ansible/defaults/_secrets.yml  &gt; ansible/inventories/&lt;customer&gt;/group_vars/all/secrets.yml
+</code></pre>
+<h4 id="keycloak-demo-users-deployment">Keycloak demo users deployment</h4>
+<p>For demo purposes, there are prepared couple of users which can be deployed into Keycloak during installation.</p>
+<pre><code class="language-yaml">keycloak_demo_users: false
+</code></pre>
+<p>By default, as those users are unsecured and <em>should not be deployed into production</em> environment, their deployment is disabled by default with <code>false</code> value.
+In case you need to deploy those users for demo purposes, you can set this variable to <code>true</code> to deploy those users into keycloak. We reccomend to change their passwords immediately after installation to secure them. It's not allowed to enable deployment of those users into production environment or into environment which is exposed into Internet.</p>
+<p>Note: those users can be created only during first run of deployment, once Keycloak REALM (of which those users are part of) is deployed, demo users can no longer be added automatically afterwards.</p>
+<h3 id="database-secrets">Database secrets</h3>
+<p>You can configure owner and password for the databases. The following variables are for that.</p>
+<p>All Ataccama ONE 2.0 modules currently use the same database server - and use the same owner. Can be configured through <code>postgres</code> variable.</p>
+<pre><code class="language-yaml">db_user_one_password: &lt;super-secret-owner-password&gt;
+</code></pre>
+<p>DQIT, MDM and RDM modules each use its own database on each server and owner/password can be configured in their module hashes.</p>
+<pre><code class="language-yaml">db_user_dqit_password: &lt;super-secret-owner-password&gt;
+db_user_rdm_password: &lt;super-secret-owner-password&gt;
+db_user_mdm_password: &lt;super-secret-owner-password&gt;
+</code></pre>
+<h3 id="jwt-secrets">JWT secrets</h3>
+<p>All modules use jwt tokens to communicate and authenticate to each other. Each module has a variable <code>&lt;module&gt;_jwt_key</code> containing both public and secret part of the token.</p>
+<p>Use our tool to generate all required tokens:</p>
+<pre><code class="language-console">cd ~/one
+tools/jwk_generator/generator.py &gt; ~/one/ansible/inventories/&lt;inventory-name&gt;/group_vars/all/jwt_tokens.yml
+</code></pre>
+<p>The resulting file may contain tokens for unused modules: these will be simply ignored.</p>
+<h3 id="firewall-config">Firewall config</h3>
+<p>By default, we automatically configure firewall on all target servers. We do not cooperate with existing
+firewall setup, we override it instead.</p>
+<p>The autoconfigured firewall allows incoming SSH (for management) and all ICMP services (to avoid breaking
+MTU path discovery and similar algorithms) from everywhere, and opens incoming TCP port for every
+service we install on its host. The configuration also limit source of every connection only to the appropriate servers.
+All other incoming connections are dropped. The firewall does not limit outgoing connections at all.</p>
+<p>In case you need some custom rule (e.g. you use custom monitoring agent that need to be network-accessible),
+you can add custom rules to this autoconfigured firewall by setting the <code>custom_firewall_rules</code> variable.
+It is not possible to close an open port: we open only ports that are needed for proper functioning of ONE.</p>
+<p>For example, this will open ports 11111 and 12345 on all target servers:</p>
+<pre><code class="language-yaml">custom_firewall_rules:
+  allowed_tcp_ports:
+    - port: 11111
+    - port: 12345
+</code></pre>
+<p>It is possible to open a range of ports too. This will open all ports in the range of 8080 to 8089 (both inclusive):</p>
+<pre><code class="language-yaml">custom_firewall_rules:
+  allowed_tcp_ports:
+    - port: 8080:8089
+</code></pre>
+<p>If only some hosts require custom open ports, it is recommended to set this variable only for the respective
+hosts or groups. This will override the global setting in <code>group_vars/all/vars.yml</code>. Examples:</p>
+<p>Setting this in <code>~/one/ansible/inventories/&lt;inventory-name&gt;/group_vars/frontend/vars.yml</code> will open port
+23456 on frontend servers:</p>
+<pre><code class="language-yaml">custom_firewall_rules:
+  allowed_tcp_ports:
+    - port: 23456
+</code></pre>
+<p>Setting this in <code>~/one/ansible/inventories/&lt;inventory-name&gt;/hosts.yml</code> will open port 33333 only on one
+of the three application servers (having multiple application servers is not common; this is only an example):</p>
+<pre><code class="language-yaml">[...]
+    one_app:
+      hosts:
+        &lt;first-application-server-hostname&gt;:
+        &lt;second-application-server-hostname&gt;:
+          custom_firewall_rules:
+            allowed_tcp_ports:
+              - port: 33333
+        &lt;third-application-server-hostname&gt;:
+[...]
+</code></pre>
+<p>If you set rules in more than one place, group settings will override the global settings, and host settings
+will override everything.</p>
+<p>It is possible to configure more complex rules. If required, see details in <code>roles/firewall-rules/README.md</code>.</p>
+<p>It is also possible to disable firewall management completely. In this case, an appropriate firewall must be
+configured beforehand. To disable firewall management, set following:</p>
+<pre><code class="language-yaml">firewall_manage: false
+</code></pre>
+<p>Because the current firewall configuration is strict, we don't recommend managing the firewall on target servers
+using Ansible, and enforcing additional rules either using custom rules (see above) and at the network's edge.</p>
+<h3 id="mmm-demo-data">MMM demo data</h3>
+<p>Currently, as a default the basic and default data coming from the MMM package are imported to the installation.
+If you wish to change the loaded data and lookups use the following variables that should point to url with the zipped data:</p>
+<pre><code class="language-yaml">mmm_data_import_url: &quot;https://example.com/demodata.zip&quot;
+mmm_lookups_import_url: &quot;https://example.com/minio-lookups.zip&quot;
+</code></pre>
+<h3 id="monitoring-alerting-config">Monitoring + alerting config</h3>
+<p>By default, there is a preconfigured non-working slack receiver in Alertmanager - that sends alerts from Alertmanager to Slack.
+If you wish to use this, it's enough to set the following two variables in your inventory.</p>
+<pre><code class="language-yaml">prometheus_slack_channel: '#your-slack-channel-for-notifications'
+alertmanager_slack_webhook_url: your-slack-webhook-url
+</code></pre>
+<p>Alerts that are being sent are about status of the environment - e.g. failed services, running out of memory, etc...</p>
+<h3 id="observability-tab">Observability tab</h3>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+</div>
+<p>This is paid feature, enable it with care.</p>
+<p>For enabling Observability stack in MMM frontend, you need to set following variable (default value is <code>false</code>).</p>
+<pre><code class="language-yaml">ff_props_observability: true
+</code></pre>
+<h3 id="smtp-e-mail-server-configuration">SMTP (e-mail) server configuration</h3>
+<p>ONE Platform can be configured to send e-mail notifications using an external MTA (mail server); this functionality is disabled by default.
+The e-mails are submitted by MMM component. MMM uses STARTTLS to ensre the connection is properly encrypted and
+SMTP authentication to authenticate itself to the server.</p>
+<p>You can enable SMTP in the inventory:</p>
+<pre><code class="language-yaml">mmm_smtp_enabled: true
+mmm_smtp_host: &lt;mail server hostname&gt;
+mmm_smtp_port: &lt;mail server port&gt;
+mmm_smtp_user: &lt;user&gt;
+mmm_smtp_password: &lt;password&gt;
+</code></pre>
+<h3 id="availability-check">Availability check</h3>
+<ul>
+<li><code>check_availability</code> - type: bool</li>
+</ul>
+<p>The variable is used to enable or disable availability checks for installed applications in roles. There is one exception, Keycloak. It is mandatory for all One 2.0 components, so it is always enabled.</p>
+<h3 id="java-options">Java options</h3>
+<p>Since 14.4, default installed Java is Adoptium distribution v 17.
+You can change this by modifying following properties:</p>
+<pre><code class="language-yaml">java_distribution: adoptiumopenjdk # possible values: openjdk, adoptiumopenjdk
+java_distribution_version: 17 # possible values: 11, 17
+</code></pre>
+<p>Its possible to use almost any combination of these values on any OS. See following
+table to check compatibility of your environment.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th>Redhat 8</th>
+<th>Ubuntu 20</th>
+<th>Centos 7</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Adoptium 11</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>Adoptium 17</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>OpenJDK 11</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>✔️</td>
+</tr>
+<tr>
+<td>OpenJDK 17</td>
+<td>✔️</td>
+<td>✔️</td>
+<td>❌</td>
+</tr>
+</tbody>
+</table>
+<p>You can set custom Java options (command-line parameters) for platform's services. The typical use is to increase the amount of heap memory Java can use:</p>
+<pre><code class="language-yaml">audit_server_java_opts: -Xms256m -Xmx384m -XX:MaxRAM=500m
+dpe_java_opts: -Xms1024m -Xmx2560m -XX:MaxRAM=3096m
+mmm_fe_java_opts: -Xms128m -Xmx256m -XX:MaxRAM=300m
+mdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+mdm_server_java_opts: -Xms1024m -Xmx3072m -XX:MaxRAM=3200m
+mmm_be_java_opts: -Xms512m -Xmx1512m -XX:MaxRAM=1800m
+rdm_java_opts: -Xms256m -Xmx288m -XX:MaxRAM=425m
+</code></pre>
+<h3 id="proxy-configuration">Proxy configuration</h3>
+<p>Ansible needs access to the Internet to download dependencies. You can configure it to use a proxy server for this purpose.</p>
+<p>In Linux / UNIX systems, proxy is conventionally configured by setting environment variables named <code>&lt;PROTOCOL&gt;_proxy</code> (e. g. <code>http_proxy</code>, <code>https_proxy</code>), containing an URL of the proxy server. To make Ansible to pass these variables to its (remote) tasks, set in your inventory:</p>
+<pre><code class="language-yaml">environment_vars:
+  http_proxy: http://1.2.3.4:3128
+  https_proxy: http://1.2.3.4:3128
+</code></pre>
+<p>If your controller uses proxy to access the Internet too, you have to set these environment variables in your session too: refer to <a href="installing_ansible.html#proxy">the installation section</a></p>
+<h3 id="bastion-host">Bastion host</h3>
+<p>It is an optional group in the inventory that contains a host used for service tasks related to cloud-allocated databases
+(creation of schema, users etc.). In the common case when databases are installed and managed by Ansible directly on the
+provided servers, bastion host is not necessary.</p>
+<p>A dedicated server used as bastion is recommended (as it can be shut down after the installation); however, you can use the
+monitoring server instead.</p>
+<p>However if you will be using a database as a service (AWS RDS, AWS RDS Aurora or Azure Databases) there is no need to install
+a database server. Instead, the bastion host is used by Ansible to set up databases configured by inventory variables</p>
+<pre><code class="language-yaml">#Set below variables  if you want to use Azure PGSQL in OneGen2.0
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true.
+cloud_provider: 'azure'  # this is used to indicate which cloud provider dataabase we are using during installation, Use AWS or Azure.
+postgresql_domain: &lt;pgsql_database_domain_name&gt;  # this value is used to indicate private domain to which PGSQL database belong to Azure.
+db_user_one: &lt;database_username&gt; # database user for one
+db_user_one_password: &lt;strong password&gt;  # password for one user
+db_user_dqit: &lt;database_username&gt; # database user for dqit
+db_user_dqit_password: &lt;strong password&gt; # password for dqit user
+db_user_rdm: &lt;database_username&gt; # database user for rdm
+db_user_rdm_password: &lt;strong password&gt; # password for rdm user
+db_user_mdm: &lt;database_username&gt; # database user for mdm
+db_user_mdm_password: &lt;strong password&gt; # password for mdm user
+
+postgresql_admin_user: &lt;postgres_admin_username&gt; # this is admin user of PGSQL database instance
+postgresql_admin_password: &lt;strong password&gt;  # password of admin user of PGSQL database instance
+one_db_host: &lt;azure pgsql database host for one&gt;  # database instance  for  one
+rdm_db_host: &lt;azure pgsql database host for rdm &gt;  # database instance  for rdm
+mdm_db_host: &lt;azure pgsql database host for mdm&gt;  # database instance  for mdm
+dqit_db_host: &lt;azure pgsql database host for dqit&gt; # database instance  for dqit
+</code></pre>
+<p>Please have in mind that this bastion host needs to have allowed network access to the database service.</p>
+<p>A dedicated server used as bastion is recommended (as it can be shut down after the installation); however, you can use the
+monitoring server instead.</p>
+<p>However if you will be using a database as a service (AWS RDS, AWS RDS Aurora or Azure Databases) there is no need to install
+a database server. Instead, the bastion host is used by Ansible to set up databases configured by inventory variables</p>
+<pre><code class="language-yaml">#Set below variables  if you want to use Azure PGSQL in OneGen2.0
+cloud_managed_db: true   # this is used to indicate we want to use cloud managed database instance and must be set true.
+cloud_provider: 'azure'  # this is used to indicate which cloud provider dataabase we are using during installation, Use AWS or Azure.
+postgresql_domain: &lt;pgsql_database_domain_name&gt;  # this value is used to indicate private domain to which PGSQL database belong to Azure.
+db_user_one: &lt;database_username&gt; # database user for one
+db_user_one_password: &lt;strong password&gt;  # password for one user
+db_user_dqit: &lt;database_username&gt; # database user for dqit
+db_user_dqit_password: &lt;strong password&gt; # password for dqit user
+db_user_rdm: &lt;database_username&gt; # database user for rdm
+db_user_rdm_password: &lt;strong password&gt; # password for rdm user
+db_user_mdm: &lt;database_username&gt; # database user for mdm
+db_user_mdm_password: &lt;strong password&gt; # password for mdm user
+
+postgresql_admin_user: &lt;postgres_admin_username&gt; # this is admin user of PGSQL database instance
+postgresql_admin_password: &lt;strong password&gt;  # password of admin user of PGSQL database instance
+one_db_host: &lt;azure pgsql database host for one&gt;  # database instance  for  one
+rdm_db_host: &lt;azure pgsql database host for rdm &gt;  # database instance  for rdm
+mdm_db_host: &lt;azure pgsql database host for mdm&gt;  # database instance  for mdm
+dqit_db_host: &lt;azure pgsql database host for dqit&gt; # database instance  for dqit
+</code></pre>
+<p>Please have in mind that this bastion host needs to have allowed network access to the database service.</p>
+<h2 id="references">References</h2>
+<p>See <a href="https://docs.ansible.com/ansible/latest/user_guide/intro_inventory.html">official Ansible documentation</a>.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="installing_ansible.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Installation &amp; requirements" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Installation & requirements
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="running_ansible.html" class="md-footer__link md-footer__link--next" aria-label="Next: Running Ansible" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Running Ansible
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

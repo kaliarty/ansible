@@ -1,0 +1,9 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    firewall_ruleset_name: "server:{{ server_instance }}"
+    iptables: "{{ (firewall_rules.iptables | default({})) | combine({'allowed_tcp_ports': [{'port': server_monitoring_port, 'source': groups['monitoring_server'] } | default({})]}, list_merge='append') }}"
+  when: (firewall_rules is defined) or (server_monitoring_port is defined)

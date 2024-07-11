@@ -1,0 +1,42 @@
+---
+# defaults file for prometheus
+
+# Prometheus monitoring server configuration
+
+prometheus_slack_channel: '#t_deployment_notifications'
+prometheus_scrape_port: "{{ monitoring_server.port }}" 
+
+# t_deployment slack default notifications config
+alertmanager_slack_webhook_url: https://hooks.slack.com/services/your-webhook-url
+alertmanager_slack_receiver:
+  name: t_deployment-slack
+  slack_configs:
+    - channel: "{{ prometheus_slack_channel }}"
+      send_resolved: true
+      icon_url: "https://avatars3.githubusercontent.com/u/3380462"
+      title: |-
+        {% raw %}{{if eq .Status "firing" }}:fire: {{ else if eq .Status "resolved" }}:white_check_mark: {{ end }}[{{ .Status | toUpper }}{{ if eq .Status "firing" }}:{{ .Alerts.Firing | len }}{{ end }}] {{ .CommonLabels.alertname }} for {{ .CommonLabels.job }}
+        {{- if gt (len .CommonLabels) (len .GroupLabels) -}}
+        {{" "}}(
+        {{- with .CommonLabels.Remove .GroupLabels.Names }}
+        {{- range $index, $label := .SortedPairs -}}
+        {{ if $index }}, {{ end }}
+        {{- $label.Name }}="{{ $label.Value -}}"
+        {{- end }}
+        {{- end -}}
+        )
+        {{- end }}{% endraw %}
+      text: >-
+        {% raw %}{{ range .Alerts -}}
+        *Alert:* {{ .Annotations.summary }}{{ if .Labels.severity }} - `{{ .Labels.severity | toUpper }}`{{ end }}
+
+        *Description:* {{ .Annotations.description }}
+
+        *Details:*
+          {{ range .Labels.SortedPairs }} • *{{ .Name }}:* `{{ .Value }}`
+          {{ end }}
+        {{ end }}{% endraw %}
+alertmanager_port: "{{ alertmanager.port }}" 
+
+# allows bypassing of tasks which take care of installation of Alertmanager, Blackbox exporter
+monitoring_bootstrap: true

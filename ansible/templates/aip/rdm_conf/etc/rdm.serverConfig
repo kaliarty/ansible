@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<server version="{{ packages.server.version }}">
+    <port>{{ rdm.server.service_port }}</port>
+    <runtimeConfiguration>rdm.runtimeConfig</runtimeConfiguration>
+    <serverComponents>
+        <component class="com.ataccama.dqc.web.logging.LoggingComponent" configFile="logging.xml" />
+        <component disabled="false" class="com.ataccama.dqc.web.HttpDispatcher">
+            <filters />
+            <listeners>
+                <listenerBean healthstateRefreshRate="60000" maxWaitingRequests="10" backlog="50" waitingRequestsWarningThreshold="1" port="{{ rdm.server.port }}" threadPoolTimeout="10000" healthStateRecoveryTimeout="300000" name="default" threads="10" servletOnly="false" ssl="none" >
+                    <contexts>
+                        <listenerContext path="/" htmlErrorPages="false">
+                            <filterChains>
+                                <filterChain path="/*" filters="securityFilter">
+                                    <conditions />
+                                </filterChain>
+                            </filterChains>
+                            <securityFilter loginUrl="/sso/login" class="com.ataccama.server.http.security.keycloak.KeycloakSecurity">
+                                <identityProviders>
+                                    <identityProvider configName="keycloak-local" clientId="rdm-token-client" pattern="/**" />
+                                </identityProviders>
+                                <interceptUrls>
+                                    <interceptUrl access="permitAll" pattern="/rdm/**" />
+                                    <interceptUrl access="isAuthenticated()" pattern="/**" />
+                                </interceptUrls>
+                            </securityFilter>
+                        </listenerContext>
+                    </contexts>
+                </listenerBean>
+            </listeners>
+            <servletFilters />
+        </component>
+        <component dataSourceRefreshRate="60" pathVariableRefreshRate="60" disabled="false" class="com.ataccama.dqc.server.services.HealthStateProviders" />
+        <component listeners="all" disabled="false" cacheTemplate="true" class="com.ataccama.dqc.web.console.WebConsoleComponent">
+            <customMenuCategories />
+            <customMenuItems />
+        </component>
+        <component disabled="false" class="com.ataccama.dqc.web.health.HealthStateWebConsole" />
+        <component listeners="all" disabled="false" class="com.ataccama.dqc.online.OnlineServicesComponent">
+            <serviceLookupFolders>
+                <configFolder>../onlineServices</configFolder>
+            </serviceLookupFolders>
+        </component>
+        <component logLevel="2" httpListener="all" disabled="false" class="com.ataccama.adt.web.WorkflowServerComponent" resourcesFolder="../workflows/resources">
+            <sources>
+                <sourceConfigBean path="../workflows" id="RDM" />
+            </sources>
+            <stateStorageProvider class="com.ataccama.adt.runtime.state.storage.FileStateStorageProvider" />
+        </component>
+        <component disabled="false" class="com.ataccama.adt.scheduler.server.SchedulerServerComponent" resourcesFolder="../schedulers/resources">
+            <resultPersister class="com.ataccama.adt.scheduler.persister.FileStateResultPersister" />
+            <sources>
+                <sourceConfigBean path="../schedulers" id="RDM" />
+            </sources>
+        </component>
+    </serverComponents>
+</server>

@@ -1,0 +1,14 @@
+---
+- hosts: all
+  any_errors_fatal: true
+  gather_facts: true
+  gather_subset: os_family
+  tasks:
+    - name: set firewall rules
+      include_role:
+        name: firewall_rules
+      vars:
+        firewall_ruleset_name: custom-firewall
+        iptables: "{{ custom_firewall_rules }}"
+      when: "(firewall_manage | bool ) and ((custom_firewall_rules | default([])) != [])"
+  environment: "{{ environment_vars | default({}) }}"

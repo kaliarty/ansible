@@ -1,0 +1,40 @@
+---
+# default values for certificates role
+
+cert_dir: /etc/ssl
+ca_cert_dir: /etc/ssl
+
+certificates: []
+# certificates config example
+#  - cn: common_name
+#    kind: selfsigned
+#    altnames:
+#      - altname1
+#  - cn: common_name
+#    kind: ownca
+#    altnames:
+#      - altname1
+#  - cn: common_name
+#    kind: letsencrypt
+#  - cn: common_name
+#    kind: provided
+#    cert: /path/to/cert
+#    cert_key: /path/to/cert-key
+#  - cn: common_name
+#    kind: provided
+#    ca: /path/to/ca-cert
+#    cert: /path/to/cert
+#    cert_key: /path/to/cert-key
+
+# Acme and Let's Encrypt defaults
+# cloud provider (see allowed values in vars/main.yml)
+le_cloud_provider:
+# destination for certificates
+le_cert_dir: "{{ cert_dir }}"
+
+# Own CA defaults
+ownca_common_name: one-ca
+ownca_privatekey_passphrase: null
+ownca_email_address: null
+ownca_ca_not_after: "+825d"
+ownca_certs_not_after: "+825d"

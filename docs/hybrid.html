@@ -1,0 +1,692 @@
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      
+      
+        <meta name="author" content="Ataccama">
+      
+      
+      <link rel="icon" href="assets/images/favicon.png">
+      <meta name="generator" content="mkdocs-1.2.3, mkdocs-material-8.0.2">
+    
+    
+      
+        <title>Hybrid DPE installation using Ansible - Ansible for ONE 2.0</title>
+      
+    
+    
+      <link rel="stylesheet" href="assets/stylesheets/main.816931ca.min.css">
+      
+        
+        <link rel="stylesheet" href="assets/stylesheets/palette.9204c3b2.min.css">
+        
+      
+    
+    
+    
+      
+    
+    
+    <script>function __md_scope(e,t,_){return new URL(_||(t===localStorage?".":"."),location).pathname+"."+e}function __md_get(e,t=localStorage,_){return JSON.parse(t.getItem(__md_scope(e,t,_)))}function __md_set(e,t,_=localStorage,o){try{_.setItem(__md_scope(e,_,o),JSON.stringify(t))}catch(e){}}</script>
+    
+      
+
+
+    
+    
+  </head>
+  
+  
+    
+    
+    
+    
+    
+    <body dir="ltr" data-md-color-scheme="" data-md-color-primary="none" data-md-color-accent="none">
+  
+    
+    
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" for="__drawer"></label>
+    <div data-md-component="skip">
+      
+        
+        <a href="#hybrid-dpe-installation-using-ansible" class="md-skip">
+          Skip to content
+        </a>
+      
+    </div>
+    <div data-md-component="announce">
+      
+    </div>
+    
+    
+      
+
+<header class="md-header" data-md-component="header">
+  <nav class="md-header__inner md-grid" aria-label="Header">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-header__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    <label class="md-header__button md-icon" for="__drawer">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M3 6h18v2H3V6m0 5h18v2H3v-2m0 5h18v2H3v-2z"/></svg>
+    </label>
+    <div class="md-header__title" data-md-component="header-title">
+      <div class="md-header__ellipsis">
+        <div class="md-header__topic">
+          <span class="md-ellipsis">
+            Ansible for ONE 2.0
+          </span>
+        </div>
+        <div class="md-header__topic" data-md-component="header-topic">
+          <span class="md-ellipsis">
+            
+              Hybrid DPE installation using Ansible
+            
+          </span>
+        </div>
+      </div>
+    </div>
+    
+    
+    
+    
+  </nav>
+  
+</header>
+    
+    <div class="md-container" data-md-component="container">
+      
+      
+        
+          
+        
+      
+      <main class="md-main" data-md-component="main">
+        <div class="md-main__inner md-grid">
+          
+            
+              
+              <div class="md-sidebar md-sidebar--primary" data-md-component="sidebar" data-md-type="navigation" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+
+<nav class="md-nav md-nav--primary" aria-label="Navigation" data-md-level="0">
+  <label class="md-nav__title" for="__drawer">
+    <a href="index.html" title="Ansible for ONE 2.0" class="md-nav__button md-logo" aria-label="Ansible for ONE 2.0" data-md-component="logo">
+      
+  
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 8a3 3 0 0 0 3-3 3 3 0 0 0-3-3 3 3 0 0 0-3 3 3 3 0 0 0 3 3m0 3.54C9.64 9.35 6.5 8 3 8v11c3.5 0 6.64 1.35 9 3.54 2.36-2.19 5.5-3.54 9-3.54V8c-3.5 0-6.64 1.35-9 3.54z"/></svg>
+
+    </a>
+    Ansible for ONE 2.0
+  </label>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="index.html" class="md-nav__link">
+        Introduction
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="installing_ansible.html" class="md-nav__link">
+        Installation & requirements
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory.html" class="md-nav__link">
+        Ansible inventory
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="running_ansible.html" class="md-nav__link">
+        Running Ansible
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="tat.html" class="md-nav__link">
+        Ansible installation tips & tricks
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="secrets.html" class="md-nav__link">
+        Encrypting secrets
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+    
+  
+  
+    <li class="md-nav__item md-nav__item--active">
+      
+      <input class="md-nav__toggle md-toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+      
+      
+        
+      
+      
+        <label class="md-nav__link md-nav__link--active" for="__toc">
+          Hybrid DPE installation using Ansible
+          <span class="md-nav__icon md-icon"></span>
+        </label>
+      
+      <a href="hybrid.html" class="md-nav__link md-nav__link--active">
+        Hybrid DPE installation using Ansible
+      </a>
+      
+        
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-installation" class="md-nav__link">
+    Ansible installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-the-inventory" class="md-nav__link">
+    Prepare the inventory
+  </a>
+  
+    <nav class="md-nav" aria-label="Prepare the inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hosts-file" class="md-nav__link">
+    Hosts file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-dpe-configuration" class="md-nav__link">
+    Optional DPE configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dpe-installation" class="md-nav__link">
+    DPE installation
+  </a>
+  
+    <nav class="md-nav" aria-label="DPE installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-checks" class="md-nav__link">
+    Installation checks
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dpe-availability-check" class="md-nav__link">
+    DPE availability check
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+      
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="inventory_examples.html" class="md-nav__link">
+        Inventory examples
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="certificates.html" class="md-nav__link">
+        Certificates
+      </a>
+    </li>
+  
+
+    
+      
+      
+      
+
+  
+  
+  
+    <li class="md-nav__item">
+      <a href="glossary.html" class="md-nav__link">
+        Glossary
+      </a>
+    </li>
+  
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="sidebar" data-md-type="toc" >
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+
+<nav class="md-nav md-nav--secondary" aria-label="Table of contents">
+  
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">
+      <span class="md-nav__icon md-icon"></span>
+      Table of contents
+    </label>
+    <ul class="md-nav__list" data-md-component="toc" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#ansible-installation" class="md-nav__link">
+    Ansible installation
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#prepare-the-inventory" class="md-nav__link">
+    Prepare the inventory
+  </a>
+  
+    <nav class="md-nav" aria-label="Prepare the inventory">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#hosts-file" class="md-nav__link">
+    Hosts file
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#variables" class="md-nav__link">
+    Variables
+  </a>
+  
+    <nav class="md-nav" aria-label="Variables">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#optional-dpe-configuration" class="md-nav__link">
+    Optional DPE configuration
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dpe-installation" class="md-nav__link">
+    DPE installation
+  </a>
+  
+    <nav class="md-nav" aria-label="DPE installation">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#installation-checks" class="md-nav__link">
+    Installation checks
+  </a>
+  
+    <nav class="md-nav" aria-label="Installation checks">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#dpe-availability-check" class="md-nav__link">
+    DPE availability check
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content" data-md-component="content">
+            <article class="md-content__inner md-typeset">
+              
+                
+
+<h1 id="hybrid-dpe-installation-using-ansible">Hybrid DPE installation using Ansible</h1>
+<p>This document serves as an installation guide for the hybrid DPE that is preconfigured to connect to Ataccama PaaS environment.</p>
+<h2 id="ansible-installation">Ansible installation</h2>
+<p>As a first step, one needs to have Ansible installed on his control node - which can be either a local machine with any Linux distribution,
+or the installation can be run even from the DPE server / node itself. The server needs to have connectivity to the internet (at least for the time of the installation),
+as we need to download the necessary packages.</p>
+<p>See <a href="installing_ansible.html">installation section</a> of the docs, which covers the installation of Ansible itself.</p>
+<h2 id="prepare-the-inventory">Prepare the inventory</h2>
+<p>Briefly, an inventory is a list of servers, that are provisioned via Ansible (see <a href="inventory.html">a more detailed description</a> on what an inventory is).</p>
+<p>To prepare the inventory for the hybrid DPE installation, use the example inventory from <code>inventories/example_hybrid</code> (copy it e.g. to <code>inventories/customer</code>).
+Then one has to modify both the hosts file and the variables files.</p>
+<h3 id="hosts-file">Hosts file</h3>
+<p>The hosts file is a file with the provisioned hosts. An example hosts file should look as follows.</p>
+<pre><code class="language-yaml">all:
+  children:
+    processing:
+      hosts:
+        &lt;dpe-server-hostname&gt;:
+        &lt;dpe-2-server-hostname&gt;: # optional, but at least one server in the processing group is required
+          key1: value1             # for any server (host), one can optionally define also variables, which are host-specific (e.g. license)
+        ...
+</code></pre>
+<p>When building your own inventory, the <code>&lt;dpe-server-hostname&gt;</code> yaml dictionary entries should be replaced with the right hosts.</p>
+<p>It is possible to specify one or multiple hosts in the processing group, for each host you can have also host-specific variables (see above).</p>
+<h3 id="variables">Variables</h3>
+<p>The variables are placed in <code>group_vars/all/vars.yml</code>. You need to modify the default ones and change the various endpoints and secrets to match
+the production PaaS environment values to be able to successfully connect to the PaaS environment.</p>
+<p>Here we list the ones, that need to be changed/filled, as they are specific for each environment.</p>
+<ul>
+<li><code>dpe_license_file</code> - path to the DPE license file on the Ansible controller. Either define it in group vars or for each host separately (when provisioning multiple DPEs). Default value is <code>licenses/license.plf</code></li>
+<li><code>keycloak_url</code> - PaaS Keycloak authentication server endpoint, e.g. <code>https://customer.dev.ataccama.online/auth/</code></li>
+<li><code>dpe_token_client</code>, <code>dpe_admin_client</code> - DPE token and admin clients credentials</li>
+<li><code>minio_url</code> - PaaS MinIO (S3 storage) endpoint, e.g. <code>https://minio.customer.dev.ataccama.online</code></li>
+<li><code>minio</code> - configure MinIO credentials, through the following variables:</li>
+</ul>
+<pre><code class="language-yaml">minio:
+  access_key: &lt;access-key&gt;
+  secret_key: &lt;secret-key&gt;
+</code></pre>
+<ul>
+<li><code>dpe_jwt_key</code> - private key of the on-premise DPE.</li>
+<li><code>dpm</code> - DPM grpc host (e.g. <code>dpm-grpc.customer.dev.ataccama.online</code>), the gRPC and HTTP port numbers should remain unchanged.</li>
+<li><code>dpm_jwt_key</code> - public key of the DPM module, containing all the respective parts (<code>name</code>, <code>content</code>, <code>fingerprint</code>).</li>
+<li>jwt key content must be in the form: <code>content: '{"kty":"EC", .... ,"alg":"ES256"}'</code></li>
+</ul>
+<h4 id="optional-dpe-configuration">Optional DPE configuration</h4>
+<p>One can provide additional configuration to DPE, whatever is for the client required. For that, add additional DPE application.properties to
+<code>dpe_additional config</code> variable. The setup in example is to set the DPE-DPM communication in bidirectional mode, that requires only just one connection opened between those two modules.</p>
+<p>Also, we have preconfigured a few JDBC datasources as a starting example (which are most commonly used), and for
+those we download JDBC drivers. List of the downloaded drivers is contained in the <code>dpe_drivers</code> variable.</p>
+<h2 id="dpe-installation">DPE installation</h2>
+<p>Having the inventory prepared, you can then proceed with the DPE installation. To install the DPE, run a playbook called <code>hybrid-dpe.yml</code>.
+The command to execute the playbook is the following, needs to be executed from the <code>ansible</code> directory,</p>
+<pre><code class="language-shell">ansible-playbook -i &lt;path-to-inventory&gt; -u &lt;username&gt; --private-key &lt;path-to-private-key&gt; -b hybrid-dpe.yml
+### in case of the example inventory, connecting via `admin` account and it's private key located in `~/.ssh/admin-private` as follows:
+ansible-playbook -i inventories/example_hybrid/ -u admin --private-key ~/.ssh/admin-private -b hybrid-dpe.yml
+</code></pre>
+<p>The user needs to have ssh access to all the hosts with root (e.g. password-less sudo) privileges.</p>
+<h3 id="installation-checks">Installation checks</h3>
+<p>At the beginning of the installation, several checks are being run to assure that all the PaaS endpoints can be reached from the DPE node.
+The successful outcome of these checks looks as follows (considering the example above, that has 2 DPE nodes).</p>
+<pre><code class="language-shell">TASK [Hybrid preinstallation checks] **********************************************************************************************************************************************************************
+
+TASK [system : Check connectivity to Keycloak] ************************************************************************************************************************************************************
+ok: [dpe-1-server-hostname]
+ok: [dpe-2-server-hostname]
+
+TASK [system : Check connectivity to MinIO] ***************************************************************************************************************************************************************
+ok: [dpe-1-server-hostname]
+ok: [dpe-2-server-hostname]
+
+TASK [system : Check connectivity to dpm grpc endpoint] ***************************************************************************************************************************************************
+ok: [dpe-1-server-hostname]
+ok: [dpe-2-server-hostname]
+</code></pre>
+<p>In case any of these checks fail, Ataccama PaaS environment cannot be reached from the DPE node(s), which can indicate a firewall / networking issue.
+Investigate and assure that the connection is fine before you proceed with the installation.</p>
+<p>The successful outcome of running the play should look similarly as follows.</p>
+<pre><code class="language-shell">...
+
+PLAY RECAP ************************************************************************************************************************************************************************************************
+dpe-1-server-hostname      : ok=86   changed=31   unreachable=0    failed=0    skipped=32   rescued=0    ignored=2
+dpe-2-server-hostname      : ok=86   changed=31   unreachable=0    failed=0    skipped=32   rescued=0    ignored=2
+</code></pre>
+<h4 id="dpe-availability-check">DPE availability check</h4>
+<p>At the end of the play, a check that DPE is running fine is performed. The check can be turned off by setting the variable <code>check_availability: false</code>.
+The check is successful if the following task finishes without issues.</p>
+<pre><code class="language-shell">TASK [dpe : Wait for dpe to come up (check monitoring endpoint ready)] ************************************************************************************************************************************
+ok: [dpe-1-server-hostname]
+ok: [dpe-2-server-hostname]
+</code></pre>
+<p>Else, if the task fails, one can see from the output, what is the cause for the DPE not starting properly.
+In the following example is e.g. the failure caused by DPE not being able to reach DPM (hence the monitoring endpoint is not returning 200).</p>
+<pre><code class="language-shell">fatal: [dpe-1-server-hostname]: FAILED! =&gt; {&quot;attempts&quot;: 30, .... &quot;json&quot;: {&quot;components&quot;: {&quot;db&quot;: {&quot;details&quot;: {&quot;database&quot;: &quot;H2&quot;,
+&quot;validationQuery&quot;: &quot;isValid()&quot;}, &quot;status&quot;: &quot;UP&quot;}, &quot;diskSpace&quot;: {&quot;details&quot;: {&quot;exists&quot;: true, &quot;free&quot;: 23339401216, &quot;threshold&quot;: 10485760, &quot;total&quot;: 31036686336},
+&quot;status&quot;: &quot;UP&quot;}, &quot;dpm&quot;: {&quot;details&quot;: {&quot;state&quot;: &quot;CONNECTING&quot;}, &quot;status&quot;: &quot;DOWN&quot;}, &quot;livenessState&quot;: {&quot;status&quot;: &quot;UP&quot;}, &quot;ping&quot;: {&quot;status&quot;: &quot;UP&quot;}, &quot;readinessState&quot;:
+{&quot;status&quot;: &quot;UP&quot;}}, &quot;groups&quot;: [&quot;liveness&quot;, &quot;readiness&quot;], &quot;status&quot;: &quot;DOWN&quot;}, &quot;msg&quot;: &quot;Status code was 503 and not [200]: HTTP Error 503: &quot;, &quot;redirected&quot;: false,
+&quot;status&quot;: 503, &quot;transfer_encoding&quot;: &quot;chunked&quot;, &quot;url&quot;: &quot;http://dpe-1-server-hostname:8034/actuator/health&quot;, &quot;x_correlation_id&quot;: &quot;8524f5&quot;}
+</code></pre>
+<p>For more information on running the Ansible playbooks and other command line parameters, see <a href="running_ansible.html">Running Ansible</a> section of this documentation.</p>
+
+              
+            </article>
+          </div>
+        </div>
+        
+      </main>
+      
+        <footer class="md-footer">
+  
+    <nav class="md-footer__inner md-grid" aria-label="Footer">
+      
+        
+        <a href="secrets.html" class="md-footer__link md-footer__link--prev" aria-label="Previous: Encrypting secrets" rel="prev">
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M20 11v2H8l5.5 5.5-1.42 1.42L4.16 12l7.92-7.92L13.5 5.5 8 11h12z"/></svg>
+          </div>
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Previous
+              </span>
+              Encrypting secrets
+            </div>
+          </div>
+        </a>
+      
+      
+        
+        <a href="inventory_examples.html" class="md-footer__link md-footer__link--next" aria-label="Next: Inventory examples" rel="next">
+          <div class="md-footer__title">
+            <div class="md-ellipsis">
+              <span class="md-footer__direction">
+                Next
+              </span>
+              Inventory examples
+            </div>
+          </div>
+          <div class="md-footer__button md-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M4 11v2h12l-5.5 5.5 1.42 1.42L19.84 12l-7.92-7.92L10.5 5.5 16 11H4z"/></svg>
+          </div>
+        </a>
+      
+    </nav>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-copyright">
+  
+  
+    Made with
+    <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+      Material for MkDocs
+    </a>
+  
+</div>
+      
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    <div class="md-dialog" data-md-component="dialog">
+      <div class="md-dialog__inner md-typeset"></div>
+    </div>
+    <script id="__config" type="application/json">{"base": ".", "features": [], "translations": {"clipboard.copy": "Copy to clipboard", "clipboard.copied": "Copied to clipboard", "search.config.lang": "en", "search.config.pipeline": "trimmer, stopWordFilter", "search.config.separator": "[\\s\\-]+", "search.placeholder": "Search", "search.result.placeholder": "Type to start searching", "search.result.none": "No matching documents", "search.result.one": "1 matching document", "search.result.other": "# matching documents", "search.result.more.one": "1 more on this page", "search.result.more.other": "# more on this page", "search.result.term.missing": "Missing", "select.version.title": "Select version"}, "search": "assets/javascripts/workers/search.01824240.min.js"}</script>
+    
+    
+      <script src="assets/javascripts/bundle.ff0eccb3.min.js"></script>
+      
+    
+  </body>
+</html>

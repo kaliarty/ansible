@@ -1,0 +1,22 @@
+---
+# NOTE: when role-to-server allocation changes, run the cleanup.yml playbook first to ensure unneeded ports are closed,
+# monitoring rules are updated and summary is regenerated.
+
+- import_playbook: system.yml
+- import_playbook: ntp.yml
+  when: ( ntp_enabled | default('true') | bool )
+- import_playbook: custom-firewall.yml
+- import_playbook: monitoring.yml
+  when: monitoring_manage | bool
+- import_playbook: logging.yml
+- import_playbook: databases.yml
+  when: not ( cloud_managed_db | default('false') | bool )
+- import_playbook: databases_cloud.yml
+  when: ( cloud_managed_db | default('false') | bool )
+- import_playbook: nginx.yml
+- import_playbook: dependencies.yml
+- import_playbook: one.yml
+- import_playbook: aip.yml
+- import_playbook: summary.yml
+- import_playbook: monitoring_post.yml
+  when: monitoring_manage | bool

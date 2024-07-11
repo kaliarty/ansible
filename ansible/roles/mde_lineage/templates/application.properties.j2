@@ -1,0 +1,104 @@
+{{ ansible_managed | comment }}
+
+# Logging configuration
+logging.filter.on=false
+logging.level.root=INFO
+logging.level.com.ataccama=INFO
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Keycloak configuration
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.token.secret={{ mde_lineage_token_client_secret }}
+ataccama.authentication.keycloak.token.client-id=mde-token-client
+ataccama.authentication.keycloak.admin.secret={{ mde_lineage_admin_client_secret }}
+ataccama.authentication.keycloak.admin.client-id=mde-admin-client
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+
+{% if ataccama_internal_encryption is defined %}
+# Encryption configuration
+internal.encryption.keystore={{ mde_lineage_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+internal.encryption.keystore.passwordFile={{ mde_lineage_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+internal.encryption.keystore.keyAlias={{ ataccama_internal_encryption.alias }}
+properties.encryption.keystore={{ mde_lineage_install_dir }}/etc/{{ ataccama_internal_encryption.keystore | basename }}
+properties.encryption.keystore.passwordFile={{ mde_lineage_install_dir }}/etc/{{ ataccama_internal_encryption.passwordfile | basename }}
+{% endif %}
+
+# Authentication configuration
+ataccama.authentication.internal.jwt.generator.key={{ mde_lineage_jwt_key.private }}
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+
+# Database configuration
+{%- set postgres_params = postgres.postgresql_server.parameters | default('') %}
+{%- if postgres_params.count('?') > 0 %}
+{%- set postgres_params = postgres_params ~ '&' ~ mde_postgres_parameters ~ ('&sslmode=require' if one_db_host is defined else '') %}
+{%- else %}
+{%- set postgres_params = postgres_params ~ '?' ~ mde_postgres_parameters ~ ('&sslmode=require' if one_db_host is defined else '') %}
+{%- endif %}
+
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ mde_lineage_database_name }}{{ postgres_params }}
+spring.datasource.username={{ postgres.database.owner }}
+spring.datasource.password={{ postgres.database.password }}
+
+# Spring configuration
+spring.graphql.schema.introspection.enabled=false
+spring.graphql.graphiql.enabled=false
+spring.jooq.sql-dialect=postgres
+spring.flyway.enabled=false
+
+# Client for MMM GQL client
+ataccama.client.connection.keycloak.http.enabled=true
+ataccama.client.connection.mmm.http.enabled=true
+ataccama.one.mde.mmmUri={{ mmm_url }}
+
+# Object storage configuration
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000
+ataccama.one.object-storage.required-writable-buckets=lineage-import
+ataccama.one.object-storage.try-create=true
+ataccama.one.object-storage.fail-fast=true
+
+# MDE specific
+server.port={{ mde_lineage_port }}
+server.error.include-message=always
+server.error.include-exception=true
+server.error.include-stacktrace=never
+server.error.include-binding-errors=always
+
+management.server.port={{ mde_lineage_management_port }}
+
+# MDE >> MMM grpc client
+ataccama.client.connection.mmm.grpc.host={{ mmm.host }}
+ataccama.client.connection.mmm.grpc.port={{ mmm.grpc_port }}
+
+# Ataccama modules JWT keys
+# MMM-BE jwt keys
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.module=mmm-be
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.uri={{ mmm.host }}:{{ mmm.http_port }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.name={{ mmm_jwt_key.name }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.content={{ mmm_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.fingerprint={{ mmm_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.jwt-keys.{{ mmm_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ mmm_deployment_name }}.security.roles[0]=IMPERSONATION
+
+### ONE webapp jwt keys
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.environment={{ env }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.module=one-webapp
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.uri={{ frontend.host }}:{{ frontend.http_port }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.name={{ frontend_jwt_key.name }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.content={{ frontend_jwt_key.content | b64encode }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.fingerprint={{ frontend_jwt_key.fp }}
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.jwt-keys.{{ frontend_jwt_key.name }}.is-revoked=false
+ataccama.one.platform.deployments.{{ frontend_deployment_name }}.security.roles[0]=IMPERSONATION

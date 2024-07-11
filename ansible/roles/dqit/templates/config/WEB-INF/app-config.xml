@@ -1,0 +1,186 @@
+<?xml version='1.0' ?>
+<config>
+
+    <rootResource>com.ataccama.epp.web.resources.RootResource</rootResource>
+
+    <globalForwards>
+        <forward name="home" path="/" redirect='true' />
+    </globalForwards>
+
+    <contextFactory class="com.ataccama.epp.web.resources.EppContextFactory" >
+        <configFile>{{ config_path }}</configFile>
+        <licenseFolder>{{ dqit_license_dir }}</licenseFolder>
+    </contextFactory>
+
+    <stepRegistry>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.RootResource" />
+            <forwards>
+                <forward name="success" path="/app/issues/" redirect='true' />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.LogoutResource" />
+            <forwards>
+                <forward name="success" path="/app/" redirect='true' />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.SessionKeeperResource" />
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.IssueListResource" />
+            <forwards>
+                <forward name="success" path="/issueList.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.IssueDetailResource" />
+            <forwards>
+                <forward name="success" path="/issueDetail.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.IssueAttachmentResource" />
+            <forwards/>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.IssueHistoryResource"/>
+            <forwards>
+                <forward name="success" path="/issueHistory.jsp"/>
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.bulk.BulkAssignResource"/>
+            <forwards>
+                <forward name="success" path="/bulkAssign.jsp"/>
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.bulk.BulkTransitionResource"/>
+            <forwards>
+                <forward name="success" path="/bulkTransition.jsp"/>
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.issues.IssueReportResource">
+                <reports>
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.WorkloadReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueScoreReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueSeverityReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueStatusDistributionReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueEntityDistributionReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueSystemDistributionReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueCreatedAgeReport" />
+                    <rep class="com.ataccama.epp.web.resources.issues.reports.IssueIdleAgeReport" />
+                </reports>
+            </step>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/issues/reports.jsp"/>
+                <forward name="reportLocation" path="/WEB-INF/pages/reports/"/>
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.AdministrationResource"/>
+            <forwards>
+                <forward name="success" redirect="true" path="/app/admin/sysInfo/" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.MaintenanceTasksResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+                <forward name="progress" path="/WEB-INF/pages/admin/progress.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.BackgroundOperationsResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.AppRestartResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+                <forward name="done" path="/app/admin/restart/?done=1" redirect="true" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.SystemInfoResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.IntegrityChecksResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.IntegrityChecksTabsResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+                <forward name="progress" path="/WEB-INF/pages/admin/progress.jsp" />
+            </forwards>
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.administration.system.ImportIssuesResource"/>
+            <forwards>
+                <forward name="success" path="/WEB-INF/pages/admin/main.jsp" />
+                <forward name="progress" path="/WEB-INF/pages/admin/progress.jsp" />
+                <forward name="report" path="/WEB-INF/pages/admin/importReport.jsp"/>
+            </forwards>
+        </resource>
+
+        <!--  AJAX -->
+
+        <resource>
+            <step class="com.ataccama.epp.web.resources.json.JsonResource" />
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.resources.json.CleansingProposalResource" />
+        </resource>
+        <resource>
+            <step class="com.ataccama.epp.web.upload.UploadMonitoringResource" />
+        </resource>
+
+        <step>
+            <step class="com.ataccama.epp.web.resources.issues.ReportIdSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.StatusSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.SeveritySelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.ScoreSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.AssigneeSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.AuthorSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.RecordCountSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.SystemStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.EntityStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.PageSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.SortingSelectionStep" />
+        </step>
+        <step>
+            <step class="com.ataccama.epp.web.resources.CustomAttributeSelectionStep"/>
+        </step>
+    </stepRegistry>
+</config>

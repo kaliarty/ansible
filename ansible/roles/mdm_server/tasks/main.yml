@@ -1,0 +1,76 @@
+---
+# tasks file for mdm_server
+
+- name: Configure firewall for MDM server
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- name: Install MDM server
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ mdm_server_module_name }}"
+    module_version: "{{ mdm_server_version }}"
+    install_dir: "{{ mdm_server_install_dir }}"
+    service_user: "{{ mdm_server_service_user }}"
+    service_group: "{{ mdm_server_service_group }}"
+    module_services: "{{ mdm_server_services }}"
+    package_download_type: "{{ mdm_server_package_download_type }}"
+    package_location: "{{ mdm_server_package_location }}"
+    package_url: "{{ mdm_server_package_url }}"
+    package_checksum: "{{ mdm_server_package_checksum }}"
+    module_config: "{{ mdm_server_config }}"
+    deploy_files: "{{ mdm_server_files }}"
+
+- name: Configure MDM server project
+  include: configure.yml
+
+- name: Configure MDM server logging
+  include: logging.yml
+  tags:
+    - logging
+
+- name: Configure MDM server monitoring
+  include: monitoring.yml
+  when: monitoring_manage | bool
+  tags:
+    - monitoring
+
+- name: Wait for MDM server to start up
+  uri:
+    url: "http://{{ ansible_host }}:{{ mdm.server.http_port }}/actuator/health"
+    status_code: 200
+  register: result
+  until: result.status == 200
+  retries: 30
+  delay: 5
+  when: check_availability | default(false) | bool
+
+# WORKAROUND: for unknown reason, variable (fact) ansible_domain is undefined here, unless we run setup, even if
+# we explicitely say gather_facts: true in the playbook). This is true even if all the previous tasks are commented out.
+# I have no idea what's happening here.
+# (ansible_domain is used indirectly in definition of mdm_services)
+- name: re-gather facts
+  setup:
+    gather_subset: min
+  tags: summary
+
+- name: Store a summary
+  include_role:
+    name: summary
+  vars:
+    group: Platform
+    summary:
+      name: MDM server
+      description: "Ataccama platform module: master data management (backend component)"
+      version: "{{ mdm_server_version }}"
+      details:
+        directories: "{{ [ mdm_server_install_dir ] }}"
+        os_user: "{{ mdm_server_service_user }}"
+        os_group: "{{ mdm_server_service_group }}"
+        services: "{{ mdm_server_services | map(attribute='name') | list }}"
+  tags: summary

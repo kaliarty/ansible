@@ -1,0 +1,44 @@
+---
+# tasks for RedHat 8 / CentOS 8 installation
+
+
+# Adoptium repository key is in wrong format. Add new line at the end of file to fix it...
+- name: RedHat 8 - Get AdoptiumOpenJDK repository key
+  get_url:
+    url: "{{ adoptiumopenjdk_rpm_repo_key }}"
+    dest: "{{ adoptiumopenjdk_rpm_repo_key_path }}"
+
+- name: RedHat 8 - Append empty line at the end of repository key
+  lineinfile:
+    path: "{{ adoptiumopenjdk_rpm_repo_key_path }}"
+    insertafter: EOF
+    line: "\n"
+    state: present
+
+- name: RedHat 8 - Add AdoptiumOpenJDK repository key
+  rpm_key:
+    key: "{{ adoptiumopenjdk_rpm_repo_key_path }}"
+    state: present
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 8 - Add AdoptiumOpenJDK repository
+  yum_repository:
+    name: AdoptiumOpenJDK
+    description: AdoptiumOpenJDK Repository
+    baseurl: "{{ adoptiumopenjdk_rpm_repo }}"
+    state: present
+    gpgcheck: yes
+    gpgkey: "{{ adoptiumopenjdk_rpm_repo_key }}"
+  when: java_distribution == 'adoptiumopenjdk'
+
+- name: RedHat 8 - Ensure Java is installed
+  dnf:
+    name: "{{ java_packages }}"
+    state: present
+    update_cache: yes
+
+- name: RedHat 8 - Install dependencies
+  dnf:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: yes

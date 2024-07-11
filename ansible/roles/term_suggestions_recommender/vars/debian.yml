@@ -1,0 +1,3 @@
+---
+# variables for Debian/Ubuntu
+java_cacerts_path: /etc/ssl/certs/java/cacerts

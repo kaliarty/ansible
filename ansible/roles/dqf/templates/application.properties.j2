@@ -1,0 +1,84 @@
+{{ ansible_managed | comment }}
+
+ataccama.one.dqf.auth.management-role=DQF_admin
+
+# Logging configuration
+logging.level.org.hibernate.SQL=INFO
+logging.level.root=INFO
+logging.level.org.springframework.web.filter.CommonsRequestLoggingFilter=INFO
+logging.level.org.eclipse.jetty=info
+logging.level.com.ataccama.dqf.engine.DQDRuleExecutionService=info
+
+
+# Production logging settings
+ataccama.logging.plainTextConsoleAppender=false
+ataccama.logging.jsonConsoleAppender=true
+ataccama.logging.plainTextFileAppender=false
+ataccama.logging.jsonFileAppender=true
+
+# Configuration service configuration
+ataccama.config-service.runtime=off
+ataccama.server.grpc.port={{ dqf_grpc_port }}
+ataccama.client.connection.mmm-be.grpc.host={{ mmm.host }}
+ataccama.client.connection.mmm-be.grpc.port={{ mmm_grpc_port }}
+
+management.server.port={{ dqf_management_port }}
+management.endpoints.web.exposure.include=health,prometheus,openapi,swagger-ui
+# enable also /actuator/health/liveness and /actuator/health/readiness health endpoints
+management.endpoint.health.probes.enabled=true
+management.endpoint.health.show-details=always
+management.endpoint.health.show-components=always
+management.endpoint.health.object-storage.enabled=true
+management.metrics.distribution.slo.http.server.requests=1ms, 5ms, 10ms, 50ms, 100ms, 200ms, 400ms
+management.metrics.distribution.slo.http.ataccama.one.grpc.server.request=1ms, 5ms, 10ms, 50ms, 100ms, 200ms, 400ms
+
+server.port={{ dqf_http_port }}
+
+jakarta-servlet.version=5.0.0
+
+# Authentication configuration
+ataccama.authentication.keycloak.server-url=https://{{ nginx_hosts.one.hostname }}/auth
+ataccama.authentication.keycloak.realm=ataccamaone
+ataccama.authentication.keycloak.token.client-id=dqf-token-client
+ataccama.authentication.keycloak.token.secret={{ dqf_token_client_secret  }}
+ataccama.authentication.keycloak.token.issuer=${ataccama.authentication.keycloak.server-url}/realms/${ataccama.authentication.keycloak.realm}
+ataccama.authentication.keycloak.admin.enable=false
+
+spring.profiles.active=LOCAL
+spring.devtools.restart.enabled=false
+
+# Database configuration
+spring.datasource.url=jdbc:postgresql://{{ postgres.host }}:{{ postgres.port }}/{{ dqf.database_name }}{{ postgres.postgresql_server.parameters | default( '' ) }}
+spring.datasource.username={{ postgres.database.owner }}
+spring.datasource.password={{ postgres.database.password }}
+
+spring.main.banner-mode: off
+
+# MMM-BE jwt keys
+ataccama.one.dqf.auth.jwt.key.{{ mmm_deployment_name }}={{ mmm_jwt_key.content }}
+
+# Swagger
+springdoc.api-docs.enabled=true
+springdoc.swagger-ui.path=/rest/swagger-ui.html
+springdoc.api-docs.path=/rest/api-docs
+
+# MINIO
+#Wait for minio during startup
+ataccama.one.object-storage.startup-wait.enabled=true
+ataccama.one.object-storage.startup-wait.interval=5s
+ataccama.one.object-storage.startup-wait.timeout=5s
+
+# Object storage retry configuration
+ataccama.one.object-storage.connection-retry.number-of-attempts=3
+ataccama.one.object-storage.connection-retry.initial-delay=100
+ataccama.one.object-storage.connection-retry.max-delay=1000
+ataccama.one.object-storage.connection-retry.multiplication-factor=3
+
+ataccama.one.object-storage.storages[0].is-default=true
+ataccama.one.object-storage.storages[0].storage-id=minio
+ataccama.one.object-storage.storages[0].storage-type=MINIO
+ataccama.one.object-storage.storages[0].env=test
+ataccama.one.object-storage.storages[0].connectionProperties.url={{ minio_url }}
+ataccama.one.object-storage.storages[0].connectionProperties.access-key={{ minio.access_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.secret-key={{ minio.secret_key }}
+ataccama.one.object-storage.storages[0].connectionProperties.tmp-expiration=3600000

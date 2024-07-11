@@ -1,0 +1,42 @@
+---
+# tasks file for server
+
+- name: Download dependency packages
+  package:
+    name: "{{ dependency_packages }}"
+    state: present
+    update_cache: true
+  when: dependency_packages is defined
+
+- name: "Configure firewall for server: {{ server_instance }}"
+  include: firewall.yml
+  when: firewall_manage | bool
+  tags:
+    - firewall
+
+- include_tasks: monitoring.yml
+  when: ( monitoring_manage | bool ) and server_monitoring_port is defined and server_monitoring_port is string and (server_monitoring_port | length > 0)
+
+- name: "Install Ataccama module: {{ module_name }}"
+  include_role:
+    name: "one_module"
+  tags:
+    - always
+  vars:
+    module_name: "{{ server_module_name }}"
+    module_version: "{{ server_version }}"
+    install_dir: "{{ server_install_dir }}"
+    service_user: "{{ server_service_user }}"
+    service_group: "{{ server_service_group }}"
+    module_services: "{{ server_services }}"
+    package_download_type: "{{ server_package_download_type }}"
+    package_location: "{{ server_package_location }}"
+    package_url: "{{ server_package_url }}"
+    package_checksum: "{{ server_package_checksum }}"
+    deploy_files: "{{ server_files }}"
+    enable_java_heapdumps: "{{ java_heapdumps }}"
+    java_heapdump_context_dir: "{{ server_instance_dir }}"
+    java_temp_folder: "{{ server_java_temp_folder }}"
+
+- include_tasks: config.yml
+  when: ( config_dir is defined ) and (config_files is defined )

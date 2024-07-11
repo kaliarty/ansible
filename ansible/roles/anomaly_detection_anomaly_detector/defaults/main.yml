@@ -1,0 +1,48 @@
+---
+# defaults file for Anomaly Detection Anomaly Detector
+anomaly_detection_anomaly_detector_module_name: anomaly-detection-anomaly-detector
+anomaly_detection_anomaly_detector_version: "{{ packages.anomaly_detection_anomaly_detector.version }}"
+anomaly_detection_anomaly_detector_license_file: licenses/license.plf
+anomaly_detection_anomaly_detector_install_dir: "{{ deployment_folder }}/{{ anomaly_detection_anomaly_detector_module_name }}"
+
+anomaly_detection_anomaly_detector_package_download_type: "{{ packages.anomaly_detection_anomaly_detector.package_download_type | default('maven_artifact') }}"
+anomaly_detection_anomaly_detector_package_location: "{{ packages.anomaly_detection_anomaly_detector.package_location | default ('') }}"
+anomaly_detection_anomaly_detector_package_url: "{{ packages.anomaly_detection_anomaly_detector.package_url }}"
+anomaly_detection_anomaly_detector_package_checksum: "{{ packages.anomaly_detection_anomaly_detector.package_checksum | default(omit) }}"
+
+anomaly_detection_anomaly_detector_system_user: ad-anomalydetector
+anomaly_detection_anomaly_detector_system_group: ad-anomalydetector
+
+anomaly_detection_anomaly_detector_files:
+  - src: "{{ anomaly_detection_anomaly_detector_license_file }}"
+    dest: "{{ anomaly_detection_anomaly_detector_install_dir }}/license/"
+
+anomaly_detection_anomaly_detector_services:
+  - name: anomaly-detection-anomaly-detector
+    service_exec_start: "{{ anomaly_detection_anomaly_detector_install_dir }}/bin/python/bin/python3 {{ anomaly_detection_anomaly_detector_install_dir }}/lib/manage.py run anomaly_detector"
+    service_env:
+      ATACCAMA_AUTHENTICATION_KEYCLOAK_TOKEN_SECRET: "{{ anomaly_detection_token_client_secret }}"
+      ATACCAMA_AUTHENTICATION_INTERNAL_JWT_GENERATOR_KEY: "{{ anomaly_detection_anomaly_detector_jwt_key.private }}"
+      GRPC_DNS_RESOLVER: "native"
+      PATH: "/usr/bin:/usr/sbin:{{ anomaly_detection_anomaly_detector_install_dir }}/bin"
+      PYTHONPATH: "$PYTHONPATH:{{ anomaly_detection_anomaly_detector_install_dir }}/lib"
+      TMPDIR: "{{ temp_folder }}"
+
+maven:
+  repo: "{{ artifactory_repo_url }}"
+  group: com.ataccama.one.anomaly-detection
+  artifact: anomaly-detection-anomaly-detector-assembly
+  version: "{{ packages.anomaly_detection_anomaly_detector.version }}"
+  extension: zip
+  classifier: linux
+
+anomaly_detection_anomaly_detector_config:
+  type: properties_local
+  src: application.properties.j2
+  dest: "{{ anomaly_detection_anomaly_detector_install_dir }}/etc/application.properties"
+
+# Fix missing libffi6 for Ubuntu Focal
+anomaly_detection_anomaly_detector_focal_libffi6_repo: https://mirror.dkm.cz/ubuntu
+anomaly_detection_anomaly_detector_focal_libffi6_path: pool/main/libf/libffi/libffi6_3.2.1-8_amd64.deb
+
+java_cacerts_password: changeit

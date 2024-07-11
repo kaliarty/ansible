@@ -1,0 +1,7 @@
+---
+- name: Debian - Install ca-certificates
+  apt:
+    pkg:
+      - ca-certificates
+    update_cache: yes
+    state: present

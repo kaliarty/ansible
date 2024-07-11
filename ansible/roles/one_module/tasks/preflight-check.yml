@@ -1,0 +1,50 @@
+---
+# preflight check for one_module
+
+- name: Assert all required configuration variables are defined
+  assert:
+    that:
+      - module_name is defined and module_name is string
+      - module_version is defined
+      - module_services is defined and module_services is iterable
+      - service_user is defined and service_user is string
+      - service_group is defined and service_group is string
+      - install_dir is defined and install_dir is string
+      - package_download_type is defined and package_download_type is string
+    msg: "Check if you defined all needed variables."
+
+- name: Assert package download is configured correctly
+  assert:
+    that:
+      - package_download_type in ['maven_artifact', 'remote_url', 'local']
+    msg: "Unsupported download type"
+
+- name: Assert package download configured correctly for maven artifact
+  assert:
+    that:
+      - module_version == maven.version
+    msg: "Maven version must match module version"
+  when: package_download_type == 'maven_artifact'
+
+- name: Assert package download configured correctly for remote_url
+  assert:
+    that:
+      - package_url is defined and package_url is string
+    msg: "Package url is not defined"
+  when: package_download_type == 'remote_url'
+
+- name: Assert package download configured correctly for local
+  assert:
+    that:
+      - package_location is defined and package_location is string
+    msg: "Path to package is not defined"
+  when: package_download_type == 'local'
+
+- name: Assert that module config defined correctly
+  assert:
+    that:
+      - module_config | type_debug == 'dict'
+      - module_config.type is defined and module_config.type in ['properties_local','properties_yaml']
+      - module_config.type != 'properties_local' or (module_config.properties is defined or module_config.src is defined)
+      - module_config.type != 'properties_yaml' or module_config.properties is defined
+  when: module_config is defined

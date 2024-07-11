@@ -1,0 +1,16 @@
+---
+- name: set monitoring rules
+  include_role:
+    name: monitoring_rules
+  tags: monitoring
+  vars:
+    monitoring_ruleset:
+      job_name: comment
+      metrics_path: /actuator/prometheus
+      scheme: http
+      port: "{{ comment_management_port }}"
+      static_configs:
+        - labels:
+            namespace: onprem
+            clusterName: onprem
+            app_kubernetes_io_component: comments

@@ -1,0 +1,12 @@
+---
+
+- name: set firewall rules
+  include_role:
+    name: firewall_rules
+  vars:
+    iptables:
+      allowed_tcp_ports:
+        - port: "{{ minio.http_ui_port }}"
+          source: "{{ groups['monitoring_server'] + (groups['frontend'] + groups['one_app'] if nginx_hosts.minio_ui.hostname is defined else (groups['processing'] + groups['one_app'] + groups['frontend'])) }}"
+        - port: "{{ minio.http_port }}"
+          source: "{{ groups['monitoring_server'] + (groups['frontend'] + groups['one_app'] if nginx_hosts.minio.hostname is defined else (groups['processing'] + groups['one_app'] + groups['frontend'])) }}"

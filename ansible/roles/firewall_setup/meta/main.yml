@@ -1,0 +1,21 @@
+---
+galaxy_info:
+  author: t_deployment
+  description: deployment team
+  company: ataccama
+
+  min_ansible_version: 2.9
+
+  license: internal
+
+  platforms:
+    # update when we verify this on Ubuntu
+    - name: CentOS
+      versions:
+        - 7
+        - 8
+
+# inspect: might be nicer way to include roles from here
+# dependencies:
+#  - one-deploy
+#  - java

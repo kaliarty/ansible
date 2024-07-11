@@ -1,0 +1,15 @@
+---
+
+- name: Configure FluentBit
+  include_role:
+    name: fluentbit
+    tasks_from: config_d.yml
+  vars:
+    fluentbit_conf_d:
+      - name: "{{ server_instance }}-server.conf"
+        template: server.fluentbit.conf.j2
+      - name: console-filter.conf
+        template: fluentbit/filters/console-filter.conf.j2
+    fluentbit_parsers_d:
+      - name: java-server-parser.conf
+        template: java-server-parser.conf.j2
